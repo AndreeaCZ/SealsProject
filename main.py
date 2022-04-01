@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib as mplt
 import math
 import matplotlib.pyplot as plt
+# import sklearn2pmml
 
 nan = float('nan')
 
@@ -30,6 +31,7 @@ def getLabel(str):
 
 
 def getData(dataset, type, perc):
+    rowNumber = 0
     colNumber = np.where(dataset == "LOW")[1][0]
     rows = np.where(dataset == type)[0]
     if perc:
@@ -42,45 +44,22 @@ def getData(dataset, type, perc):
             if dataset[i][1] != "%":
                 rowNumber = i
                 break
-    print("success", rowNumber, colNumber)
+    # print("success", rowNumber, colNumber)
     return dataset[rowNumber][colNumber]
 
 
-# Get WBC value from a given dataset
-# def getWBCData(dataset):
-#     colNumber = np.where( dataset == "LOW")[1][0]
-#     rowNumber = np.where( dataset == "WBC")[0][0]
-#     return dataset[rowNumber][colNumber]
-#
-# #units
-# def getLymfData(dataset):
-#     colNumber = np.where(dataset == "LOW")[1][0]
-#     rows = np.where(dataset == "LYMF")[0]
-#     for i in rows:
-#         if dataset[i][1] != "%":
-#             rowNumber = i
-#             break
-#     return dataset[rowNumber][colNumber]
-#
-#
-# def getGranData(dataset):
-#     colNumber = np.where(dataset == "LOW")[1][0]
-#     rows = np.where(dataset == "GRAN")[0]
-#     for i in rows:
-#         if dataset[i][1] != "%":
-#             rowNumber = i
-#             break
-#     return dataset[rowNumber][colNumber]
-
-
 # Load the data
+trainingArr = np.array([[]])
 wbcDataArr = np.array([])
 lymfDataArr = np.array([])
+lymfDataArrPerc = np.array([])
 labels = np.array([])
 
+# [[seal1wbc, seal1lymf],[seal2wbc, seal2lymf],...]
 # look into regexp
 # npthingArrivedSeals.shape[0]
-for i in range(221, npthingArrivedSeals.shape[0]):
+count = 0
+for i in range(221, 500):
     try:
         sealTag = npthingArrivedSeals[i][1]
         sealSpecies = getSealSpecies(npthingArrivedSeals[i][6])
@@ -93,23 +72,29 @@ for i in range(221, npthingArrivedSeals.shape[0]):
         path = absolutePath + filename
         dataset = pd.read_excel(path)
         npthing = dataset.to_numpy()
+        sealData = np.array([[0] * 2] * 1)
         # check this out
-        if not (math.isnan(getData(npthing, "WBC", False))):
+        if not (math.isnan(getData(npthing, "WBC", False)) or math.isnan(getData(npthing, "LYMF", False)) or math.isnan(getData(npthing, "LYMF", True))):
+            # sealData[0][0] = getData(npthing, "WBC", False)
+            # sealData[0][1] = getData(npthing, "LYMF", False)
             wbcData = getData(npthing, "WBC", False)
             wbcDataArr = np.append(wbcDataArr, wbcData)
             labels = np.append(labels, getLabel(npthingArrivedSeals[i][2]))
-            if not (math.isnan(getData(npthing, "LYMF", False))):
-                lymfDataNoPerc = getData(npthing, "LYMF", False)
-                lymfDataArr = np.append(lymfDataArr, lymfDataNoPerc)
+
+            lymfDataNoPerc = getData(npthing, "LYMF", False)
+            lymfDataArr = np.append(lymfDataArr, lymfDataNoPerc)
+
+            lymfDataArrPerc = np.append(lymfDataArrPerc, getData(npthing, "LYMF", True))
         else:
             print(path)
     except:
         print("This file was not found - ", path)
 
-print(lymfDataArr)
+trainingArr = np.vstack((wbcDataArr, lymfDataArr, lymfDataArrPerc)).T
+print(trainingArr)
 wbcDecisionTree = tree.DecisionTreeClassifier()
-wbcDecisionTree = wbcDecisionTree.fit(wbcDataArr.reshape(-1, 1), labels.reshape(-1, 1))
-predictionArr = np.array([0])
+wbcDecisionTree = wbcDecisionTree.fit(trainingArr, labels.reshape(-1, 1))
+predictionArr = np.array([11.5, 1.5, 13.1])
 # print(tree.export_text(wbcDecisionTree, show_weights=True))
 plt.figure(figsize=(50, 50))
 

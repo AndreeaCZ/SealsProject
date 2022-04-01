@@ -10,6 +10,7 @@ lightorange = '#ffba87'
 darkgray = '#3F4B5A'
 lightgray = '#6A7683'
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -18,63 +19,63 @@ class MainWindow(QMainWindow):
 
         # LEFT SIDE:
 
-        homeButton = QPushButton('Home')
-        dataRangesButton = QPushButton('Data Ranges')
-        aboutButton = QPushButton('About')
+        home_button = QPushButton('Home')
+        data_ranges_button = QPushButton('Data Ranges')
+        about_button = QPushButton('About')
 
-        leftLayout = QVBoxLayout()
-        leftLayout.addWidget(homeButton)
-        leftLayout.addWidget(dataRangesButton)
-        leftLayout.addWidget(aboutButton)
-        leftLayout.addStretch()
+        left_layout = QVBoxLayout()
+        left_layout.addWidget(home_button)
+        left_layout.addWidget(data_ranges_button)
+        left_layout.addWidget(about_button)
+        left_layout.addStretch()
 
-        leftWidget = QWidget()
-        leftWidget.setAutoFillBackground(True)
-        leftWidget.setFixedWidth(200)
-        leftWidget.setLayout(leftLayout)
-        p = leftWidget.palette()
+        left_widget = QWidget()
+        left_widget.setAutoFillBackground(True)
+        left_widget.setFixedWidth(200)
+        left_widget.setLayout(left_layout)
+        p = left_widget.palette()
         p.setColor(QPalette.ColorRole.Window, QColor(darkgray))
-        leftWidget.setPalette(p)
+        left_widget.setPalette(p)
 
         # RIGHT SIDE:
 
-        inputLine = QLineEdit()
-        inputLine.setFixedWidth(300)
-        inputLine.setPlaceholderText('Input')
+        input_line = QLineEdit()
+        input_line.setFixedWidth(300)
+        input_line.setPlaceholderText('Input')
 
-        importButton = QPushButton('Import')
-        importButton.setAttribute
+        import_button = QPushButton('Import')
 
-        outputLabel = QLabel()
-        outputLabel.setText('Yes / No is the seals dead')
+        output_label = QLabel()
+        output_label.setText('Yes / No is the seals dead')
 
-        saveButton = QPushButton('Save')
+        save_button = QPushButton('Save')
 
-        imageLabel = QLabel()
+        image_label = QLabel()
         pic = QPixmap('fancyGraph.png').scaledToHeight(250)
-        imageLabel.setPixmap(pic)
+        image_label.setPixmap(pic)
 
-        rightLayout = QGridLayout()
-        rightLayout.addWidget(inputLine, 0, 0)
-        rightLayout.addWidget(importButton, 0, 1)
-        rightLayout.addWidget(outputLabel, 1, 0)
-        rightLayout.addWidget(saveButton, 1, 1)
-        rightLayout.addWidget(imageLabel, 2, 0, 1, 2, alignment=Qt.AlignmentFlag.AlignCenter)
+        right_layout = QGridLayout()
+        right_layout.addWidget(input_line, 0, 0)
+        right_layout.addWidget(import_button, 0, 1)
+        right_layout.addWidget(output_label, 1, 0)
+        right_layout.addWidget(save_button, 1, 1)
+        right_layout.addWidget(image_label, 2, 0, 1, 2, alignment=Qt.AlignmentFlag.AlignCenter)
 
-        rightWidget = QWidget()
-        rightWidget.setAutoFillBackground(True)
-        rightWidget.setLayout(rightLayout)
-        q = rightWidget.palette()
+        right_widget = QWidget()
+        right_widget.setAutoFillBackground(True)
+        right_widget.setLayout(right_layout)
+        q = right_widget.palette()
         q.setColor(QPalette.ColorRole.Window, QColor(lightgray))
-        rightWidget.setPalette(q)
+        right_widget.setPalette(q)
 
         layout = QGridLayout()
-        layout.addWidget(leftWidget, 0, 0)
-        layout.addWidget(rightWidget, 0, 1)
+        layout.addWidget(left_widget, 0, 0)
+        layout.addWidget(right_widget, 0, 1)
 
         widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
+
 
 app = QApplication(sys.argv)
 
