@@ -30,6 +30,14 @@ class MainWindow(QMainWindow):
     output_label = QLabel()
     save_button = QPushButton('Save')
     image_label = QLabel()
+    # Creating input elements
+    wbc_input = QLineEdit()
+    lymf_input = QLineEdit()
+    lymf_perc_input = QLineEdit()
+    wbc_label = QLabel()
+    lymf_label = QLabel()
+    lymf_perc_label = QLabel()
+    submit_button = QPushButton('Submit')
 
     def __init__(self):
         super().__init__()
@@ -53,24 +61,39 @@ class MainWindow(QMainWindow):
         left_widget.setPalette(p)
 
         # RIGHT SIDE:
+        # Setting input elements properties:
+        self.wbc_label.setText('WBC')
+        self.lymf_label.setText('LYMF')
+        self.lymf_perc_label.setText('LYMF %')
+        self.submit_button.clicked.connect(self.values_entered)
         # Setting element properties
         self.input_line.setFixedWidth(300)
-        self.input_line.setPlaceholderText('Input')
+        self.input_line.setPlaceholderText('File Path')
         self.import_button.clicked.connect(self.get_import)
-        self.output_label.setText('Yes / No is the seals dead')
-        pic = QPixmap('fancyGraph.png').scaledToHeight(250)
-        self.image_label.setPixmap(pic)
-        # Adding the elements to layout:
-        right_layout = QGridLayout()
-        right_layout.addWidget(self.input_line, 0, 0)
-        right_layout.addWidget(self.import_button, 0, 1)
-        right_layout.addWidget(self.output_label, 1, 0)
-        right_layout.addWidget(self.save_button, 1, 1)
-        right_layout.addWidget(self.image_label, 2, 0, 1, 2, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.output_label.setText('Enter data to see prediction')
+        # pic = QPixmap('fancyGraph.png').scaledToHeight(250)
+        # self.image_label.setPixmap(pic)
+
+        # Adding elements to input layout
+        input_layout = QGridLayout()
+        input_layout.addWidget(self.wbc_label, 0, 0, Qt.AlignmentFlag.AlignCenter)
+        input_layout.addWidget(self.lymf_label, 0, 1, Qt.AlignmentFlag.AlignCenter)
+        input_layout.addWidget(self.lymf_perc_label, 0, 2, Qt.AlignmentFlag.AlignCenter)
+        input_layout.addWidget(self.wbc_input, 1, 0)
+        input_layout.addWidget(self.lymf_input, 1, 1)
+        input_layout.addWidget(self.lymf_perc_input, 1, 2)
+        input_layout.addWidget(self.submit_button, 2, 0, 1, 3, Qt.AlignmentFlag.AlignCenter)
+        input_layout.addWidget(self.input_line, 3, 0, 1, 2)
+        input_layout.addWidget(self.import_button, 3, 2)
+        input_layout.addWidget(self.output_label, 4, 0, 1, 2)
+        input_layout.addWidget(self.save_button, 4, 2)
+        input_layout.setRowStretch(5, 1)
+        input_layout.setRowMinimumHeight(3, 100)
+
         # Setting properties:
         right_widget = QWidget()
         right_widget.setAutoFillBackground(True)
-        right_widget.setLayout(right_layout)
+        right_widget.setLayout(input_layout)
         q = right_widget.palette()
         q.setColor(QPalette.ColorRole.Window, QColor(lightgray))
         right_widget.setPalette(q)
@@ -82,6 +105,11 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
+
+    def values_entered(self):
+        values = [float(self.wbc_input.text()), float(self.lymf_input.text()), float(self.lymf_perc_input.text())]
+        result = find_prediction(values)
+        self.output_label.setText(result)
 
     def get_import(self):
         import_path = self.input_line.text()
@@ -96,7 +124,11 @@ def make_prediction(file_path):
     blood_results = [get_data(new_seal_data, 'WBC', False),
                      get_data(new_seal_data, 'LYMF', False),
                      get_data(new_seal_data, 'LYMF', True)]
-    predictionArr = np.array(blood_results).reshape(1, -1)
+    return find_prediction(blood_results)
+
+
+def find_prediction(data):
+    predictionArr = np.array(data).reshape(1, -1)
     compare = int(SealDecisionTree.predict(predictionArr))
     if compare == 1:
         return "Will survive"
