@@ -295,3 +295,7 @@ cython_debug/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,pycharm,python
+/sealData/
+/.idea/
+/Arrived_seals_2014-2021.xlsx
+/treeOutput.png

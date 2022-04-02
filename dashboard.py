@@ -123,7 +123,18 @@ def make_prediction(file_path):
     new_seal_data = pd.read_excel(file_path).to_numpy()
     blood_results = [get_data(new_seal_data, 'WBC', False),
                      get_data(new_seal_data, 'LYMF', False),
-                     get_data(new_seal_data, 'LYMF', True)]
+                     get_data(new_seal_data, 'GRAN', False),
+                     get_data(new_seal_data, 'MID', False),
+                     get_data(new_seal_data, 'LYMF', True),
+                     get_data(new_seal_data, 'GRAN', True),
+                     get_data(new_seal_data, 'MID', True),
+                     get_data(new_seal_data, 'HCT', False),
+                     get_data(new_seal_data, 'MCV', False),
+                     get_data(new_seal_data, 'RBC', False),
+                     get_data(new_seal_data, 'HGB', False),
+                     get_data(new_seal_data, 'MCH', False),
+                     get_data(new_seal_data, 'MCHC', False),
+                     get_data(new_seal_data, 'PLT', False)]
     return find_prediction(blood_results)
 
 
