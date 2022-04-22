@@ -89,6 +89,7 @@ class MainWindow(QMainWindow):
         input_layout.addWidget(self.save_button, 4, 2)
         input_layout.setRowStretch(5, 1)
         input_layout.setRowMinimumHeight(3, 100)
+        input_layout.setRowMinimumHeight(4, 100)
 
         # Setting properties:
         right_widget = QWidget()
@@ -141,10 +142,11 @@ def make_prediction(file_path):
 def find_prediction(data):
     predictionArr = np.array(data).reshape(1, -1)
     compare = int(SealDecisionTree.predict(predictionArr))
+    output = "Values you entered:\n" + ", ".join(map(str, data)) + "\n\nModel prediction:\n"
     if compare == 1:
-        return "Will survive"
+        return output + "Will survive"
     else:
-        return "Will not survive"
+        return output + "Will not survive"
 
 
 window = MainWindow()

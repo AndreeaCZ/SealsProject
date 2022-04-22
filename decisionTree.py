@@ -4,17 +4,20 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 import joblib
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+
 from dataParser import get_data
 
 nan = float('nan')
 
 # add path to arrived seals here
 datasetArrivedSeals = pd.read_excel(
-    open(r'C:\Users\dobre\PycharmProjects\SealsProject\Arrived_seals_2014-2021.xlsx', 'rb'),
+    open(r'/Users/andreeazelko/Documents/SoftwareEngineering/SealsProject/Arrived seals 2014-2021.xlsx', 'rb'),
     sheet_name='Arrived Seals')
 npthingArrivedSeals = datasetArrivedSeals.to_numpy()
 # add path to client data here
-absolutePath = r"C:\Users\dobre\PycharmProjects\SealsProject\sealData"
+absolutePath = r"/Users/andreeazelko/Documents/SoftwareEngineering/SealsProject/clientData"
 
 
 # Get the initials of the species
@@ -57,6 +60,7 @@ labels = np.array([])
 
 # [[seal1wbc, seal1lymf],[seal2wbc, seal2lymf],...]
 # look into regexp
+# npthingArrivedSeals.shape[0]
 for i in range(221, npthingArrivedSeals.shape[0]):
     try:
         sealTag = npthingArrivedSeals[i][1]
@@ -64,10 +68,10 @@ for i in range(221, npthingArrivedSeals.shape[0]):
         # get rid of T in tag ID
         sealTagWithoutT = sealTag[1:]
         if sealTag[1:3] == "20" or sealTag[1:3] == "21":
-            filename = "20" + sealTag[1:3] + "\\" + sealTagWithoutT + " " + sealSpecies + ".xlsx"
+            filename = "20" + sealTag[1:3] + "/" + sealTagWithoutT + " " + sealSpecies + ".xlsx"
         else:
-            filename = "20" + sealTag[1:3] + "\\" + sealSpecies + sealTagWithoutT + ".xlsx"
-        path = absolutePath + "\\" + filename
+            filename = "20" + sealTag[1:3] + "/" + sealSpecies + sealTagWithoutT + ".xlsx"
+        path = absolutePath + "/" + filename
         dataset = pd.read_excel(path)
         ExcelSealData = dataset.to_numpy()
         sealData = np.array([[0] * 2] * 1)
@@ -112,18 +116,23 @@ for i in range(221, npthingArrivedSeals.shape[0]):
             print(path)
     except:
         print("This file was not found - ", path)
-# rdwDataArrPerc, mpvDataArr # cannot train on currently
-trainingArr = np.vstack((wbcDataArr, lymfDataArr, granDataArr, midDataArr, lymfDataArrPerc, granDataArrPerc,
-                         midDataArrPerc, hctDataArr, mcvDataArr, rbcDataArr, hgbDataArr, mchDataArr, mchcDataArr,
-                         pltDataArr)).T
-SealDecisionTree = tree.DecisionTreeClassifier()
-SealDecisionTree = SealDecisionTree.fit(trainingArr, labels.reshape(-1, 1))
-# !!!!!
-# this will only use 2021 files to train on - not ideal
-# !!!!!
-plt.figure(figsize=(50, 50))
-tree.plot_tree(SealDecisionTree, filled=True)
-plt.savefig(fname='treeOutput', format='pdf')
-plt.show()
 
-joblib.dump(SealDecisionTree, 'SealDecisionTree.pkl')
+trainingArr = np.vstack((wbcDataArr, lymfDataArr, lymfDataArrPerc)).T
+sealTrain, sealTest = train_test_split(trainingArr, test_size=0.3, random_state=42)
+trainLabel, testLabel = train_test_split(labels, test_size=0.3, random_state=42)
+SealDecisionTree = tree.DecisionTreeClassifier()
+SealDecisionTree = SealDecisionTree.fit(sealTrain, trainLabel.reshape(-1, 1))
+predictions = SealDecisionTree.predict(sealTest)
+accuracy = accuracy_score(testLabel, predictions)
+print(accuracy)
+
+# for printing / showing the decision tree
+# plt.figure(figsize=(50, 50))
+# tree.plot_tree(SealDecisionTree, filled=True)
+# plt.savefig(fname='treeOutput.png')
+# plt.show()
+
+predictionArr = np.array([11.5, 1.5, 13.1])
+print(SealDecisionTree.predict(predictionArr.reshape(1, -1)))
+
+# joblib.dump(SealDecisionTree, 'SealDecisionTree.pkl')
