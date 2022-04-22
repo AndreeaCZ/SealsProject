@@ -22,9 +22,6 @@ for i in range(0, 7):
                                                           engine='openpyxl').T])
         # read the excel file, skip rows based on logic function, only read 15 rows after that,only read the
         # column E and handle NA values
-        ########################################################################################################################
-        # lambda function does not function properly
-        ########################################################################################################################
     except:
         print("Error in file: " + file)
     path = r"/Users/dobrematei/Desktop/University of Groningen/Software Engineering/SealsProject/sealData"  # reset the path
