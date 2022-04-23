@@ -5,7 +5,6 @@ import numpy as np
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
-from dataParser import get_data
 
 darkblue = '#095056'
 lightblue = '#669fa8'
@@ -71,7 +70,6 @@ class MainWindow(QMainWindow):
         self.input_line.setPlaceholderText('File Path')
         self.import_button.clicked.connect(self.get_import)
         self.output_label.setText('Enter data to see prediction')
-        # pic = QPixmap('fancyGraph.png').scaledToHeight(250)
         # self.image_label.setPixmap(pic)
 
         # Adding elements to input layout

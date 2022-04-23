@@ -1,3 +1,5 @@
+# possibly not needed anymore
+
 import sqlite3
 
 connection = sqlite3.connect('sealPredictionData.db')  # create a database for model training data
