@@ -1,4 +1,5 @@
 import joblib
+import numpy as np
 import seaborn as sns
 from matplotlib import pyplot as plt
 import pandas as pd
@@ -8,8 +9,9 @@ from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
+from SealsProject.variables import DB_PATH, MODEL_NAME
 
-conn = connect(r'C:\Users\dobre\OneDrive\デスクトップ\Software Engineering\SealsProject\sealPredictionData.db')  # create
+conn = connect(DB_PATH)  # create
 # database connection
 datasetLabeledSeals = pd.read_sql('SELECT *  FROM sealPredictionData', conn)  # import data into dataframe
 datasetLabeledSeals = datasetLabeledSeals.drop(['sealTag', 'HCT', 'MCV'], axis=1)  # drop tag column
@@ -66,4 +68,4 @@ for i, column in enumerate(datasetLabeledSeals.drop(['Survival'], axis=1).column
     print(column, ':', survivalDecisionTree.feature_importances_[i])
 ########################################################################################################################
 
-joblib.dump(survivalDecisionTree, 'SealDecisionTree.pkl')
+joblib.dump(survivalDecisionTree, MODEL_NAME)

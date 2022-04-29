@@ -4,12 +4,14 @@ import glob
 import numpy as np
 import sqlite3
 
-connection = sqlite3.connect('sealPredictionData.db')
+from SealsProject.variables import DB_NAME, ARRIVED_SEALS_PATH, CLIENT_DATA_PATH, DIV
+
+connection = sqlite3.connect(DB_NAME)
 dataLabels = ["sealTag", "WBC", "LYMF", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT", "Survival"]
 startYear = 2014
-folderPath = r"/Users/andreeazelko/Documents/SoftwareEngineering/SealsProject/clientData"
+folderPath = CLIENT_DATA_PATH
 arrivedSeals = pd.read_excel(
-    open(r'/Users/andreeazelko/Documents/SoftwareEngineering/SealsProject/Arrived seals 2014-2021.xlsx', 'rb'),
+    open(ARRIVED_SEALS_PATH, 'rb'),
     sheet_name='Arrived Seals', keep_default_na=False).to_numpy()
 print(arrivedSeals.shape)
 
@@ -57,10 +59,10 @@ for i in range(221, arrivedSeals.shape[0]):
         # get rid of T in tag ID
         sealTagWithoutT = tag[1:]
         if tag[1:3] == "20" or tag[1:3] == "21":
-            filename = "20" + tag[1:3] + "/" + sealTagWithoutT + " " + sealSpecies + ".xlsx"
+            filename = "20" + tag[1:3] + DIV + sealTagWithoutT + " " + sealSpecies + ".xlsx"
         else:
-            filename = "20" + tag[1:3] + "/" + sealSpecies + sealTagWithoutT + ".xlsx"
-        file = folderPath + "/" + filename
+            filename = "20" + tag[1:3] + DIV + sealSpecies + sealTagWithoutT + ".xlsx"
+        file = folderPath + DIV + filename
         allData = pd.read_excel(file, na_filter=True, engine='openpyxl').to_numpy()
         # print("Now extracting values from file: " + file)
         values = get_values(allData, survival, tag)
