@@ -1,4 +1,4 @@
-# possibly not needed anymore
+# possibly not needed anymore, Used to create the database
 
 import sqlite3
 

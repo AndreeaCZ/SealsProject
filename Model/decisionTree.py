@@ -9,7 +9,7 @@ from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
-from variables import DB_PATH, MODEL_NAME
+from variables import DB_PATH, MODEL_PATH
 
 conn = connect(DB_PATH)  # create
 # database connection
@@ -68,4 +68,4 @@ for i, column in enumerate(datasetLabeledSeals.drop(['Survival'], axis=1).column
     print(column, ':', survivalDecisionTree.feature_importances_[i])
 ########################################################################################################################
 
-joblib.dump(survivalDecisionTree, MODEL_NAME)
+joblib.dump(survivalDecisionTree, MODEL_PATH)

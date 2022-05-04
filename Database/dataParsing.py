@@ -1,9 +1,9 @@
-import pandas as pd
-import os
-import glob
-import numpy as np
 import sqlite3
 
+import numpy as np
+import pandas as pd
+
+from Utilities.excelManipulation import get_blood_test_values
 from variables import DB_NAME, ARRIVED_SEALS_PATH, CLIENT_DATA_PATH, DIV
 
 connection = sqlite3.connect(DB_NAME)
@@ -22,22 +22,9 @@ def get_values(nparray, sur, sealTag):
             surv = True
         else:
             surv = False
+        blood_values = get_blood_test_values(nparray, ["WBC", "LYMF", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"])
+        return [[sealTag] + blood_values + [surv]]
 
-        colNumber = np.where(nparray == "LOW")[1][0]
-
-        WBC = nparray[np.where(nparray == "WBC")[0][0]][colNumber]
-        LYMF = nparray[np.where(nparray == "LYMF")[0][0]][colNumber]
-        HCT = nparray[np.where(nparray == "HCT")[0][0]][colNumber]
-        MCV = nparray[np.where(nparray == "MCV")[0][0]][colNumber]
-        RBC = nparray[np.where(nparray == "RBC")[0][0]][colNumber]
-        HGB = nparray[np.where(nparray == "HGB")[0][0]][colNumber]
-        MCH = nparray[np.where(nparray == "MCH")[0][0]][colNumber]
-        MCHC = nparray[np.where(nparray == "MCHC")[0][0]][colNumber]
-        MPV = nparray[np.where(nparray == "MPV")[0][0]][colNumber]
-        PLT = nparray[np.where(nparray == "PLT")[0][0]][colNumber]
-
-        sealValues = [[sealTag, WBC, LYMF, HCT, MCV, RBC, HGB, MCH, MCHC, MPV, PLT, surv]]
-        return sealValues
     except Exception as err1:
         print(Exception, err1)
 
@@ -69,7 +56,6 @@ for i in range(221, arrivedSeals.shape[0]):
         sealData = pd.DataFrame(values, columns=dataLabels)
         counter += 1
         print(counter)
-        sealData.to_sql(name='sealPredictionData', con=connection, if_exists='append', index=False)
+        # sealData.to_sql(name='sealPredictionData', con=connection, if_exists='append', index=False)
     except Exception as err:
         print(Exception, err)
-

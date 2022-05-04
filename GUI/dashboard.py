@@ -11,9 +11,9 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn import tree
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-import sqlite3
 
 from variables import MODEL_PATH, DB_PATH
+from Utilities.excelManipulation import get_blood_test_values
 
 darkblue = '#095056'
 lightblue = '#669fa8'
@@ -25,6 +25,7 @@ lightgray = '#6A7683'
 SealDecisionTree = joblib.load(MODEL_PATH)  # load the model created in the training phase
 
 app = QApplication(sys.argv)
+
 
 class MainWindow(QMainWindow):
     # Creating left side elements:
@@ -165,26 +166,26 @@ class TrainModelWindow(QWidget):
             self.setLayout(layout)
 
         def train_new_model(self):
-            conn = sqlite3.connect(DB_PATH)  # create
+            conn = connect(DB_PATH)  # create
             # database connection
             datasetLabeledSeals = pd.read_sql('SELECT *  FROM sealPredictionData', conn)  # import data into dataframe
             datasetLabeledSeals = datasetLabeledSeals.drop(['sealTag', 'HCT', 'MCV'], axis=1)  # drop tag column
 
-            if (not self.wbc.isChecked()):
+            if not self.wbc.isChecked():
                 datasetLabeledSeals = datasetLabeledSeals.drop(['WBC'], axis=1)  # drop tag column
-            if (not self.lymf.isChecked()):
+            if not self.lymf.isChecked():
                 datasetLabeledSeals = datasetLabeledSeals.drop(['LYMF'], axis=1)  # drop tag column
-            if (not self.rbc.isChecked()):
+            if not self.rbc.isChecked():
                 datasetLabeledSeals = datasetLabeledSeals.drop(['RBC'], axis=1)  # drop tag column
-            if (not self.hgb.isChecked()):
+            if not self.hgb.isChecked():
                 datasetLabeledSeals = datasetLabeledSeals.drop(['HGB'], axis=1)  # drop tag column
-            if (not self.mch.isChecked()):
+            if not self.mch.isChecked():
                 datasetLabeledSeals = datasetLabeledSeals.drop(['MCH'], axis=1)  # drop tag column
-            if (not self.mchc.isChecked()):
+            if not self.mchc.isChecked():
                 datasetLabeledSeals = datasetLabeledSeals.drop(['MCHC'], axis=1)  # drop tag column
-            if (not self.mpv.isChecked()):
+            if not self.mpv.isChecked():
                 datasetLabeledSeals = datasetLabeledSeals.drop(['MPV'], axis=1)  # drop tag column
-            if (not self.plt.isChecked()):
+            if not self.plt.isChecked():
                 datasetLabeledSeals = datasetLabeledSeals.drop(['PLT'], axis=1)  # drop tag column
 
             # print(datasetLabeledSeals['Survival'].value_counts())  # check unbalanced data
@@ -202,21 +203,10 @@ class TrainModelWindow(QWidget):
             predictions = survivalDecisionTree.predict(X_test)  # make predictions on the test set
             self.accu_label.setText("Your new model's accuracy " + str(accuracy_score(y_test, predictions)) + "%")
 
+
 def make_prediction(file_path):
     new_seal_data = pd.read_excel(file_path).to_numpy()
-
-    colNumber = np.where(new_seal_data == "LOW")[1][0]
-
-    WBC = new_seal_data[np.where(new_seal_data == "WBC")[0][0]][colNumber]
-    LYMF = new_seal_data[np.where(new_seal_data == "LYMF")[0][0]][colNumber]
-    RBC = new_seal_data[np.where(new_seal_data == "RBC")[0][0]][colNumber]
-    HGB = new_seal_data[np.where(new_seal_data == "HGB")[0][0]][colNumber]
-    MCH = new_seal_data[np.where(new_seal_data == "MCH")[0][0]][colNumber]
-    MCHC = new_seal_data[np.where(new_seal_data == "MCHC")[0][0]][colNumber]
-    MPV = new_seal_data[np.where(new_seal_data == "MPV")[0][0]][colNumber]
-    PLT = new_seal_data[np.where(new_seal_data == "PLT")[0][0]][colNumber]
-
-    blood_results = [WBC, LYMF, RBC, HGB, MCH, MCHC, MPV, PLT]
+    blood_results = get_blood_test_values(new_seal_data, ["WBC", "LYMF", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"])
     return find_prediction(blood_results)
 
 
