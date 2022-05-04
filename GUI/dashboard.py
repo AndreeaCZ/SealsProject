@@ -11,8 +11,9 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn import tree
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+import sqlite3
 
-from SealsProject.variables import MODEL_NAME, DB_PATH
+from variables import MODEL_PATH, DB_PATH
 
 darkblue = '#095056'
 lightblue = '#669fa8'
@@ -21,7 +22,7 @@ lightorange = '#ffba87'
 darkgray = '#3F4B5A'
 lightgray = '#6A7683'
 
-SealDecisionTree = joblib.load(MODEL_NAME)  # load the model created in the training phase
+SealDecisionTree = joblib.load(MODEL_PATH)  # load the model created in the training phase
 
 app = QApplication(sys.argv)
 
@@ -164,7 +165,7 @@ class TrainModelWindow(QWidget):
             self.setLayout(layout)
 
         def train_new_model(self):
-            conn = connect(DB_PATH)  # create
+            conn = sqlite3.connect(DB_PATH)  # create
             # database connection
             datasetLabeledSeals = pd.read_sql('SELECT *  FROM sealPredictionData', conn)  # import data into dataframe
             datasetLabeledSeals = datasetLabeledSeals.drop(['sealTag', 'HCT', 'MCV'], axis=1)  # drop tag column

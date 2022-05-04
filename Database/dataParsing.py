@@ -4,7 +4,7 @@ import glob
 import numpy as np
 import sqlite3
 
-from SealsProject.variables import DB_NAME, ARRIVED_SEALS_PATH, CLIENT_DATA_PATH, DIV
+from variables import DB_NAME, ARRIVED_SEALS_PATH, CLIENT_DATA_PATH, DIV
 
 connection = sqlite3.connect(DB_NAME)
 dataLabels = ["sealTag", "WBC", "LYMF", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT", "Survival"]

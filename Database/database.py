@@ -2,7 +2,7 @@
 
 import sqlite3
 
-from SealsProject.variables import DB_NAME
+from variables import DB_NAME
 
 connection = sqlite3.connect(DB_NAME)  # create a database for model training data
 c = connection.cursor()

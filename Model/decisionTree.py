@@ -9,7 +9,7 @@ from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
-from SealsProject.variables import DB_PATH, MODEL_NAME
+from variables import DB_PATH, MODEL_NAME
 
 conn = connect(DB_PATH)  # create
 # database connection
