@@ -1,5 +1,4 @@
 import joblib
-import numpy as np
 import seaborn as sns
 from matplotlib import pyplot as plt
 import pandas as pd
@@ -32,10 +31,6 @@ print(accuracy_score(y_test, predictions))  # evaluate accuracy
 ########################################################################################################################
 # Data Visualization, Decision Tree - Graphical Representation, Confusion Matrix, Feature Importance
 
-# Data Visualization
-g = sns.pairplot(datasetLabeledSeals, hue='Survival', vars=['WBC', 'LYMF', 'RBC', 'HGB', 'MCH', 'MCHC', 'MPV', 'PLT'])
-# shows distribution of variables in pairplot and shows the correlation between survival and the variables
-# we can use this to see which variables have the most impact on survival, or which variables are irrelevant
 
 # Confusion Matrix
 titles_options = [
