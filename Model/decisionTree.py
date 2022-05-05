@@ -10,23 +10,49 @@ from sklearn.preprocessing import MinMaxScaler
 
 from variables import DB_PATH, MODEL_PATH
 
-conn = connect(DB_PATH)  # create
-# database connection
-datasetLabeledSeals = pd.read_sql('SELECT *  FROM sealPredictionData', conn)  # import data into dataframe
-datasetLabeledSeals = datasetLabeledSeals.drop(['sealTag', 'HCT', 'MCV'], axis=1)  # drop tag column
-# print(datasetLabeledSeals['Survival'].value_counts())  # check unbalanced data
+conn = connect(DB_PATH)
+
+#######################################################################################################################
+# Balancing the data
+
+
+# retrive all the data from the database
+sql_query = pd.read_sql_query('SELECT *  FROM sealPredictionData', conn)
+# Create dataframe from the retrieved data. Note that we only want certain information to be included.
+sealDataframe = pd.DataFrame(sql_query, columns=['WBC', 'LYMF', 'RBC', 'HGB', 'MCH', 'MCHC', 'MPV', 'PLT', 'Survival'])
+# Create two different dataframe where one contains the filtered data for the survived seals
+# and the other dataframe contain details about the dead seals
+survivalData = sealDataframe[sealDataframe['Survival'] == 1]
+unsurvivalData = sealDataframe[sealDataframe['Survival'] == 0]
+# The amount of dead seals
+unsurviveNumber = len(unsurvivalData)
+# create another dataframe that contains the information about alive seals.
+# Moreover the number of data is the same as the number of dead seals data
+filteredSurvivalData = survivalData.sample(unsurviveNumber)
+# Concatenate two dataframe, that is, the dataframe named 'filteredSurvivalData' is concatenated with
+# the dataframe called 'unsurvivalData'
+undersampledData = pd.concat([filteredSurvivalData, unsurvivalData], axis=0)
+
+#######################################################################################################################
+# Split the data into training set and testing set. Those training set is used to train the decision tree model
+
+
 survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_leaf=6)
-
-X = datasetLabeledSeals.drop(['Survival'], axis=1)  # separate features from labels
+# separate features from labels
+X = undersampledData.drop(['Survival'], axis=1)
 scaler = MinMaxScaler()
-X = scaler.fit_transform(X)  # normalize the data ( MinMaxScaler ) - scale the data to be between 0 and 1
-y = datasetLabeledSeals['Survival'].values  # get all labels
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)  # split data into training
-# and test
-survivalDecisionTree = survivalDecisionTree.fit(X_train, y_train)  # train the model
-predictions = survivalDecisionTree.predict(X_test)  # make predictions on the test set
-print(accuracy_score(y_test, predictions))  # evaluate accuracy
+# normalize the data ( MinMaxScaler ) - scale the data to be between 0 and 1
+X = scaler.fit_transform(X)
+# get all labels
+y = undersampledData['Survival'].values
+# Split the data into training anf testing set
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+# Train the decision tree model
+survivalDecisionTree = survivalDecisionTree.fit(X_train, y_train)
+# Make the prediction with the testing set
+predictions = survivalDecisionTree.predict(X_test)
+# Evaluate the accuracy of the prediction
+print(accuracy_score(y_test, predictions))
 
 ########################################################################################################################
 # Data Visualization, Decision Tree - Graphical Representation, Confusion Matrix, Feature Importance
@@ -47,20 +73,23 @@ for title, normalize in titles_options:
     )
     disp.ax_.set_title(title)
 
-    print(title)
-    print(disp.confusion_matrix)
+# print(title)
+print(disp.confusion_matrix)
 
 plt.show()
 
 # Decision Tree - Graphical Representation
 fig = plt.figure(figsize=(20, 20))
-tree.plot_tree(survivalDecisionTree, filled=True, feature_names=datasetLabeledSeals.drop(['Survival'], axis=1).columns,
-               class_names=datasetLabeledSeals['Survival'].unique().astype(str), rounded=True)
+tree.plot_tree(survivalDecisionTree, filled=True, feature_names=undersampledData.drop(['Survival'], axis=1).columns,
+               class_names=undersampledData['Survival'].unique().astype(str), rounded=True)
 fig.show()
 
 # Feature Importance
-for i, column in enumerate(datasetLabeledSeals.drop(['Survival'], axis=1).columns):
-    print(column, ':', survivalDecisionTree.feature_importances_[i])
+for i, column in enumerate(undersampledData.drop(['Survival'], axis=1).columns):
+   print(column, ':', survivalDecisionTree.feature_importances_[i])
+
 ########################################################################################################################
+# Export the model
+
 
 joblib.dump(survivalDecisionTree, MODEL_PATH)
