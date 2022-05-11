@@ -1,9 +1,10 @@
 ########################################################################################################################
 # This can be connected and used in the GUI to visualize the data.
 ########################################################################################################################
-import seaborn as sns
-import pandas as pd
 from sqlite3 import connect
+
+import pandas as pd
+import seaborn as sns
 
 from variables import DB_PATH
 

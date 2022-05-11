@@ -1,6 +1,5 @@
 import sqlite3
 
-import numpy as np
 import pandas as pd
 
 from Utilities.excelManipulation import get_blood_test_values

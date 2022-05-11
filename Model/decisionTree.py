@@ -1,8 +1,8 @@
-import joblib
-import seaborn as sns
-from matplotlib import pyplot as plt
-import pandas as pd
 from sqlite3 import connect
+
+import joblib
+import pandas as pd
+from matplotlib import pyplot as plt
 from sklearn import tree
 from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score
 from sklearn.model_selection import train_test_split
