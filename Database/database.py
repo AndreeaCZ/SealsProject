@@ -12,7 +12,7 @@ c.execute('''
           ([sealTag] TEXT PRIMARY KEY, [WBC] INTEGER NOT NULL, [LYMF] INTEGER NOT NULL, 
           [HCT] INTEGER NOT NULL, [MCV] INTEGER NOT NULL, [RBC] INTEGER NOT NULL, 
           [HGB] INTEGER NOT NULL, [MCH] INTEGER NOT NULL, [MCHC] INTEGER NOT NULL, [MPV] INTEGER NOT NULL,
-          [PLT] INTEGER NOT NULL, [Survival] INTEGER NOT NULL)
+          [PLT] INTEGER NOT NULL, [Survival] INTEGER NOT NULL, [Sex] varchar(7) NOT NULL, [Species] varchar(5) NOT NULL)
           ''')
 connection.commit()
 connection.close()
