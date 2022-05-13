@@ -5,6 +5,7 @@ from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 
 from GUI.trainingWindow import TrainModelWindow
+from GUI.descriptionWindow import DescriptionWindow
 from GUI.utils import *
 
 darkblue = '#095056'
@@ -25,6 +26,7 @@ class MainWindow(QMainWindow):
 
         # Creating window elements:
         self.trainingWindow = None
+        self.descriptionWindow = None
 
         # Creating left side elements:
         self.home_button = QPushButton('Home')
@@ -62,6 +64,8 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
 
     def make_left_side(self):
+        self.about_button.clicked.connect(self.open_description_window)
+        self.trainModel_button.clicked.connect(self.open_training_window)
         left_layout = QVBoxLayout()
         left_layout.addWidget(self.home_button)
         left_layout.addWidget(self.data_ranges_button)
@@ -109,7 +113,6 @@ class MainWindow(QMainWindow):
         self.input_line.setFixedWidth(300)
         self.input_line.setPlaceholderText('File Path')
         self.import_button.clicked.connect(self.get_import)
-        self.trainModel_button.clicked.connect(self.open_training_window)
         self.output_label.setText('Enter data to see prediction')
         # Adding elements to input layout:
         self.right_layout.addWidget(self.input_line, 3, 0, 1, 2)
@@ -123,6 +126,11 @@ class MainWindow(QMainWindow):
     def open_training_window(self):
         self.trainingWindow = TrainModelWindow()
         self.trainingWindow.show()
+
+    def open_description_window(self):
+        self.descriptionWindow = DescriptionWindow()
+        self.descriptionWindow.show()
+
 
     def values_entered(self):
         values = [float(self.wbc_input.text()), float(self.lymf_input.text()), float(self.lymf_perc_input.text())]

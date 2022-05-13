@@ -10,3 +10,5 @@ TO DO:
 1. Refactoring - lot of duplicate code
 2. About section
 ...
+
+![](treeOutput.png)

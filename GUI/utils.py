@@ -22,3 +22,5 @@ def find_prediction(data):
         return output + "Will survive"
     else:
         return output + "Will not survive"
+
+
