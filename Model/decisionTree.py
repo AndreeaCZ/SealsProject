@@ -19,7 +19,7 @@ conn = connect(DB_PATH)
 # retrive all the data from the database
 sql_query = pd.read_sql_query('SELECT *  FROM sealPredictionData', conn)
 # Create dataframe from the retrieved data. Note that we only want certain information to be included.
-sealDataframe = pd.DataFrame(sql_query, columns=['WBC', 'LYMF', 'RBC', 'HGB', 'MCH', 'MCHC', 'MPV', 'PLT', 'Survival'])
+sealDataframe = pd.DataFrame(sql_query, columns=['WBC', 'LYMF', 'RBC', 'HGB', 'MCH', 'MCHC', 'MPV', 'PLT', 'Survival', 'Sex', 'Species'])
 # Create two different dataframe where one contains the filtered data for the survived seals
 # and the other dataframe contain details about the dead seals
 survivalData = sealDataframe[sealDataframe['Survival'] == 1]
