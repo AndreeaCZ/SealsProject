@@ -36,7 +36,7 @@ undersampledData = pd.concat([filteredSurvivalData, unsurvivalData], axis=0)
 #######################################################################################################################
 # Split the data into training set and testing set. Those training set is used to train the decision tree model
 
-
+undersampledData = pd.get_dummies(undersampledData, columns=['Sex', 'Species'])
 survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_leaf=6)
 # separate features from labels
 X = undersampledData.drop(['Survival'], axis=1)
