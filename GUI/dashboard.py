@@ -141,6 +141,7 @@ class MainWindow(QMainWindow):
         import_path = self.input_line.text()
         if not import_path:
             import_path = QFileDialog.getOpenFileName(filter='Excel files (*.xlsx)')[0]
+        print(import_path)
         result = make_prediction(import_path)
         self.output_label.setText(result)
 
