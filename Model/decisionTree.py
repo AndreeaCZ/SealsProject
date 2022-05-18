@@ -1,7 +1,4 @@
-from sqlite3 import connect
-
 import joblib
-import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn import tree
 from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score
@@ -12,6 +9,7 @@ from Database.modelDataGeneration import get_model_data
 from variables import MODEL_PATH
 
 undersampledData = get_model_data()
+
 survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=6, min_samples_leaf=5)
 # separate features from labels
 X = undersampledData.drop(['Survival'], axis=1)
