@@ -15,6 +15,5 @@ def get_model_data():
     deceasedNumber = len(deceasedData)
     filteredSurvivalData = survivalData.sample(deceasedNumber)
     undersampledData = pd.concat([filteredSurvivalData, deceasedData], axis=0)
-    undersampledData = pd.get_dummies(undersampledData, columns=['Sex', 'Species'])
 
     return undersampledData

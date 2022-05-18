@@ -41,6 +41,14 @@ class MainWindow(QMainWindow):
         self.save_button = QPushButton('Save')
         self.image_label = QLabel()
 
+        # Creating import sub fields
+        self.combo1 = QComboBox()
+        self.combo1.addItem("Female")
+        self.combo1.addItem("Male")
+        self.combo2 = QComboBox()
+        self.combo2.addItem("Phoca Vitulina")
+        self.combo2.addItem("Halichoerus Grypus")
+
         # Creating widgets:
         left_widget = self.make_left_side()
         self.right_layout = QGridLayout()
@@ -93,6 +101,8 @@ class MainWindow(QMainWindow):
         self.import_button.clicked.connect(self.get_import)
         self.output_label.setText('Enter data to see prediction')
         # Adding elements to input layout:
+        self.right_layout.addWidget(self.combo1, 1, 0, 1, 2)
+        self.right_layout.addWidget(self.combo2, 2, 0, 1, 2)
         self.right_layout.addWidget(self.input_line, 3, 0, 1, 2)
         self.right_layout.addWidget(self.import_button, 3, 2)
         self.right_layout.addWidget(self.output_label, 4, 0, 1, 2)
@@ -114,12 +124,30 @@ class MainWindow(QMainWindow):
         result = find_prediction(values)
         self.output_label.setText(result)
 
+    def getSealSpeciesInt(self, str):
+        if str == "Phoca Vitulina":
+            return 0
+        if str == "Halichoerus Grypus":
+            return 1
+
+    def getSexInt(self, str):
+        if str == "Female":
+            return 0
+        if str == "Male":
+            return 1
+
     def get_import(self):
         import_path = self.input_line.text()
         if not import_path:
             import_path = QFileDialog.getOpenFileName(filter='Excel files (*.xlsx)')[0]
         print(import_path)
-        result = make_prediction(import_path)
+        sex = self.combo1.currentText()
+        species = self.combo2.currentText()
+        print(sex)
+        print(species)
+        sex1 = self.getSexInt(sex)
+        species1 = self.getSealSpeciesInt(species)
+        result = make_prediction(import_path, sex1, species1)
         if not (result == 0):
             self.output_label.setText(result)
 

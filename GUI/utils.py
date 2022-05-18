@@ -9,11 +9,11 @@ SealDecisionTree = joblib.load(MODEL_PATH)  # load the model created in the trai
 
 # Makes the prediction and returns an array of values if input validation succeeds
 # If not, it returns 0
-def make_prediction(file_path):
+def make_prediction(file_path, sex, species):
     new_seal_data = pd.read_excel(file_path).to_numpy()
     blood_results = get_blood_test_values(new_seal_data, ["WBC", "LYMF", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"])
     if not (blood_results == 0):
-        blood_results = np.append(blood_results, [0,1,0,1])
+        blood_results = np.append(blood_results, [sex] + [species])
         return find_prediction(blood_results)
     else:
         return 0
