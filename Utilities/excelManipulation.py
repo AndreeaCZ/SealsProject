@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 from PyQt6.QtWidgets import QMessageBox
 
@@ -11,11 +13,11 @@ def get_blood_test_values(nparray, labels):
     # labels with wrong input type
     wrongLabels = []
     for label in labels:
-       if isinstance(nparray[np.where(nparray == label)[0][0]][colNumber], float) or isinstance(nparray[np.where(nparray == label)[0][0]][colNumber], int):
-            values.append(nparray[np.where(nparray == label)[0][0]][colNumber])
-       else:
+        e = nparray[np.where(nparray == label)[0][0]][colNumber]
+        if (isinstance(e, float) and not math.isnan(e)) or isinstance(e, int):
+            values.append(e)
+        else:
            wrongLabels.append(label)
-
     if (len(wrongLabels) == 0):
         return values
     # pops a message box if the input of the parameters is not a float or an integer
