@@ -34,15 +34,6 @@ class MainWindow(QMainWindow):
         self.about_button = QPushButton('About')
         self.trainModel_button = QPushButton('Train Model')
 
-        # Creating input elements:
-        self.wbc_input = QLineEdit()
-        self.lymf_input = QLineEdit()
-        self.lymf_perc_input = QLineEdit()
-        self.wbc_label = QLabel()
-        self.lymf_label = QLabel()
-        self.lymf_perc_label = QLabel()
-        self.submit_button = QPushButton('Submit')
-
         # Creating right side elements:
         self.input_line = QLineEdit()
         self.import_button = QPushButton('Import')
@@ -93,20 +84,7 @@ class MainWindow(QMainWindow):
         right_widget.setPalette(q)
         return right_widget
 
-    def set_input_elements(self):
-        # Setting input elements properties:
-        self.wbc_label.setText('WBC')
-        self.lymf_label.setText('LYMF')
-        self.lymf_perc_label.setText('LYMF %')
-        self.submit_button.clicked.connect(self.values_entered)
-        # Adding elements to input layout:
-        self.right_layout.addWidget(self.wbc_label, 0, 0, Qt.AlignmentFlag.AlignCenter)
-        self.right_layout.addWidget(self.lymf_label, 0, 1, Qt.AlignmentFlag.AlignCenter)
-        self.right_layout.addWidget(self.lymf_perc_label, 0, 2, Qt.AlignmentFlag.AlignCenter)
-        self.right_layout.addWidget(self.wbc_input, 1, 0)
-        self.right_layout.addWidget(self.lymf_input, 1, 1)
-        self.right_layout.addWidget(self.lymf_perc_input, 1, 2)
-        self.right_layout.addWidget(self.submit_button, 2, 0, 1, 3, Qt.AlignmentFlag.AlignCenter)
+
 
     def set_right_side_elements(self):
         # Setting right side elements properties:
@@ -130,7 +108,6 @@ class MainWindow(QMainWindow):
     def open_description_window(self):
         self.descriptionWindow = DescriptionWindow()
         self.descriptionWindow.show()
-
 
     def values_entered(self):
         values = [float(self.wbc_input.text()), float(self.lymf_input.text()), float(self.lymf_perc_input.text())]

@@ -8,36 +8,11 @@ from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
-from variables import DB_PATH, MODEL_PATH
+from Database.modelDataGeneration import get_model_data
+from variables import MODEL_PATH
 
-conn = connect(DB_PATH)
-
-#######################################################################################################################
-# Balancing the data
-
-
-# retrive all the data from the database
-sql_query = pd.read_sql_query('SELECT *  FROM sealPredictionData', conn)
-# Create dataframe from the retrieved data. Note that we only want certain information to be included.
-sealDataframe = pd.DataFrame(sql_query, columns=['WBC', 'LYMF', 'RBC', 'HGB', 'MCH', 'MCHC', 'MPV', 'PLT', 'Survival', 'Sex', 'Species'])
-# Create two different dataframe where one contains the filtered data for the survived seals
-# and the other dataframe contain details about the dead seals
-survivalData = sealDataframe[sealDataframe['Survival'] == 1]
-unsurvivalData = sealDataframe[sealDataframe['Survival'] == 0]
-# The amount of dead seals
-unsurviveNumber = len(unsurvivalData)
-# create another dataframe that contains the information about alive seals.
-# Moreover the number of data is the same as the number of dead seals data
-filteredSurvivalData = survivalData.sample(unsurviveNumber)
-# Concatenate two dataframe, that is, the dataframe named 'filteredSurvivalData' is concatenated with
-# the dataframe called 'unsurvivalData'
-undersampledData = pd.concat([filteredSurvivalData, unsurvivalData], axis=0)
-
-#######################################################################################################################
-# Split the data into training set and testing set. Those training set is used to train the decision tree model
-
-undersampledData = pd.get_dummies(undersampledData, columns=['Sex', 'Species'])
-survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_leaf=6)
+undersampledData = get_model_data()
+survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=6, min_samples_leaf=5)
 # separate features from labels
 X = undersampledData.drop(['Survival'], axis=1)
 scaler = MinMaxScaler()
