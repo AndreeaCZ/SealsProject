@@ -12,10 +12,11 @@ from sklearn.preprocessing import MinMaxScaler
 from variables import DB_PATH, DIV
 
 
+# Represents the window that lets the user train their own model
 class TrainModelWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.model = None
+        self.MODEL = None
         self.setFixedSize(QSize(500, 300))
         layout = QVBoxLayout()
         self.setWindowTitle("Train a model")
@@ -48,6 +49,7 @@ class TrainModelWindow(QWidget):
         layout.addWidget(self.save_button)
         self.setLayout(layout)
 
+    # pops open a message box with the passed str as the message
     def popMessageBox(self, str):
         msgBox = QMessageBox()
         msgBox.setText(str)
@@ -75,6 +77,7 @@ class TrainModelWindow(QWidget):
         datasetLabeledSeals = pd.read_sql('SELECT *  FROM sealPredictionData', conn)  # import data into dataframe
         datasetLabeledSeals = datasetLabeledSeals.drop(['sealTag', 'HCT', 'MCV'], axis=1)  # drop tag column
 
+        # if a feature is unchecked, it is removed from the training model params
         if not self.wbc.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['WBC'], axis=1)  # drop tag column
         if not self.lymf.isChecked():
@@ -106,6 +109,5 @@ class TrainModelWindow(QWidget):
         self.model = survivalDecisionTree.fit(X_train, y_train)  # train the model
         predictions = survivalDecisionTree.predict(X_test)  # make predictions on the test set
         self.accu_label.setText("Your new model's accuracy " + str(accuracy_score(y_test, predictions)) + "%")
-        # pops a message box
         self.popMessageBox("Model trained successfully")
 

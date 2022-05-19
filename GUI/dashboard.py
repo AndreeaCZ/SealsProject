@@ -1,12 +1,12 @@
 import sys
 
-from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtCore import QSize
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
-
 from GUI.trainingWindow import TrainModelWindow
 from GUI.descriptionWindow import DescriptionWindow
 from GUI.utils import *
+from variables import MODEL_PATH
 
 darkblue = '#095056'
 lightblue = '#669fa8'
@@ -17,13 +17,12 @@ lightgray = '#6A7683'
 
 app = QApplication(sys.argv)
 
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.model = joblib.load(MODEL_PATH)
         self.setWindowTitle("Blubber")
         self.setFixedSize(QSize(700, 400))
-
         # Creating window elements:
         self.trainingWindow = None
         self.descriptionWindow = None
@@ -40,7 +39,8 @@ class MainWindow(QMainWindow):
         self.output_label = QLabel()
         self.save_button = QPushButton('Save')
         self.image_label = QLabel()
-
+        self.load_model_button = QPushButton('Load a model')
+        self.load_default_model_button = QPushButton('Default model')
         # Creating import sub fields
         self.combo1 = QComboBox()
         self.combo1.addItem("Female")
@@ -92,24 +92,43 @@ class MainWindow(QMainWindow):
         right_widget.setPalette(q)
         return right_widget
 
-
-
     def set_right_side_elements(self):
         # Setting right side elements properties:
         self.input_line.setFixedWidth(300)
         self.input_line.setPlaceholderText('File Path')
         self.import_button.clicked.connect(self.get_import)
         self.output_label.setText('Enter data to see prediction')
+        self.load_model_button.clicked.connect(self.load_model)
+        self.load_default_model_button.clicked.connect(self.load_default_model)
         # Adding elements to input layout:
         self.right_layout.addWidget(self.combo1, 1, 0, 1, 2)
         self.right_layout.addWidget(self.combo2, 2, 0, 1, 2)
         self.right_layout.addWidget(self.input_line, 3, 0, 1, 2)
         self.right_layout.addWidget(self.import_button, 3, 2)
+        self.right_layout.addWidget(self.load_default_model_button, 1,2)
+        self.right_layout.addWidget(self.load_model_button, 2, 2)
         self.right_layout.addWidget(self.output_label, 4, 0, 1, 2)
         self.right_layout.addWidget(self.save_button, 4, 2)
         self.right_layout.setRowStretch(5, 1)
         self.right_layout.setRowMinimumHeight(3, 100)
         self.right_layout.setRowMinimumHeight(4, 100)
+
+    # Load the default model
+    def load_default_model(self):
+        self.model = joblib.load(MODEL_PATH)
+        msgBox = QMessageBox()
+        msgBox.setText("Default model loaded successfully")
+        msgBox.exec()
+
+    # Load a model from the local machine
+    def load_model(self):
+        import_path = QFileDialog.getOpenFileName(filter='PKL files (*.pkl)')[0]
+        if not (import_path == ""):
+            self.model = joblib.load(import_path)
+            msgBox = QMessageBox()
+            msgBox.setText("Model loaded successfully")
+            msgBox.exec()
+            print(import_path)
 
     def open_training_window(self):
         self.trainingWindow = TrainModelWindow()
@@ -151,7 +170,7 @@ class MainWindow(QMainWindow):
         sex1 = self.getSexInt(sex)
         species1 = self.getSealSpeciesInt(species)
         if not import_path_null:
-            result = make_prediction(import_path, sex1, species1)
+            result = make_prediction(import_path, sex1, species1, self.model)
         if not (result == 0):
             self.output_label.setText(result)
 
