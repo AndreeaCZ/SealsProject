@@ -136,18 +136,22 @@ class MainWindow(QMainWindow):
         if str == "Male":
             return 1
 
+    # if the result is zero, there´s a problem when taking the input
     def get_import(self):
         import_path = self.input_line.text()
+        result = 0
         if not import_path:
+            import_path_null = False;
             import_path = QFileDialog.getOpenFileName(filter='Excel files (*.xlsx)')[0]
-        print(import_path)
+            # if you open the window file explorer and click cancel
+            if (import_path == ""):
+                import_path_null = True;
         sex = self.combo1.currentText()
         species = self.combo2.currentText()
-        print(sex)
-        print(species)
         sex1 = self.getSexInt(sex)
         species1 = self.getSealSpeciesInt(species)
-        result = make_prediction(import_path, sex1, species1)
+        if not import_path_null:
+            result = make_prediction(import_path, sex1, species1)
         if not (result == 0):
             self.output_label.setText(result)
 
