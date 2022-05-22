@@ -1,8 +1,20 @@
-import joblib
 import numpy as np
 import pandas as pd
 
 from Utilities.excelManipulation import get_blood_test_values
+import numpy as np
+import pandas as pd
+
+from Utilities.excelManipulation import get_blood_test_values
+
+# Color constants
+darkblue = '#095056'
+lightblue = '#669fa8'
+darkorange = '#ff8a35'
+lightorange = '#ffba87'
+darkgray = '#3F4B5A'
+lightgray = '#6A7683'
+
 
 # Makes the prediction and returns an array of values if input validation succeeds
 # If not, it returns 0

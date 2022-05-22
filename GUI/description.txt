@@ -1,53 +1,22 @@
-# Title
+# Blubber documentation
 
-*Italic Text*
-_Italic Text_
+Blubber is distributed in the hope that it will be a useful tool for scientists to manage their resources by gaining
+some insight into the survival chances of the rescued animals.
 
-**Bold Text**
-__Bold Text__
+The intended use of Blubber is for guidance only. It is not guaranteed that the predictions are 100% accurate and
+therefore should not be used as a substitute for the actual survival chances of the animals.
 
-***Italic and Bold Text***
-___Italic and Bold Text___
+## User guide
 
+### The main page
 
+This is the main page of the Blubber application. It provides the side bar with access to the following pages:
+* Data ranges
+* About
+* Train a model
 
+### Train model page
 
-# Heading 1
-## Heading 2
-### Heading 3
-#### Heading 4
-##### Heading 5
-###### Heading 6
-
-
-# Heading 1
-## Heading 2
-### Heading 3
-#### Heading 4
-##### Heading 5
-###### Heading 6
-
-
-# Heading 1
-## Heading 2
-### Heading 3
-#### Heading 4
-##### Heading 5
-###### Heading 6
-
-# Heading 1
-## Heading 2
-### Heading 3
-#### Heading 4
-##### Heading 5
-###### Heading 6
-
-
-# Heading 1
-## Heading 2
-### Heading 3
-#### Heading 4
-##### Heading 5
-###### Heading 6
-
-![](treeOutput.png)
+This page allows the user to train a model. The user can select the parameters on which the model will be trained, and
+then click the "Train" button. The window will then show the accuracy of the new model. If satisfactory, the user can
+click the "Save" button to save the model.

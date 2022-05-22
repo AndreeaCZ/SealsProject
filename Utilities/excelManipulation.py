@@ -1,7 +1,7 @@
 import math
 
 import numpy as np
-from PyQt6.QtWidgets import QMessageBox, QApplication
+from PyQt6.QtWidgets import QMessageBox
 
 
 def get_blood_test_values(nparray, labels):

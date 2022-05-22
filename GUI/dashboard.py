@@ -1,21 +1,19 @@
 import sys
 
+import joblib
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
-from GUI.trainingWindow import TrainModelWindow
+
 from GUI.descriptionWindow import DescriptionWindow
+from GUI.trainingWindow import TrainModelWindow
+from GUI.predictionWindow import PredictionWindow
 from GUI.utils import *
 from variables import MODEL_PATH
 
-darkblue = '#095056'
-lightblue = '#669fa8'
-darkorange = '#ff8a35'
-lightorange = '#ffba87'
-darkgray = '#3F4B5A'
-lightgray = '#6A7683'
 
 app = QApplication(sys.argv)
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -26,109 +24,36 @@ class MainWindow(QMainWindow):
         # Creating window elements:
         self.trainingWindow = None
         self.descriptionWindow = None
+        self.predictionWindow = None
 
         # Creating left side elements:
-        self.home_button = QPushButton('Home')
+        self.predict_button = QPushButton('Predict')
         self.data_ranges_button = QPushButton('Data Ranges')
         self.about_button = QPushButton('About')
         self.trainModel_button = QPushButton('Train Model')
 
-        # Creating right side elements:
-        self.input_line = QLineEdit()
-        self.import_button = QPushButton('Import')
-        self.output_label = QLabel()
-        self.save_button = QPushButton('Save')
-        self.image_label = QLabel()
-        self.load_model_button = QPushButton('Load a model')
-        self.load_default_model_button = QPushButton('Default model')
-        # Creating import sub fields
-        self.combo1 = QComboBox()
-        self.combo1.addItem("Female")
-        self.combo1.addItem("Male")
-        self.combo2 = QComboBox()
-        self.combo2.addItem("Phoca Vitulina")
-        self.combo2.addItem("Halichoerus Grypus")
-
         # Creating widgets:
-        left_widget = self.make_left_side()
-        self.right_layout = QGridLayout()
-        right_widget = self.make_right_side()
+        widget = self.make_left_side()
 
-        # Creating overall layout:
-        layout = QGridLayout()
-        layout.addWidget(left_widget, 0, 0)
-        layout.addWidget(right_widget, 0, 1)
-        widget = QWidget()
-        widget.setLayout(layout)
         self.setCentralWidget(widget)
 
     def make_left_side(self):
+        self.predict_button.clicked.connect(self.open_prediction_window)
         self.about_button.clicked.connect(self.open_description_window)
         self.trainModel_button.clicked.connect(self.open_training_window)
-        left_layout = QVBoxLayout()
-        left_layout.addWidget(self.home_button)
-        left_layout.addWidget(self.data_ranges_button)
-        left_layout.addWidget(self.about_button)
-        left_layout.addWidget(self.trainModel_button)
-        left_layout.addStretch()
-        left_widget = QWidget()
-        left_widget.setAutoFillBackground(True)
-        left_widget.setFixedWidth(200)
-        left_widget.setLayout(left_layout)
-        p = left_widget.palette()
+        layout = QVBoxLayout()
+        layout.addWidget(self.predict_button)
+        layout.addWidget(self.data_ranges_button)
+        layout.addWidget(self.about_button)
+        layout.addWidget(self.trainModel_button)
+        layout.addStretch()
+        widget = QWidget()
+        widget.setAutoFillBackground(True)
+        widget.setLayout(layout)
+        p = widget.palette()
         p.setColor(QPalette.ColorRole.Window, QColor(darkgray))
-        left_widget.setPalette(p)
-        return left_widget
-
-    def make_right_side(self):
-        # self.set_input_elements()
-        # Toggle this ^ to have value input elements
-        self.set_right_side_elements()
-        right_widget = QWidget()
-        right_widget.setAutoFillBackground(True)
-        right_widget.setLayout(self.right_layout)
-        q = right_widget.palette()
-        q.setColor(QPalette.ColorRole.Window, QColor(lightgray))
-        right_widget.setPalette(q)
-        return right_widget
-
-    def set_right_side_elements(self):
-        # Setting right side elements properties:
-        self.input_line.setFixedWidth(300)
-        self.input_line.setPlaceholderText('File Path')
-        self.import_button.clicked.connect(self.get_import)
-        self.output_label.setText('Enter data to see prediction')
-        self.load_model_button.clicked.connect(self.load_model)
-        self.load_default_model_button.clicked.connect(self.load_default_model)
-        # Adding elements to input layout:
-        self.right_layout.addWidget(self.combo1, 1, 0, 1, 2)
-        self.right_layout.addWidget(self.combo2, 2, 0, 1, 2)
-        self.right_layout.addWidget(self.input_line, 3, 0, 1, 2)
-        self.right_layout.addWidget(self.import_button, 3, 2)
-        self.right_layout.addWidget(self.load_default_model_button, 1,2)
-        self.right_layout.addWidget(self.load_model_button, 2, 2)
-        self.right_layout.addWidget(self.output_label, 4, 0, 1, 2)
-        self.right_layout.addWidget(self.save_button, 4, 2)
-        self.right_layout.setRowStretch(5, 1)
-        self.right_layout.setRowMinimumHeight(3, 100)
-        self.right_layout.setRowMinimumHeight(4, 100)
-
-    # Load the default model
-    def load_default_model(self):
-        self.model = joblib.load(MODEL_PATH)
-        msgBox = QMessageBox()
-        msgBox.setText("Default model loaded successfully")
-        msgBox.exec()
-
-    # Load a model from the local machine
-    def load_model(self):
-        import_path = QFileDialog.getOpenFileName(filter='PKL files (*.pkl)')[0]
-        if not (import_path == ""):
-            self.model = joblib.load(import_path)
-            msgBox = QMessageBox()
-            msgBox.setText("Model loaded successfully")
-            msgBox.exec()
-            print(import_path)
+        widget.setPalette(p)
+        return widget
 
     def open_training_window(self):
         self.trainingWindow = TrainModelWindow()
@@ -138,41 +63,9 @@ class MainWindow(QMainWindow):
         self.descriptionWindow = DescriptionWindow()
         self.descriptionWindow.show()
 
-    def values_entered(self):
-        values = [float(self.wbc_input.text()), float(self.lymf_input.text()), float(self.lymf_perc_input.text())]
-        result = find_prediction(values)
-        self.output_label.setText(result)
-
-    def getSealSpeciesInt(self, str):
-        if str == "Phoca Vitulina":
-            return 0
-        if str == "Halichoerus Grypus":
-            return 1
-
-    def getSexInt(self, str):
-        if str == "Female":
-            return 0
-        if str == "Male":
-            return 1
-
-    # if the result is zero, there´s a problem when taking the input
-    def get_import(self):
-        import_path = self.input_line.text()
-        result = 0
-        if not import_path:
-            import_path_null = False;
-            import_path = QFileDialog.getOpenFileName(filter='Excel files (*.xlsx)')[0]
-            # if you open the window file explorer and click cancel
-            if (import_path == ""):
-                import_path_null = True;
-        sex = self.combo1.currentText()
-        species = self.combo2.currentText()
-        sex1 = self.getSexInt(sex)
-        species1 = self.getSealSpeciesInt(species)
-        if not import_path_null:
-            result = make_prediction(import_path, sex1, species1, self.model)
-        if not (result == 0):
-            self.output_label.setText(result)
+    def open_prediction_window(self):
+        self.predictionWindow = PredictionWindow()
+        self.predictionWindow.show()
 
 
 window = MainWindow()

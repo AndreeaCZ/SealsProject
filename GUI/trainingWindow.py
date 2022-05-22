@@ -18,7 +18,6 @@ class TrainModelWindow(QWidget):
         super().__init__()
         self.MODEL = None
         self.setFixedSize(QSize(500, 300))
-        layout = QVBoxLayout()
         self.setWindowTitle("Train a model")
         self.wbc = QCheckBox("WBC")
         self.lymf = QCheckBox("LYMF")
@@ -28,6 +27,7 @@ class TrainModelWindow(QWidget):
         self.mchc = QCheckBox("MCHC")
         self.mpv = QCheckBox("MPV")
         self.plt = QCheckBox("PLT")
+        layout = QVBoxLayout()
         layout.addWidget(self.wbc)
         layout.addWidget(self.lymf)
         layout.addWidget(self.rbc)
