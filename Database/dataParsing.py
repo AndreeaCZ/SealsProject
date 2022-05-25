@@ -9,9 +9,6 @@ connection = sqlite3.connect(DB_NAME)
 dataLabels = ["sealTag", "WBC", "LYMF", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT", "Survival", "Sex", "Species"]
 startYear = 2014
 folderPath = CLIENT_DATA_PATH
-arrivedSeals = pd.read_excel(
-    open(ARRIVED_SEALS_PATH, 'rb'),
-    sheet_name='Arrived Seals', keep_default_na=False).to_numpy()
 #print(arrivedSeals.shape)
 
 
@@ -47,6 +44,10 @@ def getSexInt(str):
         return 1
 
 counter = 0
+
+arrivedSeals = pd.read_excel(
+    open(ARRIVED_SEALS_PATH, 'rb'),
+    sheet_name='Arrived Seals', keep_default_na=False).to_numpy()
 
 for i in range(221, arrivedSeals.shape[0]):
     try:

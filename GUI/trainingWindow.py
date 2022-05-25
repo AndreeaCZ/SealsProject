@@ -1,6 +1,6 @@
 from sqlite3 import connect
-
 import joblib
+import numpy as np
 import pandas as pd
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import *
@@ -8,9 +8,9 @@ from sklearn import tree
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
-
+import xlsxwriter
 from variables import DB_PATH, DIV
-
+from openpyxl import load_workbook
 
 # Represents the window that lets the user train their own model
 class TrainModelWindow(QWidget):
@@ -49,6 +49,19 @@ class TrainModelWindow(QWidget):
         layout.addWidget(self.save_button)
         self.setLayout(layout)
 
+    def saveFeatures(self, featuresArr):
+        #Create a workbook and add a worksheet.
+        wb = load_workbook("modelInfo.xlsx")
+        ws = wb.active
+        for cell in ws[1]:
+            if cell.value is None:
+                print(cell.col_idx)
+                colIdx = cell.col_idx
+                break
+        workSheet = wb.get_sheet_by_name("modelFeatures")
+        workSheet
+
+
     # pops open a message box with the passed str as the message
     def popMessageBox(self, str):
         msgBox = QMessageBox()
@@ -76,28 +89,39 @@ class TrainModelWindow(QWidget):
         # database connection
         datasetLabeledSeals = pd.read_sql('SELECT *  FROM sealPredictionData', conn)  # import data into dataframe
         datasetLabeledSeals = datasetLabeledSeals.drop(['sealTag', 'HCT', 'MCV'], axis=1)  # drop tag column
+        colNameArr = ["WBC", "LYMF", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"]
 
         # if a feature is unchecked, it is removed from the training model params
         if not self.wbc.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['WBC'], axis=1)  # drop tag column
+            colNameArr.remove('WBC')
         if not self.lymf.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['LYMF'], axis=1)  # drop tag column
+            colNameArr.remove('LYMF')
         if not self.rbc.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['RBC'], axis=1)  # drop tag column
+            colNameArr.remove('RBC')
         if not self.hgb.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['HGB'], axis=1)  # drop tag column
+            colNameArr.remove('HGB')
         if not self.mch.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['MCH'], axis=1)  # drop tag column
+            colNameArr.remove('MCH')
         if not self.mchc.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['MCHC'], axis=1)  # drop tag column
+            colNameArr.remove('MCHC')
         if not self.mpv.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['MPV'], axis=1)  # drop tag column
+            colNameArr.remove('MPV')
         if not self.plt.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['PLT'], axis=1)  # drop tag column
+            colNameArr.remove('PLT')
+
+        #save features in an excel file
+        self.saveFeatures(colNameArr)
 
         # print(datasetLabeledSeals['Survival'].value_counts())  # check unbalanced data
         survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_leaf=6)
-
         X = datasetLabeledSeals.drop(['Survival'], axis=1)  # separate features from labels
         scaler = MinMaxScaler()
         X = scaler.fit_transform(X)  # normalize the data ( MinMaxScaler ) - scale the data to be between 0 and 1

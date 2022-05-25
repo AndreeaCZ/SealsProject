@@ -76,18 +76,6 @@ class PredictionWindow(QWidget):
             msgBox.exec()
             print(import_path)
 
-    def getSealSpeciesInt(self, str):
-        if str == "Phoca Vitulina":
-            return 0
-        if str == "Halichoerus Grypus":
-            return 1
-
-    def getSexInt(self, str):
-        if str == "Female":
-            return 0
-        if str == "Male":
-            return 1
-
     # if the result is zero, there´s a problem when taking the input
     def get_import(self):
         import_path = self.input_line.text()
@@ -101,11 +89,21 @@ class PredictionWindow(QWidget):
                 import_path_null = True;
         sex = self.combo1.currentText()
         species = self.combo2.currentText()
-        sex1 = self.getSexInt(sex)
-        species1 = self.getSealSpeciesInt(species)
+        sex1 = getSexInt(sex)
+        species1 = getSealSpeciesInt(species)
         if not import_path_null:
             result = make_prediction(import_path, sex1, species1, self.model)
         if not (result == 0):
             self.output_label.setText(result)
 
+def getSealSpeciesInt(str):
+        if str == "Phoca Vitulina":
+            return 0
+        if str == "Halichoerus Grypus":
+            return 1
 
+def getSexInt(str):
+        if str == "Female":
+            return 0
+        if str == "Male":
+            return 1
