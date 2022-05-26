@@ -135,8 +135,6 @@ class TrainModelWindow(QWidget):
             datasetLabeledSeals = datasetLabeledSeals.drop(['PLT'], axis=1)  # drop tag column
             self.excelRowIndex.remove(9)
 
-        #save features in an excel file
-        #self.saveFeatures(self.excelRowIndex)
 
         # print(datasetLabeledSeals['Survival'].value_counts())  # check unbalanced data
         survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_leaf=6)
