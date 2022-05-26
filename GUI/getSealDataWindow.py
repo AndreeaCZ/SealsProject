@@ -3,25 +3,10 @@ import sqlite3
 import numpy as np
 import pandas as pd
 
-from GUI.predictionWindow import getSexInt, getSealSpeciesInt
 dataLabels = ["sealTag", "WBC", "LYMF", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT", "Survival", "Sex", "Species"]
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import *
-
-from Utilities.excelManipulation import get_blood_test_values
 from variables import DB_PATH
-
-class color:
-    PURPLE = '\033[95m'
-    CYAN = '\033[96m'
-    DARKCYAN = '\033[36m'
-    BLUE = '\033[94m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-    END = '\033[0m'
 
 # Represents the window that lets the user see seal data
 class GetSealDataWindow(QWidget):
@@ -51,26 +36,41 @@ class GetSealDataWindow(QWidget):
         msgBox.setText(str)
         msgBox.exec()
 
-    # presents the seal data to the output panel
+    # returns the species from the integer representation
+    def getSealSpeciesStrFromInt(self, x):
+        if x == '0':
+            return "Phoca Vitulina"
+        if x == '1':
+            return "Halichoerus Grypus"
+
+    # returns the sex from the integer representation
+    def getSexStrFromInt(self, x):
+        if x == '0':
+            return "Female"
+        if x == '1':
+            return "Male"
+
+    # returns the survival from the integer representation
+    def getSurvivalStrFromInt(self, x):
+        if x == '0':
+            return "Not released"
+        if x == '1':
+            return "Released"
+
+        # presents the seal data to the output panel
     def showSealData(self, sealData):
         str = ""
-        for i in range(len(sealData)):
-            str = str + dataLabels[i].format() + " - " + sealData[i] + "\n"
+        for i in range(11):
+            str = str + dataLabels[i] + " - " + sealData[i] + "\n"
+        str = str + dataLabels[11] + " - " + self.getSurvivalStrFromInt(sealData[11]) + "\n"
+        str = str + dataLabels[12] + " - " + self.getSexStrFromInt(sealData[12]) + "\n"
+        str = str + dataLabels[13] + " - " + self.getSealSpeciesStrFromInt(sealData[13]) + "\n"
         self.output_label.setText(str)
 
-    # 
-    def getSealSpeciesStr(str):
-        if str == "Phoca Vitulina":
-            return "PV"
-        if str == "Halichoerus Grypus":
-            return "HG"
-
+    # retrieves the data of the seal with a seal tag
     # if the result is zero, there´s a problem when taking the input
     def get_Seal_Data(self):
         sealTag = self.sealTag_input_line.text()
-        print(" this ")
-        print(sealTag)
-       # print(type(str(2)) == str)
         connection = sqlite3.connect(DB_PATH)  # create a database for model training data
         c = connection.cursor()
         try:
@@ -81,4 +81,5 @@ class GetSealDataWindow(QWidget):
             self.showSealData(npSealData)
         except:
             self.popMessageBox("Something went wrong. Ensure that you've provided the seal tag of a seal present in the database.")
+            self.output_label.setText("")
         connection.close()
