@@ -9,6 +9,7 @@ from variables import MODEL_PATH
 class PredictionWindow(QWidget):
     def __init__(self):
         super().__init__()
+        self.result = 0
         self.model = joblib.load(MODEL_PATH)
         self.setWindowTitle("Run predictions")
         self.setFixedSize(QSize(700, 400))
@@ -46,6 +47,7 @@ class PredictionWindow(QWidget):
         self.output_label.setText('Enter data to see prediction')
         self.load_model_button.clicked.connect(self.load_model)
         self.load_default_model_button.clicked.connect(self.load_default_model)
+        self.save_button.clicked.connect(self.save_results)
         # Adding elements to input layout:
         self.layout.addWidget(self.combo1, 1, 0, 1, 2)
         self.layout.addWidget(self.combo2, 2, 0, 1, 2)
@@ -58,6 +60,9 @@ class PredictionWindow(QWidget):
         self.layout.setRowStretch(5, 1)
         self.layout.setRowMinimumHeight(3, 100)
         self.layout.setRowMinimumHeight(4, 100)
+
+    def save_results(self):
+        print(self.result)
 
     # Load the default model
     def load_default_model(self):
@@ -79,7 +84,6 @@ class PredictionWindow(QWidget):
     # if the result is zero, there´s a problem when taking the input
     def get_import(self):
         import_path = self.input_line.text()
-        result = 0
         import_path_null = True
         if not import_path:
             import_path_null = False;
@@ -92,9 +96,9 @@ class PredictionWindow(QWidget):
         sex1 = getSexInt(sex)
         species1 = getSealSpeciesInt(species)
         if not import_path_null:
-            result = make_prediction(import_path, sex1, species1, self.model)
-        if not (result == 0):
-            self.output_label.setText(result)
+            self.result = make_prediction(import_path, sex1, species1, self.model)
+        if not (self.result == 0):
+            self.output_label.setText(self.result)
 
 def getSealSpeciesInt(str):
         if str == "Phoca Vitulina":

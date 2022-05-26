@@ -6,7 +6,8 @@ from PyQt6.QtWidgets import *
 from GUI.descriptionWindow import DescriptionWindow
 from GUI.trainingWindow import TrainModelWindow
 from GUI.predictionWindow import PredictionWindow
-from GUI.databaseWindow import DatabaseWindow
+from GUI.addSealWindow import AddSealWindow
+from GUI.getSealDataWindow import GetSealDataWindow
 from GUI.utils import *
 from variables import MODEL_PATH
 
@@ -24,14 +25,16 @@ class MainWindow(QMainWindow):
         self.trainingWindow = None
         self.descriptionWindow = None
         self.predictionWindow = None
-        self.databaseWindow = None
+        self.addSealWindow = None
+        self.getSealWindow = None
 
         # Creating left side elements:
         self.predict_button = QPushButton('Predict')
         self.data_ranges_button = QPushButton('Data Ranges')
         self.about_button = QPushButton('About')
         self.trainModel_button = QPushButton('Train Model')
-        self.database_button = QPushButton('Database')
+        self.add_seal_button = QPushButton('Add a seal')
+        self.get_seal_button = QPushButton('Get seal data')
 
         # Creating widgets:
         widget = self.make_left_side()
@@ -42,18 +45,21 @@ class MainWindow(QMainWindow):
         self.predict_button.clicked.connect(self.open_prediction_window)
         self.about_button.clicked.connect(self.open_description_window)
         self.trainModel_button.clicked.connect(self.open_training_window)
-        self.database_button.clicked.connect(self.open_database_window)
+        self.add_seal_button.clicked.connect(self.open_add_seal_window)
+        self.get_seal_button.clicked.connect(self.open_get_seal_window)
         self.predict_button.setFixedHeight(150)
         self.data_ranges_button.setFixedHeight(150)
         self.about_button.setFixedHeight(150)
         self.trainModel_button.setFixedHeight(150)
-        self.database_button.setFixedHeight(150)
+        self.add_seal_button.setFixedHeight(150)
+        self.get_seal_button.setFixedHeight(150)
         layout = QGridLayout()
         layout.addWidget(self.predict_button, 0, 0)
         layout.addWidget(self.data_ranges_button, 0, 1)
         layout.addWidget(self.about_button, 1,0)
         layout.addWidget(self.trainModel_button, 1, 1)
-        layout.addWidget(self.database_button, 2, 0)
+        layout.addWidget(self.add_seal_button, 2, 0)
+        layout.addWidget(self.get_seal_button, 2, 1)
         widget = QWidget()
         widget.setAutoFillBackground(True)
         widget.setLayout(layout)
@@ -74,9 +80,13 @@ class MainWindow(QMainWindow):
         self.predictionWindow = PredictionWindow()
         self.predictionWindow.show()
 
-    def open_database_window(self):
-        self.databaseWindow = DatabaseWindow()
-        self.databaseWindow.show()
+    def open_add_seal_window(self):
+        self.addSealWindow = AddSealWindow()
+        self.addSealWindow.show()
+
+    def open_get_seal_window(self):
+        self.getSealWindow = GetSealDataWindow()
+        self.getSealWindow.show()
 
 
 window = MainWindow()

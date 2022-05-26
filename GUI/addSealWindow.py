@@ -8,15 +8,17 @@ from PyQt6.QtWidgets import *
 from Utilities.excelManipulation import get_blood_test_values
 from variables import DB_NAME, DB_PATH
 
-# Represents the window that lets the user interact with the database
-class DatabaseWindow(QWidget):
+# Represents the window that lets the user add a seal to the database
+class AddSealWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Database")
+        self.setWindowTitle("Add a seal")
         self.setFixedSize(QSize(700, 400))
 
         # Creating elements:
         self.sealTag_input_line = QLineEdit()
+        self.sealTag_label = QLabel()
+        self.sealTag_label.setText("Enter a unique seal tag")
         self.addSeal_button = QPushButton('Add Seal')
         self.addSeal_button.clicked.connect(self.add_Seal)
 
@@ -35,6 +37,7 @@ class DatabaseWindow(QWidget):
         layout.addWidget(self.combo1)
         layout.addWidget(self.combo2)
         layout.addWidget(self.combo3)
+        layout.addWidget(self.sealTag_label)
         layout.addWidget(self.sealTag_input_line)
         layout.addWidget(self.addSeal_button)
         self.setLayout(layout)

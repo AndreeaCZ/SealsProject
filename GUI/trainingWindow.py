@@ -17,6 +17,7 @@ class TrainModelWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.MODEL = None
+        self.excelRowIndex = [2,3,4,5,6,7,8,9]
         self.setFixedSize(QSize(500, 300))
         self.setWindowTitle("Train a model")
         self.wbc = QCheckBox("WBC")
@@ -49,18 +50,34 @@ class TrainModelWindow(QWidget):
         layout.addWidget(self.save_button)
         self.setLayout(layout)
 
-    def saveFeatures(self, featuresArr):
-        #Create a workbook and add a worksheet.
-        wb = load_workbook("modelInfo.xlsx")
+    # This function is used to update the Excel file. This Excel file is used to note down all the selected features
+    # for the trained models. If a feature was used, then the corresponding cell will be filled with 1.
+    def saveFeatures(self, rowIndexList, modelName):
+        #load a workbook and worksheet.
+        wb = load_workbook("featuresChecklist.xlsx")
         ws = wb.active
-        for cell in ws[1]:
-            if cell.value is None:
-                print(cell.col_idx)
-                colIdx = cell.col_idx
+        colIndex = 2
+        maxCol= ws.max_column
+        maxRow = ws.max_row
+        # Find the empty column
+        for j in range(2, maxCol+1):
+            counter = 0
+            for i in range(2,maxRow+1):
+                if(ws.cell(row=i, column=j).value is None):
+                    counter = counter+1
+            if counter == maxRow-1:
                 break
-        workSheet = wb.get_sheet_by_name("modelFeatures")
-        workSheet
-
+            else:
+                colIndex = colIndex+1
+        #Check if a new column is needed
+        if colIndex == maxCol:
+            ws.insert_cols(maxCol+1)
+        #Fill in the corresponding values
+        ws.cell(row=1, column=colIndex).value = modelName
+        for i in rowIndexList:
+            #fill in the cell with 1
+            ws.cell(row=i, column=colIndex).value = 1
+        wb.save("featuresChecklist.xlsx")
 
     # pops open a message box with the passed str as the message
     def popMessageBox(self, str):
@@ -78,6 +95,8 @@ class TrainModelWindow(QWidget):
             import_path = import_path + DIV + model_name + '.pkl'
             # the user tries to save a model only after training it
             if not (self.model == None):
+                #save the model details into the excel file (featuresChecklist.xlsx)
+                self.saveFeatures(self.excelRowIndex, model_name)
                 joblib.dump(self.model, import_path)
                 # pops a message box
                 self.popMessageBox("Model saved successfully")
@@ -89,36 +108,35 @@ class TrainModelWindow(QWidget):
         # database connection
         datasetLabeledSeals = pd.read_sql('SELECT *  FROM sealPredictionData', conn)  # import data into dataframe
         datasetLabeledSeals = datasetLabeledSeals.drop(['sealTag', 'HCT', 'MCV'], axis=1)  # drop tag column
-        colNameArr = ["WBC", "LYMF", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"]
 
         # if a feature is unchecked, it is removed from the training model params
         if not self.wbc.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['WBC'], axis=1)  # drop tag column
-            colNameArr.remove('WBC')
+            self.excelRowIndex.remove(2)
         if not self.lymf.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['LYMF'], axis=1)  # drop tag column
-            colNameArr.remove('LYMF')
+            self.excelRowIndex.remove(3)
         if not self.rbc.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['RBC'], axis=1)  # drop tag column
-            colNameArr.remove('RBC')
+            self.excelRowIndex.remove(4)
         if not self.hgb.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['HGB'], axis=1)  # drop tag column
-            colNameArr.remove('HGB')
+            self.excelRowIndex.remove(5)
         if not self.mch.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['MCH'], axis=1)  # drop tag column
-            colNameArr.remove('MCH')
+            self.excelRowIndex.remove(6)
         if not self.mchc.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['MCHC'], axis=1)  # drop tag column
-            colNameArr.remove('MCHC')
+            self.excelRowIndex.remove(7)
         if not self.mpv.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['MPV'], axis=1)  # drop tag column
-            colNameArr.remove('MPV')
+            self.excelRowIndex.remove(8)
         if not self.plt.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['PLT'], axis=1)  # drop tag column
-            colNameArr.remove('PLT')
+            self.excelRowIndex.remove(9)
 
         #save features in an excel file
-        self.saveFeatures(colNameArr)
+        #self.saveFeatures(self.excelRowIndex)
 
         # print(datasetLabeledSeals['Survival'].value_counts())  # check unbalanced data
         survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_leaf=6)
