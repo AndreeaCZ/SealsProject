@@ -23,10 +23,15 @@ def make_prediction(file_path, sex, species, model, featureList):
     blood_results = get_blood_test_values(new_seal_data, featureList)
     if not (blood_results == 0):
         blood_results = np.append(blood_results, [sex] + [species])
-        #result,
-        return find_prediction(blood_results, model)
+        resultStr, survival = find_prediction(blood_results, model)
+        print(resultStr)
+        print(survival)
+        print(blood_results)
+        blood_results = np.append(blood_results, [survival])
+        print(blood_results)
+        return resultStr, blood_results
     else:
-        return 0
+        return 0, []
 
 
 def find_prediction(data, model):
@@ -34,6 +39,6 @@ def find_prediction(data, model):
     compare = int(model.predict(predictionArr))
     output = "Values you entered:\n" + ", ".join(map(str, data)) + "\n\nModel prediction:\n"
     if compare == 1:
-        return output + "Will survive"
+        return output + "Will survive", 1
     else:
-        return output + "Will not survive"
+        return output + "Will not survive", 0
