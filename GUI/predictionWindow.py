@@ -69,6 +69,27 @@ class PredictionWindow(QWidget):
         self.layout.setRowMinimumHeight(3, 100)
         self.layout.setRowMinimumHeight(4, 100)
 
+    # returns the species from the integer representation
+    def getSealSpeciesStrFromInt(self, x):
+        if x == 0:
+            return "Phoca Vitulina"
+        if x == 1:
+            return "Halichoerus Grypus"
+
+    # returns the sex from the integer representation
+    def getSexStrFromInt(self, x):
+        if x == 0:
+            return "Female"
+        if x == 1:
+            return "Male"
+
+    # returns the survival from the integer representation
+    def getSurvivalStrFromInt(self, x):
+        if x == 0:
+            return "Will not survive"
+        if x == 1:
+            return "Will survive"
+
     # pops open a message box with the passed str as the message
     def popMessageBox(self, str):
         msgBox = QMessageBox()
@@ -145,6 +166,7 @@ class PredictionWindow(QWidget):
         spreadSheet = excelFile.active
 
         featureListLength = len(self.featureList)
+        sealDataLength = len(self.sealData)
 
         # Fill in the features
         spreadSheet.cell(row=1, column=1).value = "MODEL NAME"
@@ -156,8 +178,13 @@ class PredictionWindow(QWidget):
 
         # Fill in the values
         spreadSheet.cell(row=1, column=2).value = self.modelName
-        for i in range(len(self.sealData)):
+        for i in range(len(self.sealData)-3):
             spreadSheet.cell(row=i+2, column=2).value = self.sealData[i]
+
+        spreadSheet.cell(row=sealDataLength-1, column=2).value = self.getSexStrFromInt(self.sealData[sealDataLength-3])
+        spreadSheet.cell(row=sealDataLength, column=2).value = self.getSealSpeciesStrFromInt(self.sealData[sealDataLength-2])
+        spreadSheet.cell(row=sealDataLength+1, column=2).value = self.getSurvivalStrFromInt(self.sealData[sealDataLength-1])
+
         excelFile.save(import_path)
 
     # Load the default model
