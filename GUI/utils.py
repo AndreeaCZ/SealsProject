@@ -23,6 +23,7 @@ def make_prediction(file_path, sex, species, model, featureList):
     blood_results = get_blood_test_values(new_seal_data, featureList)
     if not (blood_results == 0):
         blood_results = np.append(blood_results, [sex] + [species])
+        #result,
         return find_prediction(blood_results, model)
     else:
         return 0

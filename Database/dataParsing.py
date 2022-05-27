@@ -1,5 +1,4 @@
 import sqlite3
-
 import pandas as pd
 
 from Utilities.excelManipulation import get_blood_test_values
@@ -12,7 +11,6 @@ dataLabels = ["sealTag", "WBC", "LYMF", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC
               "Species"]
 startYear = 2014
 folderPath = CLIENT_DATA_PATH
-#print(arrivedSeals.shape)
 
 
 def get_values(nparray, sur, sealTag, sealSex, species):

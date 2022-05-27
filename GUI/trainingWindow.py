@@ -16,12 +16,13 @@ import xlsxwriter
 from variables import DB_PATH, DIV
 from openpyxl import load_workbook
 
-
 # Represents the window that lets the user train their own model
+TOTAL_FEATURES = 8
+
 class TrainModelWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.MODEL = None
+        self.model = None
         self.excelRowIndex = [2,3,4,5,6,7,8,9]
         self.setFixedSize(QSize(500, 300))
         self.setWindowTitle("Train a model")
@@ -97,19 +98,23 @@ class TrainModelWindow(QWidget):
     # Saves a user trained model
     def save_model(self):
         model_name = self.input_model_name.text()
-        self.input_model_name.setText("")
-        # model name was given
-        if not (model_name == ""):
-            import_path = QFileDialog.getExistingDirectoryUrl().path()
-            import_path = import_path + DIV + model_name + '.pkl'
+        if (model_name == ""):
+            self.pop_message_box("Please enter a model name.")
+        else:
             # the user tries to save a model only after training it
             if not (self.model is None):
-                # save the model details into the excel file (featuresChecklist.xlsx)
-                self.save_features(self.excelRowIndex, model_name)
-                joblib.dump(self.model, import_path)
-                # pops a message box
-                self.pop_message_box("Model saved successfully")
-                self.model = None
+                import_path = QFileDialog.getExistingDirectoryUrl().path()
+                if not (import_path == ""):
+                    import_path = import_path + DIV + model_name + '.pkl'
+                    # save the model details into the excel file (featuresChecklist.xlsx)
+                    self.save_features(self.excelRowIndex, model_name)
+                    joblib.dump(self.model, import_path)
+                    # pops a message box
+                    self.pop_message_box("Model saved successfully")
+                    self.model = None
+            else:
+                self.pop_message_box("Please train a model first.")
+            self.input_model_name.setText("")
 
     # Trains a model based on the features selected
     def train_new_model(self):
@@ -118,45 +123,57 @@ class TrainModelWindow(QWidget):
         datasetLabeledSeals = pd.read_sql('SELECT *  FROM sealPredictionData', conn)  # import data into dataframe
         datasetLabeledSeals = datasetLabeledSeals.drop(['sealTag', 'HCT', 'MCV'], axis=1)  # drop tag column
 
+        # Features not included in training
+        excludedFeaturesNum = 0
         self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9]
         # if a feature is unchecked, it is removed from the training model params
         if not self.wbc.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['WBC'], axis=1)  # drop tag column
             self.excelRowIndex.remove(2)
+            excludedFeaturesNum  += 1
         if not self.lymf.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['LYMF'], axis=1)  # drop tag column
             self.excelRowIndex.remove(3)
+            excludedFeaturesNum += 1
         if not self.rbc.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['RBC'], axis=1)  # drop tag column
             self.excelRowIndex.remove(4)
+            excludedFeaturesNum += 1
         if not self.hgb.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['HGB'], axis=1)  # drop tag column
             self.excelRowIndex.remove(5)
+            excludedFeaturesNum += 1
         if not self.mch.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['MCH'], axis=1)  # drop tag column
             self.excelRowIndex.remove(6)
+            excludedFeaturesNum += 1
         if not self.mchc.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['MCHC'], axis=1)  # drop tag column
             self.excelRowIndex.remove(7)
+            excludedFeaturesNum += 1
         if not self.mpv.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['MPV'], axis=1)  # drop tag column
             self.excelRowIndex.remove(8)
+            excludedFeaturesNum += 1
         if not self.plt.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['PLT'], axis=1)  # drop tag column
             self.excelRowIndex.remove(9)
+            excludedFeaturesNum += 1
 
         # print(datasetLabeledSeals['Survival'].value_counts())  # check unbalanced data
-        survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_leaf=6)
-        X = datasetLabeledSeals.drop(['Survival'], axis=1)  # separate features from labels
-        scaler = MinMaxScaler()
-        X = scaler.fit_transform(X)  # normalize the data ( MinMaxScaler ) - scale the data to be between 0 and 1
-        y = datasetLabeledSeals['Survival'].values  # get all labels
+        if (excludedFeaturesNum != TOTAL_FEATURES):
+            survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_leaf=6)
+            X = datasetLabeledSeals.drop(['Survival'], axis=1)  # separate features from labels
+            scaler = MinMaxScaler()
+            X = scaler.fit_transform(X)  # normalize the data ( MinMaxScaler ) - scale the data to be between 0 and 1
+            y = datasetLabeledSeals['Survival'].values  # get all labels
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3,
-                                                            random_state=42)  # split data into training
-        # and test
-        self.model = survivalDecisionTree.fit(X_train, y_train)  # train the model
-        predictions = survivalDecisionTree.predict(X_test)  # make predictions on the test set
-        self.accu_label.setText("Your new model's accuracy " + str(accuracy_score(y_test, predictions)) + "%")
-        self.pop_message_box("Model trained successfully")
-
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3,
+                                                                random_state=42)  # split data into training
+            # and test
+            self.model = survivalDecisionTree.fit(X_train, y_train)  # train the model
+            predictions = survivalDecisionTree.predict(X_test)  # make predictions on the test set
+            self.accu_label.setText("Your new model's accuracy " + str(accuracy_score(y_test, predictions)) + "%")
+            self.pop_message_box("Model trained successfully")
+        else:
+            self.pop_message_box("Please select features to train on.")

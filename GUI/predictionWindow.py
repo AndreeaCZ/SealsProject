@@ -23,7 +23,7 @@ class PredictionWindow(QWidget):
         self.layout = QGridLayout()
 
         # Creating elements:
-        self.input_line = QLineEdit()
+        self.input_filename = QLineEdit()
         self.import_button = QPushButton('Import')
         self.output_label = QLabel()
         self.save_button = QPushButton('Save')
@@ -48,8 +48,7 @@ class PredictionWindow(QWidget):
 
     def set_elements(self):
         # Setting elements properties:
-        self.input_line.setFixedWidth(300)
-        self.input_line.setPlaceholderText('File Path')
+        self.input_filename.setPlaceholderText('Enter an excel file name')
         self.import_button.clicked.connect(self.get_import)
         self.output_label.setText('Enter data to see prediction')
         self.load_model_button.clicked.connect(self.load_model)
@@ -58,11 +57,12 @@ class PredictionWindow(QWidget):
         # Adding elements to input layout:
         self.layout.addWidget(self.combo1, 1, 0, 1, 2)
         self.layout.addWidget(self.combo2, 2, 0, 1, 2)
-        self.layout.addWidget(self.import_button, 3, 2)
+        self.layout.addWidget(self.import_button, 4, 2)
         self.layout.addWidget(self.load_default_model_button, 1,2)
         self.layout.addWidget(self.load_model_button, 2, 2)
         self.layout.addWidget(self.output_label, 4, 0, 1, 2)
-        self.layout.addWidget(self.save_button, 4, 2)
+        self.layout.addWidget(self.save_button, 5, 2)
+        self.layout.addWidget(self.input_filename, 5, 0)
         self.layout.setRowStretch(5, 1)
         self.layout.setRowMinimumHeight(3, 100)
         self.layout.setRowMinimumHeight(4, 100)
