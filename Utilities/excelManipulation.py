@@ -17,7 +17,7 @@ def get_blood_test_values(nparray, labels):
         if (isinstance(e, float) and not math.isnan(e)) or isinstance(e, int):
             values.append(e)
         else:
-           wrongLabels.append(label)
+            wrongLabels.append(label)
     if (len(wrongLabels) == 0):
         return values
     # pops a message box if the input of the parameters is not a float or an integer

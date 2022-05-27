@@ -57,7 +57,7 @@ class GetSealDataWindow(QWidget):
         if x == '1':
             return "Released"
 
-        # presents the seal data to the output panel
+    # presents the seal data to the output panel
     def showSealData(self, sealData):
         str = ""
         for i in range(11):

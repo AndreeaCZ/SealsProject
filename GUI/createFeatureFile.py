@@ -5,7 +5,7 @@ sheet = book.active
 # Fill in the labels/tittle
 sheet.cell(row=1, column=1).value = "MODEL_NAME: "
 sheet.cell(row=2, column=1).value = "WBC"
-sheet.cell(row=3, column=1).value = "LYMC"
+sheet.cell(row=3, column=1).value = "LYMF"
 sheet.cell(row=4, column=1).value = "RBC"
 sheet.cell(row=5, column=1).value = "HGB"
 sheet.cell(row=6, column=1).value = "MCH"

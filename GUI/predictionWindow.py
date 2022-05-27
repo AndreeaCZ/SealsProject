@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 import joblib
@@ -6,17 +5,16 @@ from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QPalette, QColor
 from PyQt6.QtWidgets import *
 from openpyxl import load_workbook
-from openpyxl.workbook import Workbook
+
 from GUI.utils import *
 from variables import MODEL_PATH
 
-#dataLabels = ["WBC", "LYMF", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"]
 defaultFeatureList = ["WBC", "LYMF", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"]
 
 class PredictionWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.sealData = 0
+        self.result = 0
         self.featureList = defaultFeatureList
         self.model = joblib.load(MODEL_PATH)
         self.setWindowTitle("Run predictions")
@@ -24,8 +22,7 @@ class PredictionWindow(QWidget):
         self.layout = QGridLayout()
 
         # Creating elements:
-        self.input_filename_label = QLabel()
-        self.input_filename = QLineEdit()
+        self.input_line = QLineEdit()
         self.import_button = QPushButton('Import')
         self.output_label = QLabel()
         self.save_button = QPushButton('Save')
@@ -50,7 +47,8 @@ class PredictionWindow(QWidget):
 
     def set_elements(self):
         # Setting elements properties:
-        self.input_filename.setPlaceholderText('Provide a fileName')
+        self.input_line.setFixedWidth(300)
+        self.input_line.setPlaceholderText('File Path')
         self.import_button.clicked.connect(self.get_import)
         self.output_label.setText('Enter data to see prediction')
         self.load_model_button.clicked.connect(self.load_model)
@@ -58,45 +56,15 @@ class PredictionWindow(QWidget):
         self.save_button.clicked.connect(self.save_results)
         # Adding elements to input layout:
         self.layout.addWidget(self.combo1, 1, 0, 1, 2)
-        self.layout.addWidget(self.input_filename, 5, 0, 1, 2)
         self.layout.addWidget(self.combo2, 2, 0, 1, 2)
         self.layout.addWidget(self.import_button, 3, 2)
         self.layout.addWidget(self.load_default_model_button, 1,2)
         self.layout.addWidget(self.load_model_button, 2, 2)
         self.layout.addWidget(self.output_label, 4, 0, 1, 2)
-        self.layout.addWidget(self.save_button, 5, 2)
+        self.layout.addWidget(self.save_button, 4, 2)
         self.layout.setRowStretch(5, 1)
         self.layout.setRowMinimumHeight(3, 100)
         self.layout.setRowMinimumHeight(4, 100)
-
-    def save_results(self):
-        #Create an excel file
-        excelFile = Workbook()
-        spreedSheet = excelFile.active
-        # Fill in the titles
-        spreedSheet.cell(row=1, column=1).value = "MODEL_NAME: "
-        spreedSheet.cell(row=2, column=1).value = "WBC"
-        spreedSheet.cell(row=3, column=1).value = "LYMC"
-        spreedSheet.cell(row=4, column=1).value = "RBC"
-        spreedSheet.cell(row=5, column=1).value = "HGB"
-        spreedSheet.cell(row=6, column=1).value = "MCH"
-        spreedSheet.cell(row=7, column=1).value = "MCHC"
-        spreedSheet.cell(row=8, column=1).value = "MPV"
-        spreedSheet.cell(row=9, column=1).value = "PLT"
-        spreedSheet.cell(row=10, column=1).value = "SEX"
-        spreedSheet.cell(row=11, column=1).value = "SPECIES"
-        spreedSheet.cell(row=12, column=1).value = "RESULT"
-
-        # Create a directory
-        fileName = self.input_model_name.text()
-        import_path = QFileDialog.getExistingDirectoryUrl().path()
-        print(import_path)
-
-    # Load the default model
-    def load_default_model(self):
-        self.model = joblib.load(MODEL_PATH)
-        self.featureList = defaultFeatureList
-        self.popMessageBox("Default model loaded successfully")
 
     # pops open a message box with the passed str as the message
     def popMessageBox(self, str):
@@ -106,19 +74,20 @@ class PredictionWindow(QWidget):
 
     # Update the list of features used for predicting based on the parameters the new model was trained on
     def updateFeatureList(self, filename):
-        print(filename)
         wb = load_workbook("featuresChecklist.xlsx")
         ws = wb.active
         maxCol = ws.max_column
         maxRow = ws.max_row
         featureListTemp = []
+        flag = False
         # find the column corresponding to the loaded model
         for j in range(2, maxCol + 1):
             if (ws.cell(row=1, column=j).value == filename):
+                flag = True
                 colNum = j
                 break
         # The model file exists but its data is not present in the features checklist
-        if (j == maxCol):
+        if not flag:
             self.popMessageBox("Please select another model")
         else:
             # create a list of features the model was trained on
@@ -127,6 +96,15 @@ class PredictionWindow(QWidget):
                     featureListTemp.append(ws.cell(row=i, column=1).value)
             self.featureList = featureListTemp
             self.popMessageBox("Model loaded successfully")
+
+    def save_results(self):
+        print(self.result)
+
+    # Load the default model
+    def load_default_model(self):
+        self.model = joblib.load(MODEL_PATH)
+        self.featureList = defaultFeatureList
+        self.popMessageBox("Default model loaded successfully")
 
     # Load a model from the local machine
     def load_model(self):
@@ -149,9 +127,9 @@ class PredictionWindow(QWidget):
         sex1 = getSexInt(sex)
         species1 = getSealSpeciesInt(species)
         if not import_path_null:
-            result, self.sealData = make_prediction(import_path, sex1, species1, self.model, self.featureList)
+            result = make_prediction(import_path, sex1, species1, self.model, self.featureList)
         if not (result == 0):
-            self.output_label.setText(result)
+             self.output_label.setText(result)
 
 def getSealSpeciesInt(str):
         if str == "Phoca Vitulina":

@@ -18,17 +18,14 @@ lightgray = '#6A7683'
 
 # Makes the prediction and returns an array of values if input validation succeeds
 # If not, it returns 0
-def make_prediction(file_path, sex, species, model, labels):
+def make_prediction(file_path, sex, species, model, featureList):
     new_seal_data = pd.read_excel(file_path).to_numpy()
-    blood_results = get_blood_test_values(new_seal_data, labels)
+    blood_results = get_blood_test_values(new_seal_data, featureList)
     if not (blood_results == 0):
         blood_results = np.append(blood_results, [sex] + [species])
-        result, willSurvive = find_prediction(blood_results, model)
-        blood_results = np.append(blood_results, [willSurvive])
-        print(blood_results)
-        return result, np.array(blood_results)
+        return find_prediction(blood_results, model)
     else:
-        return 0, []
+        return 0
 
 
 def find_prediction(data, model):
@@ -36,6 +33,6 @@ def find_prediction(data, model):
     compare = int(model.predict(predictionArr))
     output = "Values you entered:\n" + ", ".join(map(str, data)) + "\n\nModel prediction:\n"
     if compare == 1:
-        return output + "Will survive", 1
+        return output + "Will survive"
     else:
-        return output + "Will not survive", 0
+        return output + "Will not survive"

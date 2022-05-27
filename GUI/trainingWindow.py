@@ -109,6 +109,7 @@ class TrainModelWindow(QWidget):
         datasetLabeledSeals = pd.read_sql('SELECT *  FROM sealPredictionData', conn)  # import data into dataframe
         datasetLabeledSeals = datasetLabeledSeals.drop(['sealTag', 'HCT', 'MCV'], axis=1)  # drop tag column
 
+        self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9]
         # if a feature is unchecked, it is removed from the training model params
         if not self.wbc.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['WBC'], axis=1)  # drop tag column
@@ -134,6 +135,8 @@ class TrainModelWindow(QWidget):
         if not self.plt.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['PLT'], axis=1)  # drop tag column
             self.excelRowIndex.remove(9)
+
+
 
 
         # print(datasetLabeledSeals['Survival'].value_counts())  # check unbalanced data
