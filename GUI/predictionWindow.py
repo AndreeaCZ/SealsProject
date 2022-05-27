@@ -75,31 +75,42 @@ class PredictionWindow(QWidget):
         msgBox.setText(str)
         msgBox.exec()
 
+    # loads the default model with a different message
+    def loadDefaultModelWithNewMsg(self):
+        self.output_label.setText("")
+        self.modelName = defaultModelName
+        self.model = joblib.load(MODEL_PATH)
+        self.featureList = defaultFeatureList
+        self.popMessageBox("Can't find the featuresChecklist.xlsx file. Default model loaded successfully")
+
     # Update the list of features used for predicting based on the parameters the new model was trained on
     def updateFeatureList(self, filename):
-        wb = load_workbook("featuresChecklist.xlsx")
-        ws = wb.active
-        maxCol = ws.max_column
-        maxRow = ws.max_row
-        featureListTemp = []
-        flag = False
-        # find the column corresponding to the loaded model
-        for j in range(2, maxCol + 1):
-            if (ws.cell(row=1, column=j).value == filename):
-                flag = True
-                colNum = j
-                break
-        # The model file exists but its data is not present in the features checklist
-        if not flag:
-            self.popMessageBox("Please select another model")
-        else:
-            # create a list of features the model was trained on
-            self.modelName = ws.cell(row=1, column=colNum).value
-            for i in range(2, maxRow+1):
-                if (ws.cell(row=i, column=colNum).value is not None):
-                    featureListTemp.append(ws.cell(row=i, column=1).value)
-            self.featureList = featureListTemp
-            self.popMessageBox("Model loaded successfully")
+        try:
+            wb = load_workbook("featuresChecklist.xlsx")
+            ws = wb.active
+            maxCol = ws.max_column
+            maxRow = ws.max_row
+            featureListTemp = []
+            flag = False
+            # find the column corresponding to the loaded model
+            for j in range(2, maxCol + 1):
+                if (ws.cell(row=1, column=j).value == filename):
+                    flag = True
+                    colNum = j
+                    break
+            # The model file exists but its data is not present in the features checklist
+            if not flag:
+                self.popMessageBox("Please select another model")
+            else:
+                # create a list of features the model was trained on
+                self.modelName = ws.cell(row=1, column=colNum).value
+                for i in range(2, maxRow+1):
+                    if (ws.cell(row=i, column=colNum).value is not None):
+                        featureListTemp.append(ws.cell(row=i, column=1).value)
+                self.featureList = featureListTemp
+                self.popMessageBox("Model loaded successfully")
+        except:
+            self.loadDefaultModelWithNewMsg()
 
     # pops open a message box with the passed str as the message
     def pop_message_box(self, str):

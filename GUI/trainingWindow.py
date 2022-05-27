@@ -65,30 +65,35 @@ class TrainModelWindow(QWidget):
     # for the trained models. If a feature was used, then the corresponding cell will be filled with 1.
     def save_features(self, rowIndexList, modelName):
         # load a workbook and worksheet.
-        wb = load_workbook("featuresChecklist.xlsx")
-        ws = wb.active
-        colIndex = 2
-        maxCol= ws.max_column
-        maxRow = ws.max_row
-        # Find the empty column
-        for j in range(2, maxCol+1):
-            counter = 0
-            for i in range(2,maxRow+1):
-                if ws.cell(row=i, column=j).value is None:
-                    counter = counter+1
-            if counter == maxRow-1:
-                break
-            else:
-                colIndex = colIndex+1
-        # Check if a new column is needed
-        if colIndex == maxCol:
-            ws.insert_cols(maxCol+1)
-        # Fill in the corresponding values
-        ws.cell(row=1, column=colIndex).value = modelName
-        for i in rowIndexList:
-            # fill in the cell with 1
-            ws.cell(row=i, column=colIndex).value = 1
-        wb.save("featuresChecklist.xlsx")
+        try:
+            wb = load_workbook("featuresChecklist.xlsx")
+            ws = wb.active
+            colIndex = 2
+            maxCol= ws.max_column
+            maxRow = ws.max_row
+            # Find the empty column
+            for j in range(2, maxCol+1):
+                counter = 0
+                for i in range(2,maxRow+1):
+                    if ws.cell(row=i, column=j).value is None:
+                        counter = counter+1
+                if counter == maxRow-1:
+                    break
+                else:
+                    colIndex = colIndex+1
+            # Check if a new column is needed
+            if colIndex == maxCol:
+                ws.insert_cols(maxCol+1)
+            # Fill in the corresponding values
+            ws.cell(row=1, column=colIndex).value = modelName
+            for i in rowIndexList:
+                # fill in the cell with 1
+                ws.cell(row=i, column=colIndex).value = 1
+            wb.save("featuresChecklist.xlsx")
+            return 1
+        except:
+            self.pop_message_box("Can't find the featuresChecklist.xlsx file")
+            return 0
 
     # pops open a message box with the passed str as the message
     def pop_message_box(self, str):
@@ -108,11 +113,12 @@ class TrainModelWindow(QWidget):
                 if not (import_path == ""):
                     import_path = import_path + DIV + model_name + '.pkl'
                     # save the model details into the excel file (featuresChecklist.xlsx)
-                    self.save_features(self.excelRowIndex, model_name)
-                    joblib.dump(self.model, import_path)
-                    # pops a message box
-                    self.pop_message_box("Model saved successfully")
-                    self.model = None
+                    isSuccessful = self.save_features(self.excelRowIndex, model_name)
+                    if (isSuccessful == 1):
+                        joblib.dump(self.model, import_path)
+                        # pops a message box
+                        self.pop_message_box("Model saved successfully")
+                        self.model = None
             else:
                 self.pop_message_box("Please train a model first.")
             self.input_model_name.setText("")
@@ -158,7 +164,6 @@ class TrainModelWindow(QWidget):
             self.excelRowIndex.remove(9)
             excludedFeaturesNum += 1
 
-        # print(datasetLabeledSeals['Survival'].value_counts())  # check unbalanced data
         if (excludedFeaturesNum != I):
             survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_leaf=6)
             X = datasetLabeledSeals.drop(['Survival'], axis=1)  # separate features from labels
