@@ -13,6 +13,7 @@ from variables import MODEL_PATH
 #dataLabels = ["WBC", "LYMF", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"]
 defaultFeatureList = ["WBC", "LYMF", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"]
 
+# Represents the window where the user can predict the outcome of a seal
 class PredictionWindow(QWidget):
     def __init__(self):
         super().__init__()

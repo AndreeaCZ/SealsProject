@@ -1,9 +1,13 @@
 from PyQt6.QtCore import QSize
+from PyQt6.QtGui import QPalette, QColor
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTextEdit
+
+from GUI.utils import lightgray
 
 string = open('description.txt').read()
 
 
+# Represents the description window of the application
 class DescriptionWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -14,6 +18,10 @@ class DescriptionWindow(QWidget):
         text.setReadOnly(True)
         layout.addWidget(text)
         self.setLayout(layout)
+        self.setAutoFillBackground(True)
+        q = self.palette()
+        q.setColor(QPalette.ColorRole.Window, QColor(lightgray))
+        self.setPalette(q)
 
 
         # VERSION WITH PICTURES, WILL PROBABLY REMOVE LATER
