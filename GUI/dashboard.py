@@ -11,10 +11,10 @@ from GUI.getSealDataWindow import GetSealDataWindow
 from GUI.utils import *
 from variables import MODEL_PATH
 
-
 app = QApplication(sys.argv)
 
 
+# Represents the main (initial) window of the application
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -37,11 +37,11 @@ class MainWindow(QMainWindow):
         self.get_seal_button = QPushButton('Get seal data')
 
         # Creating widgets:
-        widget = self.make_left_side()
+        widget = self.make_elements()
 
         self.setCentralWidget(widget)
 
-    def make_left_side(self):
+    def make_elements(self):
         self.predict_button.clicked.connect(self.open_prediction_window)
         self.about_button.clicked.connect(self.open_description_window)
         self.trainModel_button.clicked.connect(self.open_training_window)
