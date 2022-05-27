@@ -11,13 +11,14 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
+from Database.modelDataGeneration import get_model_data
 from GUI.utils import lightgray
 import xlsxwriter
 from variables import DB_PATH, DIV
 from openpyxl import load_workbook
 
 # Represents the window that lets the user train their own model
-TOTAL_FEATURES = 8
+I = 8
 
 class TrainModelWindow(QWidget):
     def __init__(self):
@@ -118,10 +119,7 @@ class TrainModelWindow(QWidget):
 
     # Trains a model based on the features selected
     def train_new_model(self):
-        conn = connect(DB_PATH)  # create
-        # database connection
-        datasetLabeledSeals = pd.read_sql('SELECT *  FROM sealPredictionData', conn)  # import data into dataframe
-        datasetLabeledSeals = datasetLabeledSeals.drop(['sealTag', 'HCT', 'MCV'], axis=1)  # drop tag column
+        datasetLabeledSeals = get_model_data()
 
         # Features not included in training
         excludedFeaturesNum = 0
@@ -161,7 +159,7 @@ class TrainModelWindow(QWidget):
             excludedFeaturesNum += 1
 
         # print(datasetLabeledSeals['Survival'].value_counts())  # check unbalanced data
-        if (excludedFeaturesNum != TOTAL_FEATURES):
+        if (excludedFeaturesNum != I):
             survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_leaf=6)
             X = datasetLabeledSeals.drop(['Survival'], axis=1)  # separate features from labels
             scaler = MinMaxScaler()
@@ -173,7 +171,7 @@ class TrainModelWindow(QWidget):
             # and test
             self.model = survivalDecisionTree.fit(X_train, y_train)  # train the model
             predictions = survivalDecisionTree.predict(X_test)  # make predictions on the test set
-            self.accu_label.setText("Your new model's accuracy " + str(accuracy_score(y_test, predictions)) + "%")
+            self.accu_label.setText("Your new model's accuracy " + str(round(accuracy_score(y_test, predictions)*100,1)) + "%")
             self.pop_message_box("Model trained successfully")
         else:
             self.pop_message_box("Please select features to train on.")
