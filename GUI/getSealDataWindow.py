@@ -2,6 +2,9 @@ import sqlite3
 
 import numpy as np
 import pandas as pd
+from PyQt6.QtGui import QPalette, QColor
+
+from GUI.utils import lightgray
 
 dataLabels = ["sealTag", "WBC", "LYMF", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT", "Survival", "Sex", "Species"]
 from PyQt6.QtCore import QSize
@@ -29,6 +32,10 @@ class GetSealDataWindow(QWidget):
         layout.addWidget(self.output_label)
         layout.addWidget(self.getSealData_button)
         self.setLayout(layout)
+        self.setAutoFillBackground(True)
+        q = self.palette()
+        q.setColor(QPalette.ColorRole.Window, QColor(lightgray))
+        self.setPalette(q)
 
     # pops open a message box with the passed str as the message
     def popMessageBox(self, str):

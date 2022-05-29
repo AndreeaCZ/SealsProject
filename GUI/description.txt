@@ -10,13 +10,30 @@ therefore should not be used as a substitute for the actual survival chances of 
 
 ### The main page
 
-This is the main page of the Blubber application. It provides the side bar with access to the following pages:
-* Data ranges
-* About
-* Train a model
+This is the main page of the Blubber application. It provides access to the following pages:
+* Prediction page
+* Data ranges page
+* About page
+* Train a model page
+* Add a seal page
+* Get a seal page
 
-### Train model page
+### Prediction page
+
+This is the page where the user can make a prediction about the survival chances of the animals. Please select the
+gender of the seal, its species. Also select what model you wish to use. Next, import the Excel file containing the
+blood test results of the new seal. Make sure the file follows the usual format.
+
+### Train a model page
 
 This page allows the user to train a model. The user can select the parameters on which the model will be trained, and
 then click the "Train" button. The window will then show the accuracy of the new model. If satisfactory, the user can
 click the "Save" button to save the model.
+
+### Add a seal page
+
+This page allows the user to add a new seal to the database.
+
+### Get a seal page
+
+This page allows the user to get a seal from the database.

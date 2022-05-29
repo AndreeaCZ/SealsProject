@@ -1,10 +1,12 @@
 import sqlite3
 import pandas as pd
+from PyQt6.QtGui import QPalette, QColor
 
 from GUI.predictionWindow import getSexInt, getSealSpeciesInt
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import *
 
+from GUI.utils import lightgray
 from Utilities.excelManipulation import get_blood_test_values
 from variables import DB_NAME, DB_PATH
 
@@ -41,6 +43,10 @@ class AddSealWindow(QWidget):
         layout.addWidget(self.sealTag_input_line)
         layout.addWidget(self.addSeal_button)
         self.setLayout(layout)
+        self.setAutoFillBackground(True)
+        q = self.palette()
+        q.setColor(QPalette.ColorRole.Window, QColor(lightgray))
+        self.setPalette(q)
 
     # pops open a message box with the passed str as the message
     def popMessageBox(self, str):
