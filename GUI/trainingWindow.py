@@ -20,11 +20,12 @@ from openpyxl import load_workbook
 # Represents the window that lets the user train their own model
 I = 8
 
+
 class TrainModelWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.model = None
-        self.excelRowIndex = [2,3,4,5,6,7,8,9]
+        self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9]
         self.setFixedSize(QSize(500, 300))
         self.setWindowTitle("Train a model")
         self.wbc = QCheckBox("WBC")
@@ -69,21 +70,21 @@ class TrainModelWindow(QWidget):
             wb = load_workbook("featuresChecklist.xlsx")
             ws = wb.active
             colIndex = 2
-            maxCol= ws.max_column
+            maxCol = ws.max_column
             maxRow = ws.max_row
             # Find the empty column
-            for j in range(2, maxCol+1):
+            for j in range(2, maxCol + 1):
                 counter = 0
-                for i in range(2,maxRow+1):
+                for i in range(2, maxRow + 1):
                     if ws.cell(row=i, column=j).value is None:
-                        counter = counter+1
-                if counter == maxRow-1:
+                        counter = counter + 1
+                if counter == maxRow - 1:
                     break
                 else:
-                    colIndex = colIndex+1
+                    colIndex = colIndex + 1
             # Check if a new column is needed
             if colIndex == maxCol:
-                ws.insert_cols(maxCol+1)
+                ws.insert_cols(maxCol + 1)
             # Fill in the corresponding values
             ws.cell(row=1, column=colIndex).value = modelName
             for i in rowIndexList:
@@ -104,7 +105,7 @@ class TrainModelWindow(QWidget):
     # Saves a user trained model
     def save_model(self):
         model_name = self.input_model_name.text()
-        if (model_name == ""):
+        if model_name == "":
             self.pop_message_box("Please enter a model name.")
         else:
             # the user tries to save a model only after training it
@@ -114,7 +115,7 @@ class TrainModelWindow(QWidget):
                     import_path = import_path + DIV + model_name + '.pkl'
                     # save the model details into the excel file (featuresChecklist.xlsx)
                     isSuccessful = self.save_features(self.excelRowIndex, model_name)
-                    if (isSuccessful == 1):
+                    if isSuccessful == 1:
                         joblib.dump(self.model, import_path)
                         # pops a message box
                         self.pop_message_box("Model saved successfully")
@@ -134,7 +135,7 @@ class TrainModelWindow(QWidget):
         if not self.wbc.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['WBC'], axis=1)  # drop tag column
             self.excelRowIndex.remove(2)
-            excludedFeaturesNum  += 1
+            excludedFeaturesNum += 1
         if not self.lymf.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['LYMF'], axis=1)  # drop tag column
             self.excelRowIndex.remove(3)
@@ -164,7 +165,7 @@ class TrainModelWindow(QWidget):
             self.excelRowIndex.remove(9)
             excludedFeaturesNum += 1
 
-        if (excludedFeaturesNum != I):
+        if excludedFeaturesNum != I:
             survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_leaf=6)
             X = datasetLabeledSeals.drop(['Survival'], axis=1)  # separate features from labels
             scaler = MinMaxScaler()
@@ -176,7 +177,8 @@ class TrainModelWindow(QWidget):
             # and test
             self.model = survivalDecisionTree.fit(X_train, y_train)  # train the model
             predictions = survivalDecisionTree.predict(X_test)  # make predictions on the test set
-            self.accu_label.setText("Your new model's accuracy " + str(round(accuracy_score(y_test, predictions)*100,1)) + "%")
+            self.accu_label.setText(
+                "Your new model's accuracy " + str(round(accuracy_score(y_test, predictions) * 100, 1)) + "%")
             self.pop_message_box("Model trained successfully")
         else:
             self.pop_message_box("Please select features to train on.")

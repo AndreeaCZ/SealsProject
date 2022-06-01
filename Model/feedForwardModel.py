@@ -6,11 +6,11 @@ from sklearn.preprocessing import MinMaxScaler
 from Database.modelDataGeneration import get_model_data
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")  # sets device to gpu if available
-input_size = 12  # number of features
+input_size = 10  # number of features
 hidden_size = 100 # Number of neurons in the hidden layer
 num_classes = 2  # Number of classes in the dataset
-num_epochs = 70  # Number of epochs for training
-batch_size = 100  # Number of training samples used per step
+num_epochs = 100  # Number of epochs for training
+batch_size = 700  # Number of training samples used per step
 learning_rate = 0.001  # Learning rate used in the optimizer
 
 dataset = get_model_data()  # get the dataset
@@ -18,12 +18,12 @@ y = dataset['Survival'].values  # get the labels
 X = dataset.drop(['Survival'], axis=1)  # separate features from labels
 scaler = MinMaxScaler()  # ( MinMaxScaler ) - scale the data to be between 0 and 1
 X = scaler.fit_transform(X)  # normalize the data
-
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)  # Split the data into training anf testing set
 
 train_loader = torch.utils.data.DataLoader(dataset=torch.utils.data.TensorDataset(torch.from_numpy(X_train).float(),
                                                                                   torch.from_numpy(y_train).long()),
                                            batch_size=batch_size, shuffle=True)  # create the training set
+
 
 test_loader = torch.utils.data.DataLoader(dataset=torch.utils.data.TensorDataset(torch.from_numpy(X_test).float(),
                                                                                  torch.from_numpy(y_test).long()),
@@ -37,7 +37,9 @@ class NeuralNet(nn.Module):  # define the neural network
         self.relu = nn.ReLU()  # create the activation function
         self.l2 = nn.Linear(hidden_size, hidden_size)  # create the second layer
         self.l3 = nn.Linear(hidden_size, hidden_size)  # create the third layer
-        self.l4 = nn.Linear(hidden_size, num_classes)  # create the fourth layer
+        self.l4 = nn.Linear(hidden_size, hidden_size)  # create the fourth layer
+        self.l5 = nn.Linear(hidden_size, num_classes)  # create the fifth layer
+
 
     def forward(self, x):
         out = self.l1(x)  # pass the input through the first layer
@@ -47,6 +49,8 @@ class NeuralNet(nn.Module):  # define the neural network
         out = self.l3(out)
         out = self.relu(out)
         out = self.l4(out)
+        out = self.relu(out)
+        out = self.l5(out)
         return out  # return the output
 
 
