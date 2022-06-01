@@ -1,8 +1,11 @@
 import joblib
 from matplotlib import pyplot as plt
 from sklearn import tree
+from sklearn import svm
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score
 from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import MinMaxScaler
 
 from Database.modelDataGeneration import get_model_data
@@ -12,7 +15,6 @@ from variables import MODEL_PATH
 def data_preprocessing():
     """
     Data preprocessing for the model
-    :param data: the data to be preprocessed
     :return: the preprocessed data
     """
     data = get_model_data()
@@ -26,18 +28,52 @@ def data_preprocessing():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
     return X_train, X_test, y_train, y_test
 
-
+# feedForwardModel accuracy = 0.601
+# highest accuracy = 0.602
 def decisionTree():
     """
     Decision Tree model creation
     :return: the decision tree model
     """
-    survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_leaf=5)
+    survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_split=2)
     X_train, X_test, y_train, y_test = data_preprocessing()
     survivalDecisionTree = survivalDecisionTree.fit(X_train, y_train)
     # Make the prediction with the testing set
     # Evaluate the accuracy of the prediction
     return survivalDecisionTree
+
+# highest accuracy = 0.64
+def SVM():
+    """
+    SVM model creation
+    :return: the SVM model
+    """
+    X_train, X_test, y_train, y_test = data_preprocessing()
+    svmModel = svm.SVC(kernel='rbf', gamma='auto', C= 9, probability=True, class_weight='balanced', max_iter  = -1, tol = 1e-9)
+    svmModel = svmModel.fit(X_train, y_train)
+    return svmModel
+
+# highest accuracy = 0.641
+def KNeighbors():
+    """
+    KNeighbors model creation
+    :return: the KNeighbors model
+    """
+    X_train, X_test, y_train, y_test = data_preprocessing()
+    knnModel = KNeighborsClassifier(n_neighbors=5, algorithm='auto', weights='distance', n_jobs=-1)
+    knnModel = knnModel.fit(X_train, y_train)
+    return knnModel
+
+# highest accuracy = 0.645, fluctuating a lot
+def logisticRegression():
+    """
+    Logistic regression model creation
+    :return: the logistic regression model
+    """
+    X_train, X_test, y_train, y_test = data_preprocessing()
+    lr = LogisticRegression(C=7, solver='saga', multi_class='auto', max_iter=10000, tol = 1e-3, warm_start=True, n_jobs=-1)
+    lr = lr.fit(X_train, y_train)
+    return lr
 
 
 def test_accuracy(model):
@@ -76,27 +112,39 @@ def plot_confusion_matrix(model):
     plt.show()
 
 
-def data_visualization(model):
+def treePlotting(model):
+    """
+    Data visualization of the model
+    :param model:
+    :return:
+    """
     data = get_model_data()
     fig = plt.figure(figsize=(20, 20))
     tree.plot_tree(model, filled=True, feature_names=data.drop(['Survival'], axis=1).columns,
                    class_names=data['Survival'].unique().astype(str), rounded=True)
+    fig.savefig(MODEL_PATH + 'treePlot.png')
     fig.show()
 
 
-# Decision Tree - Graphical Representation
-
-
-# Feature Importance
-def feature_importance(model):
-    data = get_model_data()
-    for i, column in enumerate(data.drop(['Survival'], axis=1).columns):
-        print(column, ':', model.feature_importances_[i])
+def export_model(model):
+    """
+    Export the model
+    :param model: the model to be exported
+    :return: void function
+    """
+    # joblib.dump(model, MODEL_PATH + 'predictionModel.pkl')
+    joblib.dump(model, MODEL_PATH)
 
 
 ########################################################################################################################
-# Export the model
-
-def export_model(model):
-    joblib.dump(model, MODEL_PATH + 'predictionModel.pkl')
-    joblib.dump(model, MODEL_PATH)
+# Testing only
+########################################################################################################################
+def feature_importance(model):
+    """
+    Feature importance of the model
+    :param model: model of which the features' importance is to be calculated
+    :return:
+    """
+    data = get_model_data()
+    for i, column in enumerate(data.drop(['Survival'], axis=1).columns):
+        print(column, ':', model.feature_importances_[i])

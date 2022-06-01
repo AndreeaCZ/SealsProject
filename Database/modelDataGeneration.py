@@ -9,7 +9,7 @@ def get_model_data():
     :return: balanced data
     """
     conn = connect(DB_PATH)
-    sql_query = pd.read_sql_query('SELECT *  FROM sealPredictionData', conn)
+    sql_query = pd.read_sql_query('SELECT *  FROM sealPredictionData where sealPredictionData.Species = 0', conn)
     sealDataframe = pd.DataFrame(sql_query, columns=['WBC', 'LYMF', 'RBC', 'HGB', 'MCH', 'MCHC', 'MPV', 'PLT',
                                                      'Survival', 'Sex', 'Species'])
     survivalData = sealDataframe[sealDataframe['Survival'] == 1]
