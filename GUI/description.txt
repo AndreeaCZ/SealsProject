@@ -6,8 +6,10 @@ some insight into the survival chances of the rescued animals.
 The intended use of Blubber is for guidance only. It is not guaranteed that the predictions are 100% accurate and
 therefore should not be used as a substitute for the actual survival chances of the animals.
 
-## User guide
+&nbsp;
+## Summary of available pages
 
+&nbsp;
 ### The main page
 
 This is the main page of the Blubber application. It provides access to the following pages:
@@ -18,22 +20,79 @@ This is the main page of the Blubber application. It provides access to the foll
 * Add a seal page
 * Get a seal page
 
+&nbsp;
 ### Prediction page
 
 This is the page where the user can make a prediction about the survival chances of the animals. Please select the
 gender of the seal, its species. Also select what model you wish to use. Next, import the Excel file containing the
 blood test results of the new seal. Make sure the file follows the usual format.
 
+&nbsp;
+### Data ranges page
+
+This page presents the user with the data ranges of the different features, and shows tipping points for those values.
+
+&nbsp;
 ### Train a model page
 
 This page allows the user to train a model. The user can select the parameters on which the model will be trained, and
 then click the "Train" button. The window will then show the accuracy of the new model. If satisfactory, the user can
 click the "Save" button to save the model.
 
+&nbsp;
 ### Add a seal page
 
 This page allows the user to add a new seal to the database.
 
+&nbsp;
 ### Get a seal page
 
 This page allows the user to get a seal from the database.
+
+&nbsp;
+&nbsp;
+# User guide
+
+&nbsp;
+## How to predict the survival chances of a new seal using Blubber
+
+In order to predict the survival chances of a new seal, the user must first select the Prediction page.
+
+On the new widow, the user must select the species of the seal and the sex of the seal using the dropdown menus.
+Next select which prediction model you would like to use: click on Default model to use the model that comes with the app,
+or choose to Load a model if you wish to use a model that was previously saved.
+Next, input the values of the blood test results of the new seal. Alternatively, you can use the "Import" button to
+import the Excel file containing the blood test results of the new seal.
+Finally, click on the "Predict" button to make the prediction.
+
+If the prediction was successful, the user will be shown the survival chances of the new seal.
+The user can also click on the "Save" button to save the prediction.
+
+&nbsp;
+## How to train a new model for Blubber
+
+To create a new model, the user must first select the Train a model page.
+
+There, the user must select the parameters on which the model will be trained. Once the parameters are selected,
+click the "Train" button. The window will then show the accuracy of the new model. If satisfactory, the user can
+save the model by clicking the "Save" button after inputting a name for the new model.
+
+&nbsp;
+## How to add a new seal to the database
+
+Adding a new seal to the database is done by clicking on the "Add a seal" button on the main page. There, the process
+is similar to the process of making a prediction. The user must select the species of the seal, the sex and whether
+the seal has released or has not survived. Then, input the values of the seals first blood test, or use the import
+feature and just choose the Excel file which holds all the values. Lastly add the unique ID of the seal and click
+on the "Add seal" button.
+
+&nbsp;
+## How to get a seal from the database
+
+To retrive a seal from the database, the user must first click on the "Get a seal" button on the main page.
+
+There, the user can input the unique ID of the seal to be retrieved. The information of the seal will
+then be shown on the screen.
+
+&nbsp;
+

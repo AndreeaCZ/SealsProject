@@ -11,7 +11,8 @@ string = open('description.txt').read()
 class DescriptionWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setFixedSize(QSize(800, 400))
+        self.setFixedSize(QSize(800, 500))
+        self.setWindowTitle('User Guide')
         layout = QVBoxLayout()
         text = QTextEdit()
         text.setMarkdown(string)

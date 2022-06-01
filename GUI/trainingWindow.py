@@ -26,7 +26,7 @@ class TrainModelWindow(QWidget):
         super().__init__()
         self.model = None
         self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9]
-        self.setFixedSize(QSize(500, 300))
+        self.setFixedSize(QSize(500, 400))
         self.setWindowTitle("Train a model")
         self.wbc = QCheckBox("WBC")
         self.lymf = QCheckBox("LYMF")
@@ -50,6 +50,7 @@ class TrainModelWindow(QWidget):
         layout.addWidget(self.accu_label)
         self.train_button = QPushButton('Train')
         self.input_model_name = QLineEdit()
+        self.input_model_name.setPlaceholderText("Enter model name")
         self.save_button = QPushButton('Save')
         self.train_button.clicked.connect(self.train_new_model)
         self.save_button.clicked.connect(self.save_model)
