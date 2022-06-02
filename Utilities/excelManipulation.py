@@ -22,8 +22,13 @@ def get_blood_test_values(nparray, labels):
         return values
     # pops a message box if the input of the parameters is not a float or an integer
     else:
-        #app = QApplication()
-        msgBox = QMessageBox()
-        msgBox.setText("These parameters have non-numeric input. Change it!" + str(wrongLabels))
-        msgBox.exec()
+        error_message_popup(wrongLabels)
+        # print("These parameters have non-numeric input. Change it!" + str(wrongLabels))
+
         return 0
+
+
+def error_message_popup(wrongLabels):
+    msgBox = QMessageBox()
+    msgBox.setText("These parameters have non-numeric input. Change it!" + str(wrongLabels))
+    msgBox.exec()

@@ -12,7 +12,7 @@ from variables import DB_NAME, ARRIVED_SEALS_PATH, CLIENT_DATA_PATH, DIV
 #########################################################################################################################
 
 connection = sqlite3.connect(DB_NAME)
-dataLabels = ["sealTag", "WBC", "LYMF", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT", "Survival", "Sex",
+dataLabels = ["sealTag", "WBC", "LYMF", "GRAN", "MID", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT", "Survival", "Sex",
               "Species"]
 startYear = 2014
 folderPath = CLIENT_DATA_PATH
@@ -37,7 +37,7 @@ def get_values(nparray, sur, sealTag, sealSex, species):
         else:
             surv = False
         blood_values = get_blood_test_values(nparray,
-                                             ["WBC", "LYMF", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"])
+                                             ["WBC", "LYMF", "GRAN", "MID", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"])
         return [[sealTag] + blood_values + [surv] + [sealSex] + [species]]
 
     except Exception as err1:
