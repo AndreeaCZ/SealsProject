@@ -1,16 +1,24 @@
 import sqlite3
+
 import pandas as pd
 
+from GUI.utils import get_seal_species_int, get_sex_int
 from Utilities.excelManipulation import get_blood_test_values
 from variables import DB_NAME, ARRIVED_SEALS_PATH, CLIENT_DATA_PATH, DIV
 
-# File used to import the client's Excel data into the app's database
+#########################################################################################################################
+# File used to import the client's Excel data into the app's database.
+# Run file to fill the database with the data.
+#########################################################################################################################
 
 connection = sqlite3.connect(DB_NAME)
 dataLabels = ["sealTag", "WBC", "LYMF", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT", "Survival", "Sex",
               "Species"]
 startYear = 2014
 folderPath = CLIENT_DATA_PATH
+arrivedSeals = pd.read_excel(
+    open(ARRIVED_SEALS_PATH, 'rb'),
+    sheet_name='Arrived Seals', keep_default_na=False).to_numpy()
 
 
 def get_values(nparray, sur, sealTag, sealSex, species):
@@ -43,26 +51,6 @@ def get_seal_species_str(species):
         return "HG"
 
 
-def get_seal_species_int(species):
-    if species == "Phoca Vitulina":
-        return 0
-    if species == "Halichoerus Grypus":
-        return 1
-
-
-def get_sex_int(s):
-    if s == "Female":
-        return 0
-    if s == "Male":
-        return 1
-
-
-counter = 0
-
-arrivedSeals = pd.read_excel(
-    open(ARRIVED_SEALS_PATH, 'rb'),
-    sheet_name='Arrived Seals', keep_default_na=False).to_numpy()
-
 # Goes through the main Excel file and tries to get data about each seal and store it into the database
 for i in range(221, arrivedSeals.shape[0]):
     try:
@@ -81,7 +69,6 @@ for i in range(221, arrivedSeals.shape[0]):
         values = get_values(allData, survival, tag, sex, get_seal_species_int(arrivedSeals[i][6]))
         if not (values == 0):
             sealData = pd.DataFrame(values, columns=dataLabels)
-            counter += 1
             sealData.to_sql(name='sealPredictionData', con=connection, if_exists='append', index=False)
     except Exception as err:
         print(Exception, err)

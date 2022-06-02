@@ -5,6 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 from Database.modelDataGeneration import get_model_data
 
+
 def data_preprocessing():
     """
     Data preprocessing for the model

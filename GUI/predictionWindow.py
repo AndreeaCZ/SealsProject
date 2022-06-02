@@ -6,13 +6,18 @@ from PyQt6.QtGui import QPalette, QColor
 from PyQt6.QtWidgets import *
 from openpyxl import load_workbook
 from openpyxl.workbook import Workbook
+
 from GUI.utils import *
 from variables import MODEL_PATH, DIV
+
+########################################################################################################################
+# Represents the window where the user can predict the outcome of a seal
+########################################################################################################################
 
 defaultFeatureList = ["WBC", "LYMF", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"]
 defaultModelName = "Default"
 
-# Represents the window where the user can predict the outcome of a seal
+
 class PredictionWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -34,22 +39,26 @@ class PredictionWindow(QWidget):
         self.load_default_model_button = QPushButton('Default model')
         # Creating import sub fields
         self.combo1 = QComboBox()
-        self.combo1.addItem("Female")
-        self.combo1.addItem("Male")
         self.combo2 = QComboBox()
-        self.combo2.addItem("Phoca Vitulina")
-        self.combo2.addItem("Halichoerus Grypus")
 
         # Set widget properties:
-        self.setAutoFillBackground(True)
         self.set_elements()
+        self.setAutoFillBackground(True)
         self.setLayout(self.layout)
         q = self.palette()
         q.setColor(QPalette.ColorRole.Window, QColor(lightgray))
         self.setPalette(q)
 
     def set_elements(self):
+        """
+        Sets the elements of the window
+        :return: the layout of the window
+        """
         # Setting elements properties:
+        self.combo1.addItem("Female")
+        self.combo1.addItem("Male")
+        self.combo2.addItem("Phoca Vitulina")
+        self.combo2.addItem("Halichoerus Grypus")
         self.input_filename.setPlaceholderText('Enter an excel file name')
         self.import_button.clicked.connect(self.get_import)
         self.output_label.setText('Enter data to see prediction')
@@ -60,7 +69,7 @@ class PredictionWindow(QWidget):
         self.layout.addWidget(self.combo1, 1, 0, 1, 2)
         self.layout.addWidget(self.combo2, 2, 0, 1, 2)
         self.layout.addWidget(self.import_button, 4, 2)
-        self.layout.addWidget(self.load_default_model_button, 1,2)
+        self.layout.addWidget(self.load_default_model_button, 1, 2)
         self.layout.addWidget(self.load_model_button, 2, 2)
         self.layout.addWidget(self.output_label, 4, 0, 1, 2)
         self.layout.addWidget(self.save_button, 5, 2)
@@ -69,43 +78,16 @@ class PredictionWindow(QWidget):
         self.layout.setRowMinimumHeight(3, 100)
         self.layout.setRowMinimumHeight(4, 100)
 
-    # returns the species from the integer representation
-    def getSealSpeciesStrFromInt(self, x):
-        if x == 0:
-            return "Phoca Vitulina"
-        if x == 1:
-            return "Halichoerus Grypus"
-
-    # returns the sex from the integer representation
-    def getSexStrFromInt(self, x):
-        if x == 0:
-            return "Female"
-        if x == 1:
-            return "Male"
-
-    # returns the survival from the integer representation
-    def getSurvivalStrFromInt(self, x):
-        if x == 0:
-            return "Will not survive"
-        if x == 1:
-            return "Will survive"
-
-    # pops open a message box with the passed str as the message
-    def popMessageBox(self, str):
-        msgBox = QMessageBox()
-        msgBox.setText(str)
-        msgBox.exec()
-
     # loads the default model with a different message
-    def loadDefaultModelWithNewMsg(self):
+    def load_default_model_with_new_msg(self):
         self.output_label.setText("")
         self.modelName = defaultModelName
         self.model = joblib.load(MODEL_PATH)
         self.featureList = defaultFeatureList
-        self.popMessageBox("Can't find the featuresChecklist.xlsx file. Default model loaded successfully")
+        pop_message_box("Can't find the featuresChecklist.xlsx file. Default model loaded successfully")
 
     # Update the list of features used for predicting based on the parameters the new model was trained on
-    def updateFeatureList(self, filename):
+    def update_feature_list(self, filename):
         try:
             wb = load_workbook("featuresChecklist.xlsx")
             ws = wb.active
@@ -113,55 +95,50 @@ class PredictionWindow(QWidget):
             maxRow = ws.max_row
             featureListTemp = []
             flag = False
+            colNum = -1
             # find the column corresponding to the loaded model
             for j in range(2, maxCol + 1):
-                if (ws.cell(row=1, column=j).value == filename):
+                if ws.cell(row=1, column=j).value == filename:
                     flag = True
                     colNum = j
                     break
             # The model file exists but its data is not present in the features checklist
             if not flag:
-                self.popMessageBox("Please select another model")
+                pop_message_box("Please select another model")
             else:
                 # create a list of features the model was trained on
                 self.modelName = ws.cell(row=1, column=colNum).value
-                for i in range(2, maxRow+1):
-                    if (ws.cell(row=i, column=colNum).value is not None):
+                for i in range(2, maxRow + 1):
+                    if ws.cell(row=i, column=colNum).value is not None:
                         featureListTemp.append(ws.cell(row=i, column=1).value)
                 self.featureList = featureListTemp
-                self.popMessageBox("Model loaded successfully")
+                pop_message_box("Model loaded successfully")
         except:
-            self.loadDefaultModelWithNewMsg()
-
-    # pops open a message box with the passed str as the message
-    def pop_message_box(self, str):
-        msgBox = QMessageBox()
-        msgBox.setText(str)
-        msgBox.exec()
+            self.load_default_model_with_new_msg()
 
     # saves the results of the prediction
     def save_results(self):
         self.output_label.setText("")
         fileName = self.input_filename.text()
-        if (fileName == ""):
-            self.pop_message_box("Please enter a file name first.")
+        if fileName == "":
+            pop_message_box("Please enter a file name first.")
         else:
             # the user tries to save a model only after training it
             if not (self.sealData is None or self.sealData == []):
                 import_path = QFileDialog.getExistingDirectoryUrl().path()
                 if not (import_path == ""):
                     import_path = import_path + DIV + fileName + '.xlsx'
-                    self.savePrediction(import_path)
+                    self.save_prediction(import_path)
                     # pops a message box
-                    self.pop_message_box("Prediction saved successfully")
+                    pop_message_box("Prediction saved successfully")
                     self.sealData = None
             else:
-                self.pop_message_box("Please predict something first.")
+                pop_message_box("Please predict something first.")
             self.input_filename.setText("")
         self.sealData = None
 
-    def savePrediction(self, import_path):
-        # Create an excel file
+    def save_prediction(self, import_path):
+        # Create an Excel file
         excelFile = Workbook()
         spreadSheet = excelFile.active
 
@@ -171,19 +148,21 @@ class PredictionWindow(QWidget):
         # Fill in the features
         spreadSheet.cell(row=1, column=1).value = "MODEL NAME"
         for i in range(featureListLength):
-            spreadSheet.cell(row=i+2, column=1).value = self.featureList[i]
-        spreadSheet.cell(row=featureListLength+2, column=1).value = "SEX"
-        spreadSheet.cell(row=featureListLength+3, column=1).value = "SPECIES"
-        spreadSheet.cell(row=featureListLength+4, column=1).value = "SURVIVAL"
+            spreadSheet.cell(row=i + 2, column=1).value = self.featureList[i]
+        spreadSheet.cell(row=featureListLength + 2, column=1).value = "SEX"
+        spreadSheet.cell(row=featureListLength + 3, column=1).value = "SPECIES"
+        spreadSheet.cell(row=featureListLength + 4, column=1).value = "SURVIVAL"
 
         # Fill in the values
         spreadSheet.cell(row=1, column=2).value = self.modelName
-        for i in range(len(self.sealData)-3):
-            spreadSheet.cell(row=i+2, column=2).value = self.sealData[i]
+        for i in range(len(self.sealData) - 3):
+            spreadSheet.cell(row=i + 2, column=2).value = self.sealData[i]
 
-        spreadSheet.cell(row=sealDataLength-1, column=2).value = self.getSexStrFromInt(self.sealData[sealDataLength-3])
-        spreadSheet.cell(row=sealDataLength, column=2).value = self.getSealSpeciesStrFromInt(self.sealData[sealDataLength-2])
-        spreadSheet.cell(row=sealDataLength+1, column=2).value = self.getSurvivalStrFromInt(self.sealData[sealDataLength-1])
+        spreadSheet.cell(row=sealDataLength - 1, column=2).value = get_sex_str_from_int(self.sealData[sealDataLength - 3])
+        spreadSheet.cell(row=sealDataLength, column=2).value = get_seal_species_str_from_int(
+            self.sealData[sealDataLength - 2])
+        spreadSheet.cell(row=sealDataLength + 1, column=2).value = get_chances_str_from_int(
+            self.sealData[sealDataLength - 1])
 
         excelFile.save(import_path)
 
@@ -193,7 +172,7 @@ class PredictionWindow(QWidget):
         self.modelName = defaultModelName
         self.model = joblib.load(MODEL_PATH)
         self.featureList = defaultFeatureList
-        self.popMessageBox("Default model loaded successfully")
+        pop_message_box("Default model loaded successfully")
 
     # Load a model from the local machine
     def load_model(self):
@@ -202,11 +181,11 @@ class PredictionWindow(QWidget):
         if not (import_path == ""):
             self.model = joblib.load(import_path)
             fileName = Path(import_path).stem
-            self.updateFeatureList(fileName)
+            self.update_feature_list(fileName)
 
     # if the result is zero, there´s a problem when taking the input
     def get_import(self):
-        result=0
+        result = 0
         import_path_null = False
         import_path = QFileDialog.getOpenFileName(filter='Excel files (*.xlsx)')[0]
         # if you open the window file explorer and click cancel
@@ -214,21 +193,9 @@ class PredictionWindow(QWidget):
             import_path_null = True
         sex = self.combo1.currentText()
         species = self.combo2.currentText()
-        sex1 = getSexInt(sex)
-        species1 = getSealSpeciesInt(species)
+        sex1 = get_sex_int(sex)
+        species1 = get_seal_species_int(species)
         if not import_path_null:
             result, self.sealData = make_prediction(import_path, sex1, species1, self.model, self.featureList)
         if not (result == 0):
             self.output_label.setText(result)
-
-def getSealSpeciesInt(str):
-        if str == "Phoca Vitulina":
-            return 0
-        if str == "Halichoerus Grypus":
-            return 1
-
-def getSexInt(str):
-        if str == "Female":
-            return 0
-        if str == "Male":
-            return 1

@@ -1,26 +1,32 @@
 import sys
+
 import joblib
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
-from GUI.descriptionWindow import DescriptionWindow
-from GUI.trainingWindow import TrainModelWindow
-from GUI.predictionWindow import PredictionWindow
+
 from GUI.addSealWindow import AddSealWindow
+from GUI.descriptionWindow import DescriptionWindow
 from GUI.getSealDataWindow import GetSealDataWindow
+from GUI.predictionWindow import PredictionWindow
+from GUI.trainingWindow import TrainModelWindow
 from GUI.utils import *
 from variables import MODEL_PATH
+
+########################################################################################################################
+# Represents the main (initial) window of the application
+########################################################################################################################
 
 app = QApplication(sys.argv)
 
 
-# Represents the main (initial) window of the application
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.model = joblib.load(MODEL_PATH)
         self.setWindowTitle("Blubber")
         self.setFixedSize(QSize(700, 400))
+
         # Creating window elements:
         self.trainingWindow = None
         self.descriptionWindow = None
@@ -37,11 +43,16 @@ class MainWindow(QMainWindow):
         self.get_seal_button = QPushButton('Get seal data')
 
         # Creating widgets:
-        widget = self.make_elements()
+        widget = self.set_elements()
 
         self.setCentralWidget(widget)
 
-    def make_elements(self):
+    def set_elements(self):
+        """
+        Sets the elements of the window
+        :return: the layout of the window
+        """
+        # Setting elements:
         self.predict_button.clicked.connect(self.open_prediction_window)
         self.about_button.clicked.connect(self.open_description_window)
         self.trainModel_button.clicked.connect(self.open_training_window)
@@ -53,6 +64,7 @@ class MainWindow(QMainWindow):
         self.trainModel_button.setFixedHeight(120)
         self.add_seal_button.setFixedHeight(120)
         self.get_seal_button.setFixedHeight(120)
+        # Adding elements to layout:
         layout = QGridLayout()
         layout.addWidget(self.predict_button, 0, 0)
         layout.addWidget(self.data_ranges_button, 0, 1)
@@ -60,6 +72,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.trainModel_button, 1, 1)
         layout.addWidget(self.add_seal_button, 2, 0)
         layout.addWidget(self.get_seal_button, 2, 1)
+        # Setting widget properties:
         widget = QWidget()
         widget.setAutoFillBackground(True)
         widget.setLayout(layout)

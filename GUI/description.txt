@@ -1,3 +1,8 @@
+[//]: # (##############################################################################################################)
+[//]: # (This document is the basic text that gets processed in Markdown for the User Guide)
+[//]: # (##############################################################################################################)
+
+
 # Blubber documentation
 
 Blubber is distributed in the hope that it will be a useful tool for scientists to manage their resources by gaining
@@ -95,4 +100,5 @@ There, the user can input the unique ID of the seal to be retrieved. The informa
 then be shown on the screen.
 
 &nbsp;
+
 

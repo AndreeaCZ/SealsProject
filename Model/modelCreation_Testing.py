@@ -1,7 +1,7 @@
 import joblib
 from matplotlib import pyplot as plt
-from sklearn import tree
 from sklearn import svm
+from sklearn import tree
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score
 from sklearn.model_selection import train_test_split

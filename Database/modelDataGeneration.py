@@ -1,5 +1,7 @@
 from sqlite3 import connect
+
 import pandas as pd
+
 from variables import DB_PATH
 
 

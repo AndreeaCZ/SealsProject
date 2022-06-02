@@ -1,5 +1,11 @@
 from openpyxl import Workbook
 
+########################################################################################################################
+# Used to create a feature file
+# Run this file to create a feature file
+########################################################################################################################
+
+
 book = Workbook()
 sheet = book.active
 # Fill in the labels/tittle
