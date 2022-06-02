@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import joblib
-from PyQt6.QtCore import QSize
+from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QPalette, QColor
 from PyQt6.QtWidgets import *
 from openpyxl import load_workbook
@@ -26,25 +26,45 @@ class PredictionWindow(QWidget):
         self.featureList = defaultFeatureList
         self.model = joblib.load(MODEL_PATH)
         self.setWindowTitle("Run predictions")
-        self.setFixedSize(QSize(700, 400))
-        self.layout = QGridLayout()
+        self.setFixedSize(QSize(600, 620))
 
         # Creating elements:
         self.input_filename = QLineEdit()
         self.import_button = QPushButton('Import')
-        self.output_label = QLabel()
+        self.output_label = QLabel('Enter data to see prediction')
         self.save_button = QPushButton('Save')
-        self.image_label = QLabel()
         self.load_model_button = QPushButton('Load a model')
         self.load_default_model_button = QPushButton('Default model')
-        # Creating import sub fields
+        self.info_label_1 = QLabel('Select sex and species')
+        self.info_label_2 = QLabel('Select what model to use')
+        self.info_label_3 = QLabel('Enter blood test values')
+        self.info_label_4 = QLabel('Click to run prediction once all values are entered')
+        self.info_label_5 = QLabel('Click to import values from an excel file')
+        self.run_predict_button = QPushButton('Predict')
+
+        # Creating import subfields
         self.combo1 = QComboBox()
         self.combo2 = QComboBox()
+        self.wbc_label = QLabel("WBC: ")
+        self.lymf_label = QLabel("LYMF: ")
+        self.rbc_label = QLabel("RBC: ")
+        self.hgb_label = QLabel("HGB: ")
+        self.mch_label = QLabel("MCH: ")
+        self.mchc_label = QLabel("MCHC: ")
+        self.mpv_label = QLabel("MPV: ")
+        self.plt_label = QLabel("PLT: ")
+        self.wbc_input = QLineEdit()
+        self.lymf_input = QLineEdit()
+        self.rbc_input = QLineEdit()
+        self.hgb_input = QLineEdit()
+        self.mch_input = QLineEdit()
+        self.mchc_input = QLineEdit()
+        self.mpv_input = QLineEdit()
+        self.plt_input = QLineEdit()
 
         # Set widget properties:
-        self.set_elements()
+        self.setLayout(self.set_elements())
         self.setAutoFillBackground(True)
-        self.setLayout(self.layout)
         q = self.palette()
         q.setColor(QPalette.ColorRole.Window, QColor(lightgray))
         self.setPalette(q)
@@ -61,22 +81,57 @@ class PredictionWindow(QWidget):
         self.combo2.addItem("Halichoerus Grypus")
         self.input_filename.setPlaceholderText('Enter an excel file name')
         self.import_button.clicked.connect(self.get_import)
-        self.output_label.setText('Enter data to see prediction')
         self.load_model_button.clicked.connect(self.load_model)
         self.load_default_model_button.clicked.connect(self.load_default_model)
         self.save_button.clicked.connect(self.save_results)
+        self.info_label_1.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.info_label_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.info_label_3.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.info_label_4.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.info_label_5.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.output_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.run_predict_button.clicked.connect(self.run_prediction)
+        self.output_label.setAutoFillBackground(True)
+        p = self.output_label.palette()
+        p.setColor(QPalette.ColorRole.Window, QColor(darkgray))
+        self.output_label.setPalette(p)
         # Adding elements to input layout:
-        self.layout.addWidget(self.combo1, 1, 0, 1, 2)
-        self.layout.addWidget(self.combo2, 2, 0, 1, 2)
-        self.layout.addWidget(self.import_button, 4, 2)
-        self.layout.addWidget(self.load_default_model_button, 1, 2)
-        self.layout.addWidget(self.load_model_button, 2, 2)
-        self.layout.addWidget(self.output_label, 4, 0, 1, 2)
-        self.layout.addWidget(self.save_button, 5, 2)
-        self.layout.addWidget(self.input_filename, 5, 0)
-        self.layout.setRowStretch(5, 1)
-        self.layout.setRowMinimumHeight(3, 100)
-        self.layout.setRowMinimumHeight(4, 100)
+        layout = QGridLayout()
+        layout.addWidget(self.info_label_1, 0, 0, 1, 2)
+        layout.addWidget(self.info_label_2, 0, 3)
+        layout.addWidget(self.combo1, 1, 0, 1, 2)
+        layout.addWidget(self.load_default_model_button, 1, 3)
+        layout.addWidget(self.combo2, 2, 0, 1, 2)
+        layout.addWidget(self.load_model_button, 2, 3)
+        layout.setRowMinimumHeight(3, 50)  # Row 3 is empty and is used as a space
+        layout.addWidget(self.info_label_3, 4, 0, 1, 4)
+        layout.addWidget(self.wbc_label, 5, 0)
+        layout.addWidget(self.lymf_label, 5, 1)
+        layout.addWidget(self.rbc_label, 5, 2)
+        layout.addWidget(self.hgb_label, 5, 3)
+        layout.addWidget(self.wbc_input, 6, 0)
+        layout.addWidget(self.lymf_input, 6, 1)
+        layout.addWidget(self.rbc_input, 6, 2)
+        layout.addWidget(self.hgb_input, 6, 3)
+        layout.addWidget(self.mch_label, 7, 0)
+        layout.addWidget(self.mchc_label, 7, 1)
+        layout.addWidget(self.mpv_label, 7, 2)
+        layout.addWidget(self.plt_label, 7, 3)
+        layout.addWidget(self.mch_input, 8, 0)
+        layout.addWidget(self.mchc_input, 8, 1)
+        layout.addWidget(self.mpv_input, 8, 2)
+        layout.addWidget(self.plt_input, 8, 3)
+        layout.addWidget(self.info_label_4, 9, 0, 1, 3)
+        layout.addWidget(self.run_predict_button, 9, 3)
+        layout.setRowMinimumHeight(10, 50)  # Row 10 is empty and is used as a space
+        layout.addWidget(self.info_label_5, 11, 0, 1, 3)
+        layout.addWidget(self.import_button, 11, 3)
+        layout.addWidget(self.output_label, 12, 0, 1, 4)
+        layout.setRowMinimumHeight(12, 100)
+        layout.addWidget(self.input_filename, 13, 0, 1, 3)
+        layout.addWidget(self.save_button, 13, 3)
+        layout.setRowStretch(14, 1)
+        return layout
 
     # loads the default model with a different message
     def load_default_model_with_new_msg(self):
@@ -191,11 +246,33 @@ class PredictionWindow(QWidget):
         # if you open the window file explorer and click cancel
         if import_path == "":
             import_path_null = True
-        sex = self.combo1.currentText()
-        species = self.combo2.currentText()
-        sex1 = get_sex_int(sex)
-        species1 = get_seal_species_int(species)
+        sex = get_sex_int(self.combo1.currentText())
+        species = get_seal_species_int(self.combo2.currentText())
         if not import_path_null:
-            result, self.sealData = make_prediction(import_path, sex1, species1, self.model, self.featureList)
+            result, self.sealData = make_prediction(import_path, sex, species, self.model, self.featureList)
         if not (result == 0):
             self.output_label.setText(result)
+
+    def run_prediction(self):
+        sex = get_sex_int(self.combo1.currentText())
+        species = get_seal_species_int(self.combo2.currentText())
+        wbc = self.wbc_input.text()
+        lymf = self.lymf_input.text()
+        rbc = self.rbc_input.text()
+        hgb = self.hgb_input.text()
+        mch = self.mch_input.text()
+        mchc = self.mchc_input.text()
+        mpv = self.mpv_input.text()
+        plt = self.plt_input.text()
+        if wbc == "" or lymf == "" or rbc == "" or hgb == "" or mch == "" or mchc == "" or mpv == "" or plt == "":
+            pop_message_box("Please enter all the values")
+        else:
+            try:
+                data = [float(wbc), float(lymf), float(rbc), float(hgb), float(mch), float(mchc), float(mpv), float(plt)]
+                result, survival = find_prediction(data, self.model, sex, species)
+                self.output_label.setText(result)
+            except ValueError as ve1:
+                pop_message_box("Something went wrong.\nCheck that you only entered numbers.\nMake sure to write decimals with a dot ( . ) and not a comma ( , )")
+
+
+
