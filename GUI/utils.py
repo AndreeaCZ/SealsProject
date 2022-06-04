@@ -34,7 +34,6 @@ def make_prediction(file_path, sex, species, model, featureList):
     if not (blood_results == 0):
         resultStr, survival = find_prediction(blood_results, model, sex, species)
         blood_results = np.append(blood_results, [sex] + [species] + [survival])
-        print(resultStr)
         return resultStr, blood_results
     else:
         return 0, []

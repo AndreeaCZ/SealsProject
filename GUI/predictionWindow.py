@@ -1,9 +1,12 @@
+import math
 from pathlib import Path
 
 import joblib
+import numpy as np
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QPalette, QColor
 from PyQt6.QtWidgets import *
+from numpy import newaxis
 from openpyxl import load_workbook
 from openpyxl.workbook import Workbook
 
@@ -179,7 +182,7 @@ class PredictionWindow(QWidget):
             pop_message_box("Please enter a file name first.")
         else:
             # the user tries to save a model only after training it
-            if not (self.sealData is None or self.sealData == []):
+            if not (self.sealData is None or self.sealData.size == 0):
                 import_path = QFileDialog.getExistingDirectoryUrl().path()
                 if not (import_path == ""):
                     import_path = import_path + DIV + fileName + '.xlsx'
@@ -201,23 +204,25 @@ class PredictionWindow(QWidget):
         sealDataLength = len(self.sealData)
 
         # Fill in the features
-        spreadSheet.cell(row=1, column=1).value = "MODEL NAME"
+        spreadSheet.cell(row=1, column=1).value = "SEAL-TAG"
+        spreadSheet.cell(row=2, column=1).value = "MODEL NAME"
         for i in range(featureListLength):
-            spreadSheet.cell(row=i + 2, column=1).value = self.featureList[i]
-        spreadSheet.cell(row=featureListLength + 2, column=1).value = "SEX"
-        spreadSheet.cell(row=featureListLength + 3, column=1).value = "SPECIES"
-        spreadSheet.cell(row=featureListLength + 4, column=1).value = "SURVIVAL"
+            spreadSheet.cell(row=i + 3, column=1).value = self.featureList[i]
+        spreadSheet.cell(row=featureListLength + 3, column=1).value = "SEX"
+        spreadSheet.cell(row=featureListLength + 4, column=1).value = "SPECIES"
+        spreadSheet.cell(row=featureListLength + 5, column=1).value = "SURVIVAL"
 
         # Fill in the values
-        spreadSheet.cell(row=1, column=2).value = self.modelName
+        spreadSheet.cell(row=1, column=2).value = self.sealData[0]
+        spreadSheet.cell(row=2, column=2).value = self.modelName
         for i in range(len(self.sealData) - 3):
-            spreadSheet.cell(row=i + 2, column=2).value = self.sealData[i]
+            spreadSheet.cell(row=i + 3, column=2).value = self.sealData[i+1]
 
-        spreadSheet.cell(row=sealDataLength - 1, column=2).value = get_sex_str_from_int(self.sealData[sealDataLength - 3])
-        spreadSheet.cell(row=sealDataLength, column=2).value = get_seal_species_str_from_int(
-            self.sealData[sealDataLength - 2])
-        spreadSheet.cell(row=sealDataLength + 1, column=2).value = get_chances_str_from_int(
-            self.sealData[sealDataLength - 1])
+        spreadSheet.cell(row=sealDataLength - 1, column=2).value = get_sex_str_from_int(int(float(self.sealData[sealDataLength - 2])))
+        spreadSheet.cell(row=sealDataLength, column=2).value = get_seal_species_str_from_int(int(float(
+            self.sealData[sealDataLength - 1])))
+        spreadSheet.cell(row=sealDataLength + 1, column=2).value = get_chances_str_from_int(int(float(
+            self.sealData[sealDataLength-1])))
 
         excelFile.save(import_path)
 
@@ -250,8 +255,25 @@ class PredictionWindow(QWidget):
         species = get_seal_species_int(self.combo2.currentText())
         if not import_path_null:
             result, self.sealData = make_prediction(import_path, sex, species, self.model, self.featureList)
+            sealTag = self.get_seal_tag(import_path)
+            if sealTag == "":
+                pop_message_box("Check that the correct file is being uploaded and contains a seal tag")
+                result = 0
+            else:
+                self.sealData = np.concatenate((np.array([sealTag]), self.sealData), axis=0)
         if not (result == 0):
-            self.output_label.setText(result)
+            self.output_label.setText("Seal tag - " + sealTag + "\n\n" + result)
+
+    # retrieves the seal tag of the seal whose data is present in the file
+    def get_seal_tag(self, import_path):
+        new_seal_data = pd.read_excel(import_path).to_numpy()
+        sealTag = np.where((new_seal_data == 'Rhb. number:') | (new_seal_data == 'Rhb. number: '))[0]
+        tag = ""
+        if not (np.where((new_seal_data == 'Rhb. number:') | (new_seal_data == 'Rhb. number: '))[0].size == 0):
+            for i in range(1, 5):
+                if not (pd.isnull(new_seal_data[sealTag[0]][i])):
+                    tag = new_seal_data[sealTag[0]][i]
+        return tag
 
     def run_prediction(self):
         sex = get_sex_int(self.combo1.currentText())
