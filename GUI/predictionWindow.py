@@ -176,12 +176,10 @@ class PredictionWindow(QWidget):
 
     # saves the results of the prediction
     def save_results(self):
-        self.output_label.setText("")
         fileName = self.input_filename.text()
         if fileName == "":
             pop_message_box("Please enter a file name first.")
         else:
-            # the user tries to save a model only after training it
             if not (self.sealData is None or self.sealData.size == 0):
                 import_path = QFileDialog.getExistingDirectoryUrl().path()
                 if not (import_path == ""):
@@ -190,10 +188,11 @@ class PredictionWindow(QWidget):
                     # pops a message box
                     pop_message_box("Prediction saved successfully")
                     self.sealData = None
+                    self.output_label.setText("")
             else:
                 pop_message_box("Please predict something first.")
             self.input_filename.setText("")
-        self.sealData = None
+            self.sealData = None
 
     def save_prediction(self, import_path):
         # Create an Excel file
