@@ -106,7 +106,8 @@ class TrainModelWindow(QWidget):
                     # save the model details into the Excel file (featuresChecklist.xlsx)
                     isSuccessful = save_features(self.excelRowIndex, model_name)
                     if isSuccessful == 1:
-                        joblib.dump(self.model, "D:\\save.pkl")
+
+                        joblib.dump(self.model, import_path)
                         # pops a message box
                         pop_message_box("Model saved successfully")
                         self.model = None
