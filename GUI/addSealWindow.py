@@ -17,10 +17,13 @@ from variables import DB_PATH
 
 
 class AddSealWindow(QWidget):
-    def __init__(self):
+    def __init__(self, dashboard):
         super().__init__()
         self.setWindowTitle("Add a seal")
         self.setFixedSize(QSize(700, 400))
+        # close home page
+        self.dashboard = dashboard
+        dashboard.close()
 
         # Creating elements:
         self.sealTag_input_line = QLineEdit()
@@ -31,6 +34,9 @@ class AddSealWindow(QWidget):
         self.combo1 = QComboBox()
         self.combo2 = QComboBox()
         self.combo3 = QComboBox()
+
+        # Creating a home button
+        self.home_button = QPushButton('Home')
 
         # Setting widget properties:
         self.setLayout(self.set_elements())
@@ -47,6 +53,7 @@ class AddSealWindow(QWidget):
         # Setting the elements:
         self.sealTag_label.setText("Enter a unique seal tag")
         self.addSeal_button.clicked.connect(self.add_seal)
+        self.home_button.clicked.connect(self.go_to_home)
         self.combo1.addItem("Female")
         self.combo1.addItem("Male")
         self.combo2.addItem("Phoca Vitulina")
@@ -61,7 +68,13 @@ class AddSealWindow(QWidget):
         layout.addWidget(self.sealTag_label)
         layout.addWidget(self.sealTag_input_line)
         layout.addWidget(self.addSeal_button)
+        layout.addWidget(self.home_button)
         return layout
+
+    # re-opens the dashboard and closes the current window
+    def go_to_home(self):
+        self.dashboard.show()
+        self.close()
 
     # if the result is zero, there´s a problem when taking the input
     def add_seal(self):

@@ -17,12 +17,18 @@ maxNumOfExcludedFeatures = 12
 
 
 class TrainModelWindow(QWidget):
-    def __init__(self):
+    def __init__(self, dashboard):
         super().__init__()
         self.model = None
         self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
         self.setFixedSize(QSize(500, 400))
         self.setWindowTitle("Train a model")
+        # close home page
+        self.dashboard = dashboard
+        dashboard.close()
+
+        # Creating a home button
+        self.home_button = QPushButton('Home')
 
         # Creating elements
         self.sex = QCheckBox("Sex")
@@ -49,6 +55,11 @@ class TrainModelWindow(QWidget):
         q.setColor(QPalette.ColorRole.Window, QColor(lightgray))
         self.setPalette(q)
 
+    # re-opens the dashboard and closes the current window
+    def go_to_home(self):
+        self.dashboard.show()
+        self.close()
+
     def set_elements(self):
         """
         Sets the elements of the window
@@ -59,6 +70,7 @@ class TrainModelWindow(QWidget):
         self.input_model_name.setPlaceholderText("Enter model name")
         self.train_button.clicked.connect(self.train_new_model)
         self.save_button.clicked.connect(self.save_model)
+        self.home_button.clicked.connect(self.go_to_home)
         # Adding elements to the layout:
         layout = QVBoxLayout()
         layout.addWidget(self.sex)
@@ -77,6 +89,7 @@ class TrainModelWindow(QWidget):
         layout.addWidget(self.train_button)
         layout.addWidget(self.input_model_name)
         layout.addWidget(self.save_button)
+        layout.addWidget(self.home_button)
         return layout
 
     # Saves a user trained model

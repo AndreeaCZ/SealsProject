@@ -12,11 +12,17 @@ from variables import DB_PATH, DIV
 
 
 class QueryDatabaseWindow(QWidget):
-    def __init__(self):
+    def __init__(self, dashboard):
         super().__init__()
         self.sealData = None
         self.setWindowTitle("Query the database")
         self.setFixedSize(QSize(800, 800))
+        #close the main dashboard
+        self.dashboard = dashboard
+        dashboard.close()
+
+        # Creating a home button
+        self.home_button = QPushButton('Home')
 
         # Blood values:
         self.minWBC = QLineEdit()
@@ -78,6 +84,11 @@ class QueryDatabaseWindow(QWidget):
         q = self.palette()
         q.setColor(QPalette.ColorRole.Window, QColor(lightgray))
         self.setPalette(q)
+
+    # re-opens the dashboard and closes the current window
+    def go_to_home(self):
+        self.dashboard.show()
+        self.close()
 
     def get_min_tag_for_year(self, year):
         """
@@ -525,6 +536,7 @@ class QueryDatabaseWindow(QWidget):
         self.order.addItem("Descending")
 
         self.executeButton.clicked.connect(self.execute_query)
+        self.home_button.clicked.connect(self.go_to_home)
 
         # Add blood values to layout
         layout = QGridLayout()
@@ -574,6 +586,8 @@ class QueryDatabaseWindow(QWidget):
 
         # Add button + set rowspan
         layout.addWidget(self.executeButton)
+        layout.addWidget(self.home_button)
+
         layout.setColumnStretch(0, 1)
 
         return layout
