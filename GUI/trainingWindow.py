@@ -2,7 +2,7 @@ from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QPalette, QColor
 from PyQt6.QtWidgets import *
 from openpyxl import load_workbook
-from Model.modelCreation_Testing import *
+from Model.modelFunctions import *
 from Database.modelDataGeneration import get_model_data
 from GUI.utils import lightgray, pop_message_box
 from variables import DIV
@@ -106,7 +106,7 @@ class TrainModelWindow(QWidget):
                     # save the model details into the Excel file (featuresChecklist.xlsx)
                     isSuccessful = save_features(self.excelRowIndex, model_name)
                     if isSuccessful == 1:
-                        joblib.dump(self.model, import_path)
+                        joblib.dump(self.model, "D:\\save.pkl")
                         # pops a message box
                         pop_message_box("Model saved successfully")
                         self.model = None

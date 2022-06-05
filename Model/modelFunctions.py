@@ -13,7 +13,7 @@ def data_preprocessing(data):
     Data preprocessing for the model
     :return: the preprocessed data
     """
-    X = data.drop(['Survival', 'Species', 'Sex'], axis=1)
+    X = data.drop(['Survival'], axis=1)
     # separate features from labels
 
     scaler = MinMaxScaler()
@@ -103,7 +103,7 @@ def feature_importance(model):
     :return:
     """
     data = get_model_data()
-    for i, column in enumerate(data.drop(['Survival', 'Species', 'Sex'], axis=1).columns):
+    for i, column in enumerate(data.drop(['Survival'], axis=1).columns):
         print(column, ':', model.feature_importances_[i])
 
 # perform feature selection
