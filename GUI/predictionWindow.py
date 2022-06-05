@@ -259,6 +259,7 @@ class PredictionWindow(QWidget):
                 pop_message_box("Check that the correct file is being uploaded and contains a seal tag")
                 result = 0
             else:
+                sealTag = "T" + sealTag
                 self.sealData = np.concatenate((np.array([sealTag]), self.sealData), axis=0)
         if not (result == 0):
             self.output_label.setText("Seal tag - " + sealTag + "\n\n" + result)

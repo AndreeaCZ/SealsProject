@@ -9,6 +9,7 @@ from GUI.addSealWindow import AddSealWindow
 from GUI.descriptionWindow import DescriptionWindow
 from GUI.getSealDataWindow import GetSealDataWindow
 from GUI.predictionWindow import PredictionWindow
+from GUI.queryDatabaseWindow import QueryDatabaseWindow
 from GUI.trainingWindow import TrainModelWindow
 from GUI.utils import *
 from variables import MODEL_PATH
@@ -33,10 +34,11 @@ class MainWindow(QMainWindow):
         self.predictionWindow = None
         self.addSealWindow = None
         self.getSealWindow = None
+        self.queryDatabaseWindow = None
 
         # Creating left side elements:
         self.predict_button = QPushButton('Predict')
-        self.data_ranges_button = QPushButton('Data Ranges')
+        self.query_database_button = QPushButton('Play with the database')
         self.about_button = QPushButton('User Guide')
         self.trainModel_button = QPushButton('Train Model')
         self.add_seal_button = QPushButton('Add a seal')
@@ -58,8 +60,9 @@ class MainWindow(QMainWindow):
         self.trainModel_button.clicked.connect(self.open_training_window)
         self.add_seal_button.clicked.connect(self.open_add_seal_window)
         self.get_seal_button.clicked.connect(self.open_get_seal_window)
+        self.query_database_button.clicked.connect(self.open_query_database_window)
         self.predict_button.setFixedHeight(120)
-        self.data_ranges_button.setFixedHeight(120)
+        self.query_database_button.setFixedHeight(120)
         self.about_button.setFixedHeight(120)
         self.trainModel_button.setFixedHeight(120)
         self.add_seal_button.setFixedHeight(120)
@@ -67,7 +70,7 @@ class MainWindow(QMainWindow):
         # Adding elements to layout:
         layout = QGridLayout()
         layout.addWidget(self.predict_button, 0, 0)
-        layout.addWidget(self.data_ranges_button, 0, 1)
+        layout.addWidget(self.query_database_button, 0, 1)
         layout.addWidget(self.about_button, 1, 0)
         layout.addWidget(self.trainModel_button, 1, 1)
         layout.addWidget(self.add_seal_button, 2, 0)
@@ -80,6 +83,10 @@ class MainWindow(QMainWindow):
         p.setColor(QPalette.ColorRole.Window, QColor(darkgray))
         widget.setPalette(p)
         return widget
+
+    def open_query_database_window(self):
+        self.queryDatabaseWindow = QueryDatabaseWindow()
+        self.queryDatabaseWindow.show()
 
     def open_training_window(self):
         self.trainingWindow = TrainModelWindow()

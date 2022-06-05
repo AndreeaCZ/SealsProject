@@ -10,6 +10,7 @@ from GUI.utils import lightgray, pop_message_box
 from Utilities.excelManipulation import get_blood_test_values
 from variables import DB_PATH
 
+
 ########################################################################################################################
 # Represents the window that lets the user add a seal to the database
 ########################################################################################################################
@@ -87,7 +88,8 @@ class AddSealWindow(QWidget):
         else:
             Survival = 0
         data = pd.read_excel(file, na_filter=True, engine='openpyxl').to_numpy()
-        blood_values = get_blood_test_values(data, ["WBC", "LYMF", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"])
+        blood_values = get_blood_test_values(data,
+                                             ["WBC", "LYMF", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"])
         if not (blood_values == 0):
             WBC = blood_values[0]
             LYMF = blood_values[1]
