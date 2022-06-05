@@ -4,6 +4,7 @@ import joblib
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
+
 from GUI.addSealWindow import AddSealWindow
 from GUI.descriptionWindow import DescriptionWindow
 from GUI.getSealDataWindow import GetSealDataWindow
