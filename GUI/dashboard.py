@@ -85,27 +85,27 @@ class MainWindow(QMainWindow):
         return widget
 
     def open_query_database_window(self):
-        self.queryDatabaseWindow = QueryDatabaseWindow()
+        self.queryDatabaseWindow = QueryDatabaseWindow(window)
         self.queryDatabaseWindow.show()
 
     def open_training_window(self):
-        self.trainingWindow = TrainModelWindow()
+        self.trainingWindow = TrainModelWindow(window)
         self.trainingWindow.show()
 
     def open_description_window(self):
-        self.descriptionWindow = DescriptionWindow()
+        self.descriptionWindow = DescriptionWindow(window)
         self.descriptionWindow.show()
 
     def open_prediction_window(self):
-        self.predictionWindow = PredictionWindow()
+        self.predictionWindow = PredictionWindow(window)
         self.predictionWindow.show()
 
     def open_add_seal_window(self):
-        self.addSealWindow = AddSealWindow()
+        self.addSealWindow = AddSealWindow(window)
         self.addSealWindow.show()
 
     def open_get_seal_window(self):
-        self.getSealWindow = GetSealDataWindow()
+        self.getSealWindow = GetSealDataWindow(window)
         self.getSealWindow.show()
 
 

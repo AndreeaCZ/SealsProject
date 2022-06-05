@@ -22,7 +22,7 @@ defaultModelName = "Default"
 
 
 class PredictionWindow(QWidget):
-    def __init__(self):
+    def __init__(self, dashboard):
         super().__init__()
         self.sealData = None
         self.modelName = defaultModelName
@@ -30,6 +30,8 @@ class PredictionWindow(QWidget):
         self.model = joblib.load(MODEL_PATH)
         self.setWindowTitle("Run predictions")
         self.setFixedSize(QSize(600, 620))
+        self.dashboard = dashboard
+        dashboard.close()
 
         # Creating elements:
         self.input_filename = QLineEdit()
@@ -65,12 +67,20 @@ class PredictionWindow(QWidget):
         self.mpv_input = QLineEdit()
         self.plt_input = QLineEdit()
 
+        # Creating a home button
+        self.home_button = QPushButton('Home')
+
         # Set widget properties:
         self.setLayout(self.set_elements())
         self.setAutoFillBackground(True)
         q = self.palette()
         q.setColor(QPalette.ColorRole.Window, QColor(lightgray))
         self.setPalette(q)
+
+    # re-opens the dashboard and closes the current window
+    def go_to_home(self):
+            self.dashboard.show()
+            self.close()
 
     def set_elements(self):
         """
@@ -87,6 +97,7 @@ class PredictionWindow(QWidget):
         self.load_model_button.clicked.connect(self.load_model)
         self.load_default_model_button.clicked.connect(self.load_default_model)
         self.save_button.clicked.connect(self.save_results)
+        self.home_button.clicked.connect(self.go_to_home)
         self.info_label_1.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.info_label_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.info_label_3.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -133,6 +144,7 @@ class PredictionWindow(QWidget):
         layout.setRowMinimumHeight(12, 100)
         layout.addWidget(self.input_filename, 13, 0, 1, 3)
         layout.addWidget(self.save_button, 13, 3)
+        layout.addWidget(self.home_button, 14, 2)
         layout.setRowStretch(14, 1)
         return layout
 
