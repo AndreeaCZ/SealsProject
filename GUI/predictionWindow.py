@@ -17,8 +17,8 @@ from variables import MODEL_PATH, DIV
 # Represents the window where the user can predict the outcome of a seal
 ########################################################################################################################
 
-defaultFeatureList = ["WBC", "LYMF", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"]
-defaultModelName = "Default"
+defaultFeatureList = ["WBC", "LYMF", "GRAN", "MID", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"]
+defaultModelName = "defaultModel"
 
 
 class PredictionWindow(QWidget):

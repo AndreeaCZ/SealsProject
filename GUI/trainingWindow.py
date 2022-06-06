@@ -18,14 +18,14 @@ from variables import DIV
 ########################################################################################################################
 
 # TODO: Please rename this and explain what it does
-I = 8
+I = 10
 
 
 class TrainModelWindow(QWidget):
     def __init__(self, dashboard):
         super().__init__()
         self.model = None
-        self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9]
+        self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
         self.setFixedSize(QSize(500, 400))
         self.setWindowTitle("Train a model")
         # close home page
@@ -38,6 +38,8 @@ class TrainModelWindow(QWidget):
         # Creating elements
         self.wbc = QCheckBox("WBC")
         self.lymf = QCheckBox("LYMF")
+        self.gran = QCheckBox("GRAN")
+        self.mid = QCheckBox("MID")
         self.rbc = QCheckBox("RBC")
         self.hgb = QCheckBox("HGB")
         self.mch = QCheckBox("MCH")
@@ -76,6 +78,8 @@ class TrainModelWindow(QWidget):
         layout = QVBoxLayout()
         layout.addWidget(self.wbc)
         layout.addWidget(self.lymf)
+        layout.addWidget(self.gran)
+        layout.addWidget(self.mid)
         layout.addWidget(self.rbc)
         layout.addWidget(self.hgb)
         layout.addWidget(self.mch)
@@ -117,7 +121,7 @@ class TrainModelWindow(QWidget):
 
         # Features not included in training
         excludedFeaturesNum = 0
-        self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9]
+        self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
         # if a feature is unchecked, it is removed from the training model params
         if not self.wbc.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['WBC'], axis=1)  # drop tag column
@@ -127,29 +131,37 @@ class TrainModelWindow(QWidget):
             datasetLabeledSeals = datasetLabeledSeals.drop(['LYMF'], axis=1)  # drop tag column
             self.excelRowIndex.remove(3)
             excludedFeaturesNum += 1
+        if not self.gran.isChecked():
+            datasetLabeledSeals = datasetLabeledSeals.drop(['GRAN'], axis=1)  # drop tag column
+            self.excelRowIndex.remove(4)
+            excludedFeaturesNum += 1
+        if not self.mid.isChecked():
+            datasetLabeledSeals = datasetLabeledSeals.drop(['MID'], axis=1)  # drop tag column
+            self.excelRowIndex.remove(5)
+            excludedFeaturesNum += 1
         if not self.rbc.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['RBC'], axis=1)  # drop tag column
-            self.excelRowIndex.remove(4)
+            self.excelRowIndex.remove(6)
             excludedFeaturesNum += 1
         if not self.hgb.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['HGB'], axis=1)  # drop tag column
-            self.excelRowIndex.remove(5)
+            self.excelRowIndex.remove(7)
             excludedFeaturesNum += 1
         if not self.mch.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['MCH'], axis=1)  # drop tag column
-            self.excelRowIndex.remove(6)
+            self.excelRowIndex.remove(8)
             excludedFeaturesNum += 1
         if not self.mchc.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['MCHC'], axis=1)  # drop tag column
-            self.excelRowIndex.remove(7)
+            self.excelRowIndex.remove(9)
             excludedFeaturesNum += 1
         if not self.mpv.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['MPV'], axis=1)  # drop tag column
-            self.excelRowIndex.remove(8)
+            self.excelRowIndex.remove(10)
             excludedFeaturesNum += 1
         if not self.plt.isChecked():
             datasetLabeledSeals = datasetLabeledSeals.drop(['PLT'], axis=1)  # drop tag column
-            self.excelRowIndex.remove(9)
+            self.excelRowIndex.remove(11)
             excludedFeaturesNum += 1
 
         if excludedFeaturesNum != I:

@@ -18,7 +18,8 @@ def data_preprocessing():
     :return: the preprocessed data
     """
     data = get_model_data()
-    X = data.drop(['Survival', 'Species', 'Sex'], axis=1)
+    #'Species', 'Sex'
+    X = data.drop(['Survival'], axis=1)
     # separate features from labels
 
     scaler = MinMaxScaler()
@@ -159,7 +160,7 @@ def feature_importance(model):
     :return:
     """
     data = get_model_data()
-    for i, column in enumerate(data.drop(['Survival', 'Species', 'Sex'], axis=1).columns):
+    for i, column in enumerate(data.drop(['Survival'], axis=1).columns):
         print(column, ':', model.feature_importances_[i])
 
 
@@ -167,6 +168,7 @@ test_model = rf_Model()
 
 feature_importance(test_model)
 test_accuracy(test_model)
+export_model(test_model)
 # perform feature selection
 # drop the features that are not important: species, sex
 # need to be tested: GRAN, MID
