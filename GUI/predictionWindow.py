@@ -72,11 +72,6 @@ class PredictionWindow(QWidget):
         defaultInputList = [self.wbc_input, self.lymf_input, self.gran_input, self.mid_input, self.rbc_input,
                             self.hgb_input, self.mch_input, self.mchc_input, self.mpv_input, self.plt_input]
         self.featureInputDict = dict(zip(defaultFeatureList, defaultInputList))
-        # textField labels dict
-        defaultLabelList = [self.wbc_label, self.lymf_label, self.gran_label, self.mid_label, self.rbc_label,
-                            self.hgb_label, self.mch_label, self.mchc_label, self.mpv_label, self.plt_label]
-        self.featureLabelDict = dict(zip(defaultFeatureList, defaultLabelList))
-
 
         # Creating a home button
         self.home_button = QPushButton('Home')
@@ -172,16 +167,14 @@ class PredictionWindow(QWidget):
         '''
         update the input fields and labels based on the loaded model
         '''
-        # hide all labels
-        for label in self.featureLabelDict.values():
-            label.hide()
-        # hide all input fields
         for input in self.featureInputDict.values():
-            input.hide()
+            input.setDisabled(False)
+            input.setStyleSheet("background-color: white;")
         # show labels and fields of features in the current feature list
-        for feature in self.featureList:
-            self.featureLabelDict.get(feature).show()
-            self.featureInputDict.get(feature).show()
+        for i in defaultFeatureList:
+            if i not in self.featureList:
+                self.featureInputDict.get(i).setStyleSheet("background-color: darkgrey;")
+                self.featureInputDict.get(i).setDisabled(True)
 
     # clears the text of all input fields
     def reset_input_fields_text(self):
@@ -283,9 +276,9 @@ class PredictionWindow(QWidget):
         self.modelName = defaultModelName
         self.model = joblib.load(MODEL_PATH)
         self.featureList = defaultFeatureList
+        pop_message_box("Default model loaded successfully")
         self.reset_input_fields_text()
         self.update_input_and_labels()
-        pop_message_box("Default model loaded successfully")
 
     # Load a model from the local machine
     def load_model(self):
