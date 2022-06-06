@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import joblib
+import platform
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QPalette, QColor
 from PyQt6.QtWidgets import *
@@ -229,7 +230,9 @@ class PredictionWindow(QWidget):
                 import_path = QFileDialog.getExistingDirectoryUrl().path()
                 if not (import_path == ""):
                     import_path = import_path + DIV + fileName + '.xlsx'
-                    self.save_prediction(import_path[1:])
+                    if (platform.system() == "Windows"):
+                        import_path = import_path[1:]
+                    self.save_prediction(import_path)
                     # pops a message box
                     pop_message_box("Prediction saved successfully")
                     self.sealData = None

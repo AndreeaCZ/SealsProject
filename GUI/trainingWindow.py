@@ -1,3 +1,5 @@
+import platform
+
 import joblib
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QPalette, QColor
@@ -107,7 +109,9 @@ class TrainModelWindow(QWidget):
                     # save the model details into the Excel file (featuresChecklist.xlsx)
                     isSuccessful = save_features(self.excelRowIndex, model_name)
                     if isSuccessful == 1:
-                        joblib.dump(self.model, import_path[1:])
+                        if (platform.system() == "Windows"):
+                            import_path = import_path[1:]
+                        joblib.dump(self.model, import_path)
                         # pops a message box
                         pop_message_box("Model saved successfully")
                         self.model = None
