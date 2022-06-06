@@ -190,29 +190,24 @@ def save_features(rowIndexList, modelName):
     try:
         wb = load_workbook("featuresChecklist.xlsx")
         ws = wb.active
-        colIndex = 2
         maxCol = ws.max_column
-        maxRow = ws.max_row
-        # Find the empty column
+        isModelNameUnique = True
         for j in range(2, maxCol + 1):
-            counter = 0
-            for i in range(2, maxRow + 1):
-                if ws.cell(row=i, column=j).value is None:
-                    counter = counter + 1
-            if counter == maxRow - 1:
+            if ws.cell(row=1, column=j).value == modelName:
+                pop_message_box("Model names need to be unique, please enter a new model name")
+                isModelNameUnique = False
                 break
-            else:
-                colIndex = colIndex + 1
-        # Check if a new column is needed
-        if colIndex == maxCol:
+        if isModelNameUnique:
             ws.insert_cols(maxCol + 1)
-        # Fill in the corresponding values
-        ws.cell(row=1, column=colIndex).value = modelName
-        for i in rowIndexList:
-            # fill in the cell with 1
-            ws.cell(row=i, column=colIndex).value = 1
-        wb.save("featuresChecklist.xlsx")
-        return 1
+            # Fill in the corresponding values
+            ws.cell(row=1, column=maxCol+1).value = modelName
+            for i in rowIndexList:
+                # fill in the cell with 1
+                ws.cell(row=i, column=maxCol+1).value = 1
+            wb.save("featuresChecklist.xlsx")
+            return 1
+        else:
+            return 0
     except:
         pop_message_box("Can't find the featuresChecklist.xlsx file")
     return 0
