@@ -229,7 +229,7 @@ class PredictionWindow(QWidget):
                 import_path = QFileDialog.getExistingDirectoryUrl().path()
                 if not (import_path == ""):
                     import_path = import_path + DIV + fileName + '.xlsx'
-                    self.save_prediction(import_path)
+                    self.save_prediction(import_path[1:])
                     # pops a message box
                     pop_message_box("Prediction saved successfully")
                     self.sealData = None
