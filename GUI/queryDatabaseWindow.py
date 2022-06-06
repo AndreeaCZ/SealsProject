@@ -169,37 +169,41 @@ class QueryDatabaseWindow(QWidget):
         """
         # get blood values from text fields
         self.set_default_values()
-        minWBC = float(self.minWBC.text())
-        maxWBC = float(self.maxWBC.text())
-        minLYMF = float(self.minLYMF.text())
-        maxLYMF = float(self.maxLYMF.text())
-        minGRAN = float(self.minGRAN.text())
-        maxGRAN = float(self.maxGRAN.text())
-        minMID = float(self.minMID.text())
-        maxMID = float(self.maxMID.text())
-        minHCT = float(self.minHCT.text())
-        maxHCT = float(self.maxHCT.text())
-        minMCV = float(self.minMCV.text())
-        maxMCV = float(self.maxMCV.text())
-        minRBC = float(self.minRBC.text())
-        maxRBC = float(self.maxRBC.text())
-        minHGB = float(self.minHGB.text())
-        maxHGB = float(self.maxHGB.text())
-        minMCH = float(self.minMCH.text())
-        maxMCH = float(self.maxMCH.text())
-        minMCHC = float(self.minMCHC.text())
-        maxMCHC = float(self.maxMCHC.text())
-        minMPV = float(self.minMPV.text())
-        maxMPV = float(self.maxMPV.text())
-        minPLT = float(self.minPLT.text())
-        maxPLT = float(self.maxPLT.text())
-
-        # check which of the checkboxes are checked
-        surv = self.get_excluded_value(self.survY.isChecked(), self.survN.isChecked())
-        sex = self.get_excluded_value(self.sexF.isChecked(), self.sexM.isChecked())
-        species = self.get_excluded_value(self.speciesPV.isChecked(), self.speciesHG.isChecked())
-        minStr = (self.get_year())[0]
-        maxStr = (self.get_year())[1]
+        noNumInput = False
+        try:
+            minWBC = float(self.minWBC.text())
+            maxWBC = float(self.maxWBC.text())
+            minLYMF = float(self.minLYMF.text())
+            maxLYMF = float(self.maxLYMF.text())
+            minGRAN = float(self.minGRAN.text())
+            maxGRAN = float(self.maxGRAN.text())
+            minMID = float(self.minMID.text())
+            maxMID = float(self.maxMID.text())
+            minHCT = float(self.minHCT.text())
+            maxHCT = float(self.maxHCT.text())
+            minMCV = float(self.minMCV.text())
+            maxMCV = float(self.maxMCV.text())
+            minRBC = float(self.minRBC.text())
+            maxRBC = float(self.maxRBC.text())
+            minHGB = float(self.minHGB.text())
+            maxHGB = float(self.maxHGB.text())
+            minMCH = float(self.minMCH.text())
+            maxMCH = float(self.maxMCH.text())
+            minMCHC = float(self.minMCHC.text())
+            maxMCHC = float(self.maxMCHC.text())
+            minMPV = float(self.minMPV.text())
+            maxMPV = float(self.maxMPV.text())
+            minPLT = float(self.minPLT.text())
+            maxPLT = float(self.maxPLT.text())
+            # check which of the checkboxes are checked
+            surv = self.get_excluded_value(self.survY.isChecked(), self.survN.isChecked())
+            sex = self.get_excluded_value(self.sexF.isChecked(), self.sexM.isChecked())
+            species = self.get_excluded_value(self.speciesPV.isChecked(), self.speciesHG.isChecked())
+            minStr = (self.get_year())[0]
+            maxStr = (self.get_year())[1]
+        except:
+            pop_message_box("Something went wrong. The input fields contain non-numeric input, change it.")
+            noNumInput = True
 
         # get the column name for sorting
         orderBy = self.orderBy.currentText()
@@ -213,34 +217,35 @@ class QueryDatabaseWindow(QWidget):
         else:
             isAscending = False
 
-        connection = sqlite3.connect(DB_PATH)
-        c = connection.cursor()
-        try:
-            sql = """SELECT * FROM sealPredictionData WHERE WBC >= ? and WBC <= ? and LYMF >= ? and LYMF <= ? and 
-            GRAN >= ? and GRAN <= ? and MID >= ? and MID <= ? and HCT >= ? and HCT <= ? and MCV >= ? and MCV <= ?
-            and RBC >= ? and RBC <= ? and HGB >= ? and HGB <= ? and MCH >= ? and MCH <= ? and MCHC >= ? and MCHC <= ? 
-            and MPV >= ? and MPV <= ? and PLT >= ? and PLT <= ? and Survival != ? and Sex != ? and Species != ? and 
-            sealTag >= ? and sealTag <= ?"""
-            c.execute(sql, (minWBC, maxWBC, minLYMF, maxLYMF, minGRAN, maxGRAN, minMID, maxMID, minHCT, maxHCT, minMCV,
-                            maxMCV, minRBC, maxRBC, minHGB, maxHGB, minMCH, maxMCH, minMCHC, maxMCHC, minMPV,
-                            maxMPV, minPLT, maxPLT, surv, sex, species, minStr, maxStr))
-            sealData = c.fetchall()
-            npSealData = np.array(sealData)
-            if (npSealData.size != 0):
-                df = pd.DataFrame(npSealData,
-                                  columns=['sealTag', 'WBC', 'LYMF', 'GRAN', 'MID', 'HCT', 'MCV', 'RBC', 'HGB',
-                                           'MCH', 'MCHC', 'MPV', 'PLT', 'Survival', 'Sex', 'Species'])
-                df = df.astype({'WBC': np.float, 'LYMF': np.float, 'GRAN': np.float, 'MID': np.float,
-                                'HCT': np.float, 'MCV': np.float, 'RBC': np.float, 'HGB': np.float, 'MCH': np.float,
-                                'MCHC': np.float, 'MPV': np.float, 'PLT': np.float})
-                df.sort_values(orderBy, ascending=isAscending, inplace=True)
-                self.update_dataframe(df)
-                self.save_data(df)
-            else:
-                pop_message_box("There is no data to save.")
-        except:
-            pop_message_box("Something went wrong when querying")
-        connection.close()
+        if not noNumInput:
+            connection = sqlite3.connect(DB_PATH)
+            c = connection.cursor()
+            try:
+                sql = """SELECT * FROM sealPredictionData WHERE WBC >= ? and WBC <= ? and LYMF >= ? and LYMF <= ? and 
+                GRAN >= ? and GRAN <= ? and MID >= ? and MID <= ? and HCT >= ? and HCT <= ? and MCV >= ? and MCV <= ?
+                and RBC >= ? and RBC <= ? and HGB >= ? and HGB <= ? and MCH >= ? and MCH <= ? and MCHC >= ? and MCHC <= ? 
+                and MPV >= ? and MPV <= ? and PLT >= ? and PLT <= ? and Survival != ? and Sex != ? and Species != ? and 
+                sealTag >= ? and sealTag <= ?"""
+                c.execute(sql, (minWBC, maxWBC, minLYMF, maxLYMF, minGRAN, maxGRAN, minMID, maxMID, minHCT, maxHCT, minMCV,
+                                maxMCV, minRBC, maxRBC, minHGB, maxHGB, minMCH, maxMCH, minMCHC, maxMCHC, minMPV,
+                                maxMPV, minPLT, maxPLT, surv, sex, species, minStr, maxStr))
+                sealData = c.fetchall()
+                npSealData = np.array(sealData)
+                if (npSealData.size != 0):
+                    df = pd.DataFrame(npSealData,
+                                      columns=['sealTag', 'WBC', 'LYMF', 'GRAN', 'MID', 'HCT', 'MCV', 'RBC', 'HGB',
+                                               'MCH', 'MCHC', 'MPV', 'PLT', 'Survival', 'Sex', 'Species'])
+                    df = df.astype({'WBC': np.float, 'LYMF': np.float, 'GRAN': np.float, 'MID': np.float,
+                                    'HCT': np.float, 'MCV': np.float, 'RBC': np.float, 'HGB': np.float, 'MCH': np.float,
+                                    'MCHC': np.float, 'MPV': np.float, 'PLT': np.float})
+                    df.sort_values(orderBy, ascending=isAscending, inplace=True)
+                    self.update_dataframe(df)
+                    self.save_data(df)
+                else:
+                    pop_message_box("There is no data to save.")
+            except:
+                pop_message_box("Something went wrong when querying")
+            connection.close()
 
     def update_dataframe(self, df):
         """
