@@ -18,7 +18,6 @@ def data_preprocessing():
     :return: the preprocessed data
     """
     data = get_model_data()
-    #'Species', 'Sex'
     X = data.drop(['Survival'], axis=1)
     # separate features from labels
 

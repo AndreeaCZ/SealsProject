@@ -1,12 +1,9 @@
-import math
 from pathlib import Path
 
 import joblib
-import numpy as np
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QPalette, QColor
 from PyQt6.QtWidgets import *
-from numpy import newaxis
 from openpyxl import load_workbook
 from openpyxl.workbook import Workbook
 
@@ -29,7 +26,7 @@ class PredictionWindow(QWidget):
         self.featureList = defaultFeatureList
         self.model = joblib.load(MODEL_PATH)
         self.setWindowTitle("Run predictions")
-        self.setFixedSize(QSize(600, 620))
+        self.setFixedSize(QSize(600, 750))
         self.dashboard = dashboard
         dashboard.close()
 
@@ -52,6 +49,8 @@ class PredictionWindow(QWidget):
         self.combo2 = QComboBox()
         self.wbc_label = QLabel("WBC: ")
         self.lymf_label = QLabel("LYMF: ")
+        self.gran_label = QLabel("GRAN: ")
+        self.mid_label = QLabel("MID: ")
         self.rbc_label = QLabel("RBC: ")
         self.hgb_label = QLabel("HGB: ")
         self.mch_label = QLabel("MCH: ")
@@ -60,12 +59,24 @@ class PredictionWindow(QWidget):
         self.plt_label = QLabel("PLT: ")
         self.wbc_input = QLineEdit()
         self.lymf_input = QLineEdit()
+        self.gran_input = QLineEdit()
+        self.mid_input = QLineEdit()
         self.rbc_input = QLineEdit()
         self.hgb_input = QLineEdit()
         self.mch_input = QLineEdit()
         self.mchc_input = QLineEdit()
         self.mpv_input = QLineEdit()
         self.plt_input = QLineEdit()
+
+        # textField dict
+        defaultInputList = [self.wbc_input, self.lymf_input, self.gran_input, self.mid_input, self.rbc_input,
+                            self.hgb_input, self.mch_input, self.mchc_input, self.mpv_input, self.plt_input]
+        self.featureInputDict = dict(zip(defaultFeatureList, defaultInputList))
+        # textField labels dict
+        defaultLabelList = [self.wbc_label, self.lymf_label, self.gran_label, self.mid_label, self.rbc_label,
+                            self.hgb_label, self.mch_label, self.mchc_label, self.mpv_label, self.plt_label]
+        self.featureLabelDict = dict(zip(defaultFeatureList, defaultLabelList))
+
 
         # Creating a home button
         self.home_button = QPushButton('Home')
@@ -119,34 +130,63 @@ class PredictionWindow(QWidget):
         layout.addWidget(self.load_model_button, 2, 3)
         layout.setRowMinimumHeight(3, 50)  # Row 3 is empty and is used as a space
         layout.addWidget(self.info_label_3, 4, 0, 1, 4)
+
         layout.addWidget(self.wbc_label, 5, 0)
         layout.addWidget(self.lymf_label, 5, 1)
-        layout.addWidget(self.rbc_label, 5, 2)
-        layout.addWidget(self.hgb_label, 5, 3)
+        layout.addWidget(self.gran_label, 5, 2)
+        layout.addWidget(self.mid_label, 5, 3)
         layout.addWidget(self.wbc_input, 6, 0)
         layout.addWidget(self.lymf_input, 6, 1)
-        layout.addWidget(self.rbc_input, 6, 2)
-        layout.addWidget(self.hgb_input, 6, 3)
-        layout.addWidget(self.mch_label, 7, 0)
-        layout.addWidget(self.mchc_label, 7, 1)
-        layout.addWidget(self.mpv_label, 7, 2)
-        layout.addWidget(self.plt_label, 7, 3)
-        layout.addWidget(self.mch_input, 8, 0)
-        layout.addWidget(self.mchc_input, 8, 1)
-        layout.addWidget(self.mpv_input, 8, 2)
-        layout.addWidget(self.plt_input, 8, 3)
-        layout.addWidget(self.info_label_4, 9, 0, 1, 3)
-        layout.addWidget(self.run_predict_button, 9, 3)
-        layout.setRowMinimumHeight(10, 50)  # Row 10 is empty and is used as a space
-        layout.addWidget(self.info_label_5, 11, 0, 1, 3)
-        layout.addWidget(self.import_button, 11, 3)
-        layout.addWidget(self.output_label, 12, 0, 1, 4)
-        layout.setRowMinimumHeight(12, 100)
-        layout.addWidget(self.input_filename, 13, 0, 1, 3)
-        layout.addWidget(self.save_button, 13, 3)
-        layout.addWidget(self.home_button, 14, 2)
-        layout.setRowStretch(14, 1)
+        layout.addWidget(self.gran_input, 6, 2)
+        layout.addWidget(self.mid_input, 6, 3)
+
+        layout.addWidget(self.rbc_label, 7, 0)
+        layout.addWidget(self.hgb_label, 7, 1)
+        layout.addWidget(self.mch_label, 7, 2)
+        layout.addWidget(self.mchc_label, 7, 3)
+        layout.addWidget(self.rbc_input, 8, 0)
+        layout.addWidget(self.hgb_input, 8, 1)
+        layout.addWidget(self.mch_input, 8, 2)
+        layout.addWidget(self.mchc_input, 8, 3)
+
+        layout.addWidget(self.mpv_label, 9, 0)
+        layout.addWidget(self.plt_label, 9, 1)
+        layout.addWidget(self.mpv_input, 10, 0)
+        layout.addWidget(self.plt_input, 10, 1)
+
+        layout.addWidget(self.info_label_4, 11, 0, 1, 3)
+        layout.addWidget(self.run_predict_button, 11, 3)
+        layout.setRowMinimumHeight(12, 50)  # Row 10 is empty and is used as a space
+        layout.addWidget(self.info_label_5, 13, 0, 1, 3)
+        layout.addWidget(self.import_button, 13, 3)
+        layout.addWidget(self.output_label, 14, 0, 1, 4)
+        layout.setRowMinimumHeight(14, 100)
+        layout.addWidget(self.input_filename, 15, 0, 1, 3)
+        layout.addWidget(self.save_button, 15, 3)
+        layout.addWidget(self.home_button, 16, 2)
+        layout.setRowStretch(16, 1)
         return layout
+
+    # dynamically add input lines and labels
+    def update_input_and_labels(self):
+        '''
+        update the input fields and labels based on the loaded model
+        '''
+        # hide all labels
+        for label in self.featureLabelDict.values():
+            label.hide()
+        # hide all input fields
+        for input in self.featureInputDict.values():
+            input.hide()
+        # show labels and fields of features in the current feature list
+        for feature in self.featureList:
+            self.featureLabelDict.get(feature).show()
+            self.featureInputDict.get(feature).show()
+
+    # clears the text of all input fields
+    def reset_input_fields_text(self):
+        for input in self.featureInputDict.values():
+            input.setText("")
 
     # loads the default model with a different message
     def load_default_model_with_new_msg(self):
@@ -243,6 +283,8 @@ class PredictionWindow(QWidget):
         self.modelName = defaultModelName
         self.model = joblib.load(MODEL_PATH)
         self.featureList = defaultFeatureList
+        self.reset_input_fields_text()
+        self.update_input_and_labels()
         pop_message_box("Default model loaded successfully")
 
     # Load a model from the local machine
@@ -253,6 +295,8 @@ class PredictionWindow(QWidget):
             self.model = joblib.load(import_path)
             fileName = Path(import_path).stem
             self.update_feature_list(fileName)
+            self.reset_input_fields_text()
+            self.update_input_and_labels()
 
     # if the result is zero, there´s a problem when taking the input
     def get_import(self):
@@ -290,23 +334,12 @@ class PredictionWindow(QWidget):
     def run_prediction(self):
         sex = get_sex_int(self.combo1.currentText())
         species = get_seal_species_int(self.combo2.currentText())
-        wbc = self.wbc_input.text()
-        lymf = self.lymf_input.text()
-        rbc = self.rbc_input.text()
-        hgb = self.hgb_input.text()
-        mch = self.mch_input.text()
-        mchc = self.mchc_input.text()
-        mpv = self.mpv_input.text()
-        plt = self.plt_input.text()
-        if wbc == "" or lymf == "" or rbc == "" or hgb == "" or mch == "" or mchc == "" or mpv == "" or plt == "":
-            pop_message_box("Please enter all the values")
-        else:
-            try:
-                data = [float(wbc), float(lymf), float(rbc), float(hgb), float(mch), float(mchc), float(mpv), float(plt)]
-                result, survival = find_prediction(data, self.model, sex, species)
-                self.output_label.setText(result)
-            except ValueError as ve1:
-                pop_message_box("Something went wrong.\nCheck that you only entered numbers.\nMake sure to write decimals with a dot ( . ) and not a comma ( , )")
-
-
-
+        data = []
+        try:
+            for feature in self.featureList:
+                data = np.append(data, [float(self.featureInputDict.get(feature).text())])
+            result, survival = find_prediction(data, self.model, sex, species)
+            self.output_label.setText(result)
+        except ValueError as ve1:
+            pop_message_box(
+                "Something went wrong.\nCheck that you filled in all the boxes only entered numbers.\nMake sure to write decimals with a dot ( . ) and not a comma ( , )")
