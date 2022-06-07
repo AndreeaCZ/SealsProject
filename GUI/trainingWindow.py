@@ -12,15 +12,14 @@ from sklearn.preprocessing import MinMaxScaler
 
 from Database.modelDataGeneration import get_model_data
 from GUI.utils import lightgray, pop_message_box
+from Model.modelCreation_Testing import *
 from variables import DIV
-
 
 ########################################################################################################################
 # Represents the window that lets the user train their own model
 ########################################################################################################################
-
 # TODO: Please rename this and explain what it does
-I = 10
+maxExcludedFeatures = 10
 
 
 class TrainModelWindow(QWidget):
@@ -168,18 +167,13 @@ class TrainModelWindow(QWidget):
             self.excelRowIndex.remove(11)
             excludedFeaturesNum += 1
 
-        if excludedFeaturesNum != I:
-            survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_leaf=6)
-            X = datasetLabeledSeals.drop(['Survival'], axis=1)  # separate features from labels
-            scaler = MinMaxScaler()
-            X = scaler.fit_transform(X)  # normalize the data ( MinMaxScaler ) - scale the data to be between 0 and 1
-            y = datasetLabeledSeals['Survival'].values  # get all labels
+        if excludedFeaturesNum != maxExcludedFeatures:
+            randomForest = rf_Model()
 
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3,
-                                                                random_state=42)  # split data into training
+            X_train, X_test, y_train, y_test = data_preprocessing()
             # and test
-            self.model = survivalDecisionTree.fit(X_train, y_train)  # train the model
-            predictions = survivalDecisionTree.predict(X_test)  # make predictions on the test set
+            self.model = randomForest.fit(X_train, y_train)  # train the model
+            predictions = randomForest.predict(X_test)  # make predictions on the test set
             self.accu_label.setText(
                 "Your new model's accuracy " + str(round(accuracy_score(y_test, predictions) * 100, 1)) + "%")
             pop_message_box("Model trained successfully")
@@ -204,10 +198,10 @@ def save_features(rowIndexList, modelName):
         if isModelNameUnique:
             ws.insert_cols(maxCol + 1)
             # Fill in the corresponding values
-            ws.cell(row=1, column=maxCol+1).value = modelName
+            ws.cell(row=1, column=maxCol + 1).value = modelName
             for i in rowIndexList:
                 # fill in the cell with 1
-                ws.cell(row=i, column=maxCol+1).value = 1
+                ws.cell(row=i, column=maxCol + 1).value = 1
             wb.save("featuresChecklist.xlsx")
             return 1
         else:

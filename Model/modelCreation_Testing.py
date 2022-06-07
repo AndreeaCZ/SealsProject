@@ -30,63 +30,18 @@ def data_preprocessing():
 
 
 # feedForwardModel accuracy = 0.601
-# highest accuracy = 0.602
-def decisionTree():
-    """
-    Decision Tree model creation
-    :return: the decision tree model
-    """
-    survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', min_samples_split=2)
-    X_train, X_test, y_train, y_test = data_preprocessing()
-    survivalDecisionTree = survivalDecisionTree.fit(X_train, y_train)
-    return survivalDecisionTree
-
-
+# highest accuracy = 0.602 Decision Tree
 # highest accuracy = 0.65
 def rf_Model():
     X_Train, X_Test, y_Train, y_Test = data_preprocessing()
     rf = RandomForestClassifier(criterion='entropy', n_estimators=300, max_depth=7, random_state=42, bootstrap=True,
                                 max_features='auto', min_samples_leaf=1, min_samples_split=10)
-    rf.fit(X_Train, y_Train)
     return rf
 
 
-# highest accuracy = 0.64
-def SVM():
-    """
-    SVM model creation
-    :return: the SVM model
-    """
-    X_train, X_test, y_train, y_test = data_preprocessing()
-    svmModel = svm.SVC(kernel='rbf', gamma='auto', C=9, probability=True, class_weight='balanced', max_iter=-1,
-                       tol=1e-9)
-    svmModel = svmModel.fit(X_train, y_train)
-    return svmModel
-
-
-# highest accuracy = 0.641
-def KNeighbors():
-    """
-    KNeighbors model creation
-    :return: the KNeighbors model
-    """
-    X_train, X_test, y_train, y_test = data_preprocessing()
-    knnModel = KNeighborsClassifier(n_neighbors=5, algorithm='auto', weights='distance', n_jobs=-1)
-    knnModel = knnModel.fit(X_train, y_train)
-    return knnModel
-
-
-# highest accuracy = 0.645, fluctuating a lot
-def logisticRegression():
-    """
-    Logistic regression model creation
-    :return: the logistic regression model
-    """
-    X_train, X_test, y_train, y_test = data_preprocessing()
-    lr = LogisticRegression(C=7, solver='saga', multi_class='auto', max_iter=10000, tol=1e-3, warm_start=True,
-                            n_jobs=-1)
-    lr = lr.fit(X_train, y_train)
-    return lr
+# highest accuracy = 0.64 SVM
+# highest accuracy = 0.641 KNN
+# highest accuracy = 0.645, fluctuating a lot LR
 
 
 def test_accuracy(model):
@@ -163,11 +118,7 @@ def feature_importance(model):
         print(column, ':', model.feature_importances_[i])
 
 
-test_model = rf_Model()
 
-feature_importance(test_model)
-test_accuracy(test_model)
-export_model(test_model)
 # perform feature selection
 # drop the features that are not important: species, sex
 # need to be tested: GRAN, MID

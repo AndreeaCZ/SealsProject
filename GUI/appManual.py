@@ -9,11 +9,11 @@ from GUI.utils import lightgray
 ########################################################################################################################
 
 
-class DescriptionWindow(QWidget):
+class AppManualWindow(QWidget):
     def __init__(self, dashboard):
         super().__init__()
         self.setFixedSize(QSize(800, 500))
-        self.setWindowTitle('About')
+        self.setWindowTitle('User Guide')
         #close the home page
         self.dashboard = dashboard
         dashboard.close()
@@ -42,31 +42,10 @@ class DescriptionWindow(QWidget):
         """
         # Setting elements:
         self.home_button.clicked.connect(self.go_to_home)
-        self.text.setMarkdown(open('about.txt').read())
+        self.text.setMarkdown(open('description.txt').read())
         self.text.setReadOnly(True)
         # Adding elements to layout:
         layout = QVBoxLayout()
         layout.addWidget(self.text)
         layout.addWidget(self.home_button)
         return layout
-
-
-        # VERSION WITH PICTURES, WILL PROBABLY REMOVE LATER
-        # layout = QVBoxLayout()
-        # text = QTextEdit()
-        # text.setMarkdown(string)
-        # text.setReadOnly(True)
-        # text.setFixedHeight(1000)
-        # layout.addWidget(text)
-        # layout.addStretch()
-        # image = QLabel()
-        # pic = QPixmap.fromImage(QImage('/Users/andreeazelko/Documents/SoftwareEngineering/SealsProject/treeOutput.png'))
-        # image.setPixmap(pic.scaledToWidth(600))
-        # layout.addWidget(image)
-        # inWidget = QWidget()
-        # inWidget.setLayout(layout)
-        # scroll = QScrollArea()
-        # scroll.setWidget(inWidget)
-        # outsideLayout = QVBoxLayout()
-        # outsideLayout.addWidget(scroll)
-        # self.setLayout(outsideLayout)
