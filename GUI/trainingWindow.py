@@ -14,13 +14,11 @@ from Database.modelDataGeneration import get_model_data
 from GUI.utils import lightgray, pop_message_box
 from variables import DIV
 
-
 ########################################################################################################################
 # Represents the window that lets the user train their own model
 ########################################################################################################################
-
 # TODO: Please rename this and explain what it does
-I = 10
+maxExcludedFeatures = 10
 
 
 class TrainModelWindow(QWidget):
@@ -168,7 +166,7 @@ class TrainModelWindow(QWidget):
             self.excelRowIndex.remove(11)
             excludedFeaturesNum += 1
 
-        if excludedFeaturesNum != I:
+        if excludedFeaturesNum != maxExcludedFeatures:
             survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_leaf=6)
             X = datasetLabeledSeals.drop(['Survival'], axis=1)  # separate features from labels
             scaler = MinMaxScaler()
@@ -204,10 +202,10 @@ def save_features(rowIndexList, modelName):
         if isModelNameUnique:
             ws.insert_cols(maxCol + 1)
             # Fill in the corresponding values
-            ws.cell(row=1, column=maxCol+1).value = modelName
+            ws.cell(row=1, column=maxCol + 1).value = modelName
             for i in rowIndexList:
                 # fill in the cell with 1
-                ws.cell(row=i, column=maxCol+1).value = 1
+                ws.cell(row=i, column=maxCol + 1).value = 1
             wb.save("featuresChecklist.xlsx")
             return 1
         else:

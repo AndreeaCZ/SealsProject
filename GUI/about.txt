@@ -1,0 +1,34 @@
+[//]: # (##############################################################################################################)
+[//]: # (This document is the basic text that gets processed in Markdown for the User Guide)
+[//]: # (##############################################################################################################)
+
+
+# Blubber Technology Documentation
+
+This page offers information on the technologies and algorithms used when building the app.
+
+&nbsp;
+## Prediction model
+
+The prediction model chosen for the app is a [Random Forest model](https://en.wikipedia.org/wiki/Random_forest#:~:text=Random%20forests%20or%20random%20decision,class%20selected%20by%20most%20trees.).
+ A random forest is a meta-algorithm that combines several decision trees. The decision trees are used to build the forest.
+ The forest is then used to make predictions.
+
+A decision tree takes in a set of data and then creates a set of rules (that produce the highest accuracy) that can be
+used to make predictions.
+
+The parameters of the random forest are:
+1. criterion='entropy'
+2. n_estimators=300
+3. max_depth=7
+4. random_state=42
+5. bootstrap=True
+6. max_features='auto'
+7. min_samples_leaf=1
+8. min_samples_split=10
+
+For an in-depth explanation of every parameter, see the [Wikipedia page](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html)
+
+&nbsp;
+
+
