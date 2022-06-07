@@ -30,5 +30,3 @@ The parameters of the random forest are:
 For an in-depth explanation of every parameter, see the [Wikipedia page](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html)
 
 &nbsp;
-
-
