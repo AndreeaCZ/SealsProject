@@ -13,7 +13,7 @@ class About(QWidget):
     def __init__(self, dashboard):
         super().__init__()
         self.setFixedSize(QSize(800, 500))
-        self.setWindowTitle('User Guide')
+        self.setWindowTitle('About')
         #close the home page
         self.dashboard = dashboard
         dashboard.close()

@@ -13,7 +13,7 @@ class DescriptionWindow(QWidget):
     def __init__(self, dashboard):
         super().__init__()
         self.setFixedSize(QSize(800, 500))
-        self.setWindowTitle('About')
+        self.setWindowTitle('User Guide')
         #close the home page
         self.dashboard = dashboard
         dashboard.close()
@@ -42,7 +42,7 @@ class DescriptionWindow(QWidget):
         """
         # Setting elements:
         self.home_button.clicked.connect(self.go_to_home)
-        self.text.setMarkdown(open('about.txt').read())
+        self.text.setMarkdown(open('description.txt').read())
         self.text.setReadOnly(True)
         # Adding elements to layout:
         layout = QVBoxLayout()

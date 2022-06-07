@@ -31,11 +31,12 @@ class MainWindow(QMainWindow):
 
         # Creating window elements:
         self.trainingWindow = None
-        self.descriptionWindow = None
+        self.user_guideWindow = None
         self.predictionWindow = None
         self.addSealWindow = None
         self.getSealWindow = None
         self.queryDatabaseWindow = None
+        self.aboutWindow = None
 
         # Creating left side elements:
         self.predict_button = QPushButton('Predict')
