@@ -33,7 +33,7 @@ def data_preprocessing():
 # highest accuracy = 0.602 Decision Tree
 # highest accuracy = 0.65
 def rf_Model():
-    X_Train, X_Test, y_Train, y_Test = data_preprocessing()
+    #X_Train, X_Test, y_Train, y_Test = data_preprocessing()
     rf = RandomForestClassifier(criterion='entropy', n_estimators=300, max_depth=7, random_state=42, bootstrap=True,
                                 max_features='auto', min_samples_leaf=1, min_samples_split=10)
     return rf
@@ -42,8 +42,6 @@ def rf_Model():
 # highest accuracy = 0.64 SVM
 # highest accuracy = 0.641 KNN
 # highest accuracy = 0.645, fluctuating a lot LR
-
-
 def test_accuracy(model):
     """
     Test the accuracy of the model
@@ -73,8 +71,6 @@ def plot_confusion_matrix(model):
             normalize=normalize
         )
         disp.ax_.set_title(title)
-
-    # print(title)
     print(disp.confusion_matrix)
 
     plt.show()
@@ -117,8 +113,12 @@ def feature_importance(model):
     for i, column in enumerate(data.drop(['Survival'], axis=1).columns):
         print(column, ':', model.feature_importances_[i])
 
-
+# X_Train, X_Test, y_Train, y_Test = data_preprocessing()
+# test_model = rf_Model()
+# test_model.fit(X_Train, y_Train)
+# test_accuracy(test_model)
+# export_model(test_model)
+# feature_importance(test_model)
 
 # perform feature selection
-# drop the features that are not important: species, sex
 # need to be tested: GRAN, MID
