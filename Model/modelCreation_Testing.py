@@ -36,7 +36,6 @@ def rf_Model():
     X_Train, X_Test, y_Train, y_Test = data_preprocessing()
     rf = RandomForestClassifier(criterion='entropy', n_estimators=300, max_depth=7, random_state=42, bootstrap=True,
                                 max_features='auto', min_samples_leaf=1, min_samples_split=10)
-    rf.fit(X_Train, y_Train)
     return rf
 
 
