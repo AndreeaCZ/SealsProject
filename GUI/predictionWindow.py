@@ -86,8 +86,8 @@ class PredictionWindow(QWidget):
 
     # re-opens the dashboard and closes the current window
     def go_to_home(self):
-        self.dashboard.show()
-        self.close()
+            self.dashboard.show()
+            self.close()
 
     def set_elements(self):
         """
