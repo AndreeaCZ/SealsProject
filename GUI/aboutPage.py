@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTextEdit, QPushButton
 
 from GUI.utils import lightgray
 
+
 ########################################################################################################################
 # Represents the description window of the application
 ########################################################################################################################
@@ -14,9 +15,11 @@ class About(QWidget):
         super().__init__()
         self.setFixedSize(QSize(800, 500))
         self.setWindowTitle('About')
-        #close the home page
+
+        # close the home page
         self.dashboard = dashboard
         dashboard.close()
+
         # Creating elements:
         self.text = QTextEdit()
 

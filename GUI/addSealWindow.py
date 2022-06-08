@@ -3,7 +3,7 @@ import sqlite3
 import pandas as pd
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QPalette, QColor
-from PyQt6.QtWidgets import *
+from PyQt6.QtWidgets import QGridLayout, QLineEdit, QLabel, QPushButton, QComboBox, QWidget, QFileDialog
 
 from GUI.predictionWindow import get_sex_int, get_seal_species_int
 from GUI.utils import lightgray, pop_message_box
@@ -21,6 +21,7 @@ class AddSealWindow(QWidget):
         super().__init__()
         self.setWindowTitle("Add a seal")
         self.setFixedSize(QSize(700, 400))
+
         # close home page
         self.dashboard = dashboard
         dashboard.close()
@@ -29,6 +30,7 @@ class AddSealWindow(QWidget):
         self.sealTag_input_line = QLineEdit()
         self.sealTag_label = QLabel()
         self.addSeal_button = QPushButton('Add Seal')
+        self.infoLabel1 = QLabel('Please select sex, species and release status:')
 
         # Creating import subfields
         self.combo1 = QComboBox()
@@ -60,15 +62,19 @@ class AddSealWindow(QWidget):
         self.combo2.addItem("Halichoerus Grypus")
         self.combo3.addItem("Released")
         self.combo3.addItem("Not released")
+
         # Adding the elements to the layout:
         layout = QGridLayout()
-        layout.addWidget(self.combo1)
-        layout.addWidget(self.combo2)
-        layout.addWidget(self.combo3)
-        layout.addWidget(self.sealTag_label)
-        layout.addWidget(self.sealTag_input_line)
-        layout.addWidget(self.addSeal_button)
-        layout.addWidget(self.home_button)
+        layout.addWidget(self.infoLabel1, 0, 0)
+        layout.addWidget(self.combo1, 1, 0)
+        layout.addWidget(self.combo2, 2, 0)
+        layout.addWidget(self.combo3, 3, 0)
+        layout.setRowMinimumHeight(4, 40)
+        layout.addWidget(self.sealTag_label, 5, 0)
+        layout.addWidget(self.sealTag_input_line, 6, 0)
+        layout.addWidget(self.addSeal_button, 7, 0)
+        layout.addWidget(self.home_button, 8, 0)
+        layout.setRowMinimumHeight(8, 70)
         return layout
 
     # re-opens the dashboard and closes the current window

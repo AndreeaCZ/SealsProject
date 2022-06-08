@@ -18,7 +18,7 @@ from variables import DIV
 ########################################################################################################################
 # Represents the window that lets the user train their own model
 ########################################################################################################################
-# TODO: Please rename this and explain what it does
+
 maxExcludedFeatures = 10
 
 
@@ -27,7 +27,7 @@ class TrainModelWindow(QWidget):
         super().__init__()
         self.model = None
         self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-        self.setFixedSize(QSize(500, 400))
+        self.setFixedSize(QSize(500, 450))
         self.setWindowTitle("Train a model")
         # close home page
         self.dashboard = dashboard

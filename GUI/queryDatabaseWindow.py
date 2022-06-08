@@ -2,9 +2,9 @@ import sqlite3
 
 import numpy as np
 import pandas as pd
-from PyQt6.QtCore import QSize
+from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QColor, QPalette
-from PyQt6.QtWidgets import QWidget, QLineEdit, QPushButton, QCheckBox, QComboBox, QGridLayout, QFileDialog
+from PyQt6.QtWidgets import QWidget, QLineEdit, QPushButton, QCheckBox, QComboBox, QGridLayout, QFileDialog, QLabel
 import datetime
 
 from GUI.utils import lightgray, pop_message_box
@@ -16,13 +16,19 @@ class QueryDatabaseWindow(QWidget):
         super().__init__()
         self.sealData = None
         self.setWindowTitle("Query the database")
-        self.setFixedSize(QSize(800, 800))
-        #close the main dashboard
+        self.setFixedSize(QSize(900, 600))
+
+        # close the main dashboard
         self.dashboard = dashboard
         dashboard.close()
 
         # Creating a home button
         self.home_button = QPushButton('Home')
+
+        # Creating labels:
+        self.infoLabel1 = QLabel('Please enter ranges for the following values:')
+        self.infoLabel2 = QLabel('Please select additional fields:')
+        self.infoLabel3 = QLabel('Please enter a file name and press Get the subsets so see results')
 
         # Blood values:
         self.minWBC = QLineEdit()
@@ -517,6 +523,9 @@ class QueryDatabaseWindow(QWidget):
         self.minPLT.setPlaceholderText("min PLT")
         self.maxPLT.setPlaceholderText("max PLT")
 
+        self.minYear.setPlaceholderText('min Year')
+        self.maxYear.setPlaceholderText('max Year')
+
         # Set placeholder for filename text field
         self.fileName.setPlaceholderText("Enter a file name")
 
@@ -544,55 +553,91 @@ class QueryDatabaseWindow(QWidget):
         self.home_button.clicked.connect(self.go_to_home)
 
         # Add blood values to layout
+        # Column 3 is a spacer
         layout = QGridLayout()
-        layout.addWidget(self.minWBC)
-        layout.addWidget(self.maxWBC)
-        layout.addWidget(self.minLYMF)
-        layout.addWidget(self.maxLYMF)
-        layout.addWidget(self.minGRAN)
-        layout.addWidget(self.maxGRAN)
-        layout.addWidget(self.minMID)
-        layout.addWidget(self.maxMID)
-        layout.addWidget(self.minHCT)
-        layout.addWidget(self.maxHCT)
-        layout.addWidget(self.minMCV)
-        layout.addWidget(self.maxMCV)
-        layout.addWidget(self.minRBC)
-        layout.addWidget(self.maxRBC)
-        layout.addWidget(self.minHGB)
-        layout.addWidget(self.maxHGB)
-        layout.addWidget(self.minMCH)
-        layout.addWidget(self.maxMCH)
-        layout.addWidget(self.minMCHC)
-        layout.addWidget(self.maxMCHC)
-        layout.addWidget(self.minMPV)
-        layout.addWidget(self.maxMPV)
-        layout.addWidget(self.minPLT)
-        layout.addWidget(self.maxPLT)
+        layout.setColumnMinimumWidth(3, 100)
+        layout.addWidget(self.infoLabel1, 0, 0, 1, 7)
+        layout.setRowMinimumHeight(0, 70)
+
+        layout.addWidget(QLabel('WBC:'), 1, 0)
+        layout.addWidget(self.minWBC, 1, 1)
+        layout.addWidget(self.maxWBC, 1, 2)
+        layout.addWidget(QLabel('LYMF:'), 1, 4)
+        layout.addWidget(self.minLYMF, 1, 5)
+        layout.addWidget(self.maxLYMF, 1, 6)
+
+        layout.addWidget(QLabel('GRAN:'), 2, 0)
+        layout.addWidget(self.minGRAN, 2, 1)
+        layout.addWidget(self.maxGRAN, 2, 2)
+        layout.addWidget(QLabel('MID:'), 2, 4)
+        layout.addWidget(self.minMID, 2, 5)
+        layout.addWidget(self.maxMID, 2, 6)
+
+        layout.addWidget(QLabel('HCT:'), 3, 0)
+        layout.addWidget(self.minHCT, 3, 1)
+        layout.addWidget(self.maxHCT, 3, 2)
+        layout.addWidget(QLabel('MCV:'), 3, 4)
+        layout.addWidget(self.minMCV, 3, 5)
+        layout.addWidget(self.maxMCV, 3, 6)
+
+        layout.addWidget(QLabel('RBC:'), 4, 0)
+        layout.addWidget(self.minRBC, 4, 1)
+        layout.addWidget(self.maxRBC, 4, 2)
+        layout.addWidget(QLabel('HGB:'), 4, 4)
+        layout.addWidget(self.minHGB, 4, 5)
+        layout.addWidget(self.maxHGB, 4, 6)
+
+        layout.addWidget(QLabel('MCH:'), 5, 0)
+        layout.addWidget(self.minMCH, 5, 1)
+        layout.addWidget(self.maxMCH, 5, 2)
+        layout.addWidget(QLabel('MCHC:'), 5, 4)
+        layout.addWidget(self.minMCHC, 5, 5)
+        layout.addWidget(self.maxMCHC, 5, 6)
+
+        layout.addWidget(QLabel('MPV:'), 6, 0)
+        layout.addWidget(self.minMPV, 6, 1)
+        layout.addWidget(self.maxMPV, 6, 2)
+        layout.addWidget(QLabel('PLT:'), 6, 4)
+        layout.addWidget(self.minPLT, 6, 5)
+        layout.addWidget(self.maxPLT, 6, 6)
+
+        # Add year to layout
+        layout.addWidget(QLabel('Year:'), 7, 0)
+        layout.addWidget(self.minYear, 7, 1)
+        layout.addWidget(self.maxYear, 7, 2)
+
+        layout.addWidget(self.infoLabel2, 8, 0, 1, 7)
+        layout.setRowMinimumHeight(8, 70)
 
         # Add survival to layout
-        layout.addWidget(self.survY)
-        layout.addWidget(self.survN)
+        layout.addWidget(QLabel('Survival:'), 9, 0)
+        layout.addWidget(self.survY, 9, 1)
+        layout.addWidget(self.survN, 9, 2)
         # Add sex to layout
-        layout.addWidget(self.sexF)
-        layout.addWidget(self.sexM)
+        layout.addWidget(QLabel('Sex:'), 9, 4)
+        layout.addWidget(self.sexF, 9, 5)
+        layout.addWidget(self.sexM, 9, 6)
+
         # Add species to layout
-        layout.addWidget(self.speciesPV)
-        layout.addWidget(self.speciesHG)
-        # Add year to layout
-        layout.addWidget(self.minYear)
-        layout.addWidget(self.maxYear)
+        layout.addWidget(QLabel('Species:'), 10, 0)
+        layout.addWidget(self.speciesPV, 10, 1)
+        layout.addWidget(self.speciesHG, 10, 2)
         # Add order by to layout
-        layout.addWidget(self.orderBy)
+        layout.addWidget(QLabel('Sort by:'), 10, 4)
+        layout.addWidget(self.orderBy, 10, 5)
         # Add order by ascending or descending
-        layout.addWidget(self.order)
+        layout.addWidget(self.order, 10, 6)
+
+        layout.setRowMinimumHeight(11, 50)
+        layout.addWidget(self.infoLabel3, 12, 0, 1, 7)
         # Add text field for filename
-        layout.addWidget(self.fileName)
+        layout.addWidget(self.fileName, 13, 0, 1, 3)
+        layout.addWidget(self.executeButton, 13, 3, 1, 2)
 
-        # Add button + set rowspan
-        layout.addWidget(self.executeButton)
-        layout.addWidget(self.home_button)
+        layout.addWidget(self.home_button, 13, 6)
+        # layout.setRowMinimumHeight(14, 80)
 
-        layout.setColumnStretch(0, 1)
+        layout.setRowStretch(25, 1)
+        # layout.setColumnMinimumWidth(0, 150)
 
         return layout

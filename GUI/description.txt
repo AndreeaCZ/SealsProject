@@ -19,7 +19,7 @@ therefore should not be used as a substitute for the actual survival chances of 
 
 This is the main page of the Blubber application. It provides access to the following pages:
 * Prediction page
-* Data ranges page
+* Database access page
 * About page
 * Train a model page
 * Add a seal page
@@ -35,7 +35,10 @@ blood test results of the new seal. Make sure the file follows the usual format.
 &nbsp;
 ### Data ranges page
 
-This page presents the user with the data ranges of the different features, and shows tipping points for those values.
+This page allows the user to interact with and query the database of seal information. It is not required to fill all the
+available fields on that page. Simply fill the desired values and additional fields, then enter a file name and press Get
+the subsets. The database entries which match the criteria selected will be entered into a new Excel file and saved with
+the given name.
 
 &nbsp;
 ### Train a model page

@@ -1,10 +1,10 @@
+import platform
 from pathlib import Path
 
 import joblib
-import platform
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QPalette, QColor
-from PyQt6.QtWidgets import *
+from PyQt6.QtWidgets import QGridLayout, QWidget, QLineEdit, QPushButton, QLabel, QComboBox, QFileDialog
 from openpyxl import load_workbook
 from openpyxl.workbook import Workbook
 
@@ -27,7 +27,7 @@ class PredictionWindow(QWidget):
         self.featureList = defaultFeatureList
         self.model = joblib.load(MODEL_PATH)
         self.setWindowTitle("Run predictions")
-        self.setFixedSize(QSize(600, 750))
+        self.setFixedSize(QSize(600, 700))
         self.dashboard = dashboard
         dashboard.close()
 
@@ -86,8 +86,8 @@ class PredictionWindow(QWidget):
 
     # re-opens the dashboard and closes the current window
     def go_to_home(self):
-            self.dashboard.show()
-            self.close()
+        self.dashboard.show()
+        self.close()
 
     def set_elements(self):
         """
@@ -116,51 +116,52 @@ class PredictionWindow(QWidget):
         p = self.output_label.palette()
         p.setColor(QPalette.ColorRole.Window, QColor(darkgray))
         self.output_label.setPalette(p)
+
         # Adding elements to input layout:
         layout = QGridLayout()
         layout.addWidget(self.info_label_1, 0, 0, 1, 2)
-        layout.addWidget(self.info_label_2, 0, 3)
+        layout.addWidget(self.info_label_2, 0, 3, 1, 2)
         layout.addWidget(self.combo1, 1, 0, 1, 2)
-        layout.addWidget(self.load_default_model_button, 1, 3)
+        layout.addWidget(self.load_default_model_button, 1, 3, 1, 2)
         layout.addWidget(self.combo2, 2, 0, 1, 2)
-        layout.addWidget(self.load_model_button, 2, 3)
+        layout.addWidget(self.load_model_button, 2, 3, 1, 2)
         layout.setRowMinimumHeight(3, 50)  # Row 3 is empty and is used as a space
-        layout.addWidget(self.info_label_3, 4, 0, 1, 4)
+        layout.addWidget(self.info_label_3, 4, 0, 1, 5)
 
         layout.addWidget(self.wbc_label, 5, 0)
         layout.addWidget(self.lymf_label, 5, 1)
         layout.addWidget(self.gran_label, 5, 2)
         layout.addWidget(self.mid_label, 5, 3)
+        layout.addWidget(self.rbc_label, 5, 4)
         layout.addWidget(self.wbc_input, 6, 0)
         layout.addWidget(self.lymf_input, 6, 1)
         layout.addWidget(self.gran_input, 6, 2)
         layout.addWidget(self.mid_input, 6, 3)
+        layout.addWidget(self.rbc_input, 6, 4)
 
-        layout.addWidget(self.rbc_label, 7, 0)
-        layout.addWidget(self.hgb_label, 7, 1)
-        layout.addWidget(self.mch_label, 7, 2)
-        layout.addWidget(self.mchc_label, 7, 3)
-        layout.addWidget(self.rbc_input, 8, 0)
-        layout.addWidget(self.hgb_input, 8, 1)
-        layout.addWidget(self.mch_input, 8, 2)
-        layout.addWidget(self.mchc_input, 8, 3)
+        layout.addWidget(self.hgb_label, 7, 0)
+        layout.addWidget(self.mch_label, 7, 1)
+        layout.addWidget(self.mchc_label, 7, 2)
+        layout.addWidget(self.mpv_label, 7, 3)
+        layout.addWidget(self.plt_label, 7, 4)
+        layout.addWidget(self.hgb_input, 8, 0)
+        layout.addWidget(self.mch_input, 8, 1)
+        layout.addWidget(self.mchc_input, 8, 2)
+        layout.addWidget(self.mpv_input, 8, 3)
+        layout.addWidget(self.plt_input, 8, 4)
 
-        layout.addWidget(self.mpv_label, 9, 0)
-        layout.addWidget(self.plt_label, 9, 1)
-        layout.addWidget(self.mpv_input, 10, 0)
-        layout.addWidget(self.plt_input, 10, 1)
-
-        layout.addWidget(self.info_label_4, 11, 0, 1, 3)
-        layout.addWidget(self.run_predict_button, 11, 3)
-        layout.setRowMinimumHeight(12, 50)  # Row 10 is empty and is used as a space
-        layout.addWidget(self.info_label_5, 13, 0, 1, 3)
-        layout.addWidget(self.import_button, 13, 3)
-        layout.addWidget(self.output_label, 14, 0, 1, 4)
+        layout.addWidget(self.info_label_4, 11, 0, 1, 4)
+        layout.addWidget(self.run_predict_button, 11, 4)
+        layout.setRowMinimumHeight(12, 50)  # Row 12 is empty and is used as a space
+        layout.addWidget(self.info_label_5, 13, 0, 1, 4)
+        layout.addWidget(self.import_button, 13, 4)
+        layout.addWidget(self.output_label, 14, 0, 1, 5)
         layout.setRowMinimumHeight(14, 100)
-        layout.addWidget(self.input_filename, 15, 0, 1, 3)
-        layout.addWidget(self.save_button, 15, 3)
-        layout.addWidget(self.home_button, 16, 2)
-        layout.setRowStretch(16, 1)
+        layout.addWidget(self.input_filename, 15, 0, 1, 4)
+        layout.addWidget(self.save_button, 15, 4)
+        layout.addWidget(self.home_button, 16, 1, 1, 3)
+        layout.setRowMinimumHeight(16, 100)
+        layout.setRowStretch(20, 1)
         return layout
 
     # dynamically add input lines and labels
@@ -230,7 +231,7 @@ class PredictionWindow(QWidget):
                 import_path = QFileDialog.getExistingDirectoryUrl().path()
                 if not (import_path == ""):
                     import_path = import_path + DIV + fileName + '.xlsx'
-                    if (platform.system() == "Windows"):
+                    if platform.system() == "Windows":
                         import_path = import_path[1:]
                     self.save_prediction(import_path)
                     # pops a message box
@@ -263,13 +264,14 @@ class PredictionWindow(QWidget):
         spreadSheet.cell(row=1, column=2).value = self.sealData[0]
         spreadSheet.cell(row=2, column=2).value = self.modelName
         for i in range(len(self.sealData) - 3):
-            spreadSheet.cell(row=i + 3, column=2).value = self.sealData[i+1]
+            spreadSheet.cell(row=i + 3, column=2).value = self.sealData[i + 1]
 
-        spreadSheet.cell(row=sealDataLength - 1, column=2).value = get_sex_str_from_int(int(float(self.sealData[sealDataLength - 2])))
+        spreadSheet.cell(row=sealDataLength - 1, column=2).value = get_sex_str_from_int(
+            int(float(self.sealData[sealDataLength - 2])))
         spreadSheet.cell(row=sealDataLength, column=2).value = get_seal_species_str_from_int(int(float(
             self.sealData[sealDataLength - 1])))
         spreadSheet.cell(row=sealDataLength + 1, column=2).value = get_chances_str_from_int(int(float(
-            self.sealData[sealDataLength-1])))
+            self.sealData[sealDataLength - 1])))
 
         excelFile.save(import_path)
 

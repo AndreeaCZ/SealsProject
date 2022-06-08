@@ -1,5 +1,5 @@
 [//]: # (##############################################################################################################)
-[//]: # (This document is the basic text that gets processed in Markdown for the User Guide)
+[//]: # (This document is the basic text that gets processed in Markdown for the App Documentation)
 [//]: # (##############################################################################################################)
 
 
@@ -47,6 +47,8 @@ the left and right branches. This may have the effect of smoothing the model, es
 
 - min_samples_split=10 - The minimum number of samples required to split an internal node.
 
-For an in-depth explanation of every parameter, see this [page](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html)
+For an in-depth explanation of every parameter, see this page:
+
+https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
 
 &nbsp;

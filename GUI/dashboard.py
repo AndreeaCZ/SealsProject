@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.model = joblib.load(MODEL_PATH)
         self.setWindowTitle("Blubber")
-        self.setFixedSize(QSize(700, 400))
+        self.setFixedSize(QSize(700, 450))
 
         # Creating window elements:
         self.trainingWindow = None
@@ -65,13 +65,13 @@ class MainWindow(QMainWindow):
         self.get_seal_button.clicked.connect(self.open_get_seal_window)
         self.query_database_button.clicked.connect(self.open_query_database_window)
         self.about_button.clicked.connect(self.open_about_window)
-        self.predict_button.setFixedHeight(120)
-        self.query_database_button.setFixedHeight(120)
-        self.user_guide.setFixedHeight(120)
-        self.trainModel_button.setFixedHeight(120)
-        self.add_seal_button.setFixedHeight(120)
-        self.get_seal_button.setFixedHeight(120)
-        self.about_button.setFixedHeight(120)
+        self.predict_button.setFixedHeight(100)
+        self.query_database_button.setFixedHeight(100)
+        self.user_guide.setFixedHeight(100)
+        self.trainModel_button.setFixedHeight(100)
+        self.add_seal_button.setFixedHeight(100)
+        self.get_seal_button.setFixedHeight(100)
+        self.about_button.setFixedHeight(100)
 
         # Adding elements to layout:
         layout = QGridLayout()
@@ -81,7 +81,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.trainModel_button, 1, 1)
         layout.addWidget(self.add_seal_button, 2, 0)
         layout.addWidget(self.get_seal_button, 2, 1)
-        layout.addWidget(self.about_button, 3, 0)
+        layout.addWidget(self.about_button, 3, 0, 1, 2)
         # Setting widget properties:
         widget = QWidget()
         widget.setAutoFillBackground(True)
@@ -100,8 +100,8 @@ class MainWindow(QMainWindow):
         self.trainingWindow.show()
 
     def open_description_window(self):
-        self.descriptionWindow = DescriptionWindow(window)
-        self.descriptionWindow.show()
+        self.user_guideWindow = DescriptionWindow(window)
+        self.user_guideWindow.show()
 
     def open_prediction_window(self):
         self.predictionWindow = PredictionWindow(window)
