@@ -22,7 +22,8 @@ defaultModelName = "defaultModel"
 class PredictionWindow(QWidget):
     def __init__(self, dashboard):
         super().__init__()
-        self.sealData = None
+        self.sealDataImport = None
+        self.sealDataManualInput = None
         self.modelName = defaultModelName
         self.featureList = defaultFeatureList
         self.model = joblib.load(MODEL_PATH)
@@ -111,7 +112,7 @@ class PredictionWindow(QWidget):
         self.info_label_4.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.info_label_5.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.output_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.run_predict_button.clicked.connect(self.run_prediction)
+        self.run_predict_button.clicked.connect(self.get_manual_input_prediction)
         self.output_label.setAutoFillBackground(True)
         p = self.output_label.palette()
         p.setColor(QPalette.ColorRole.Window, QColor(darkgray))
@@ -177,6 +178,13 @@ class PredictionWindow(QWidget):
                 self.featureInputDict.get(i).setStyleSheet("background-color: darkgrey;")
                 self.featureInputDict.get(i).setDisabled(True)
 
+    def get_seal_tag_popup(self):
+        text, ok = QInputDialog.getText(self, 'Input Dialog', 'Enter a seal tag if you wish to save it with the prediction:')
+        if ok:
+            return str(text)
+        else:
+            return 0
+
     # clears the text of all input fields
     def reset_input_fields_text(self):
         for input in self.featureInputDict.values():
@@ -189,6 +197,11 @@ class PredictionWindow(QWidget):
         self.model = joblib.load(MODEL_PATH)
         self.featureList = defaultFeatureList
         pop_message_box("Can't find the featuresChecklist.xlsx file. Default model loaded successfully")
+
+    # clear input fields
+    def clear_input_fields(self):
+        for input in self.featureInputDict.values():
+            input.setText("")
 
     # Update the list of features used for predicting based on the parameters the new model was trained on
     def update_feature_list(self, filename):
@@ -222,33 +235,42 @@ class PredictionWindow(QWidget):
 
     # saves the results of the prediction
     def save_results(self):
+        if self.sealDataManualInput is not None:
+            sealTag = self.get_seal_tag_popup()
+            self.sealDataManualInput.insert(0, sealTag)
         fileName = self.input_filename.text()
         if fileName == "":
             pop_message_box("Please enter a file name first.")
         else:
-            if not (self.sealData is None or self.sealData.size == 0):
-                import_path = QFileDialog.getExistingDirectoryUrl().path()
-                if not (import_path == ""):
-                    import_path = import_path + DIV + fileName + '.xlsx'
-                    if (platform.system() == "Windows"):
-                        import_path = import_path[1:]
-                    self.save_prediction(import_path)
-                    # pops a message box
-                    pop_message_box("Prediction saved successfully")
-                    self.sealData = None
-                    self.output_label.setText("")
+            if self.sealDataManualInput is not None or self.sealDataManualInput is not None:
+                if (sealTag != 0):
+                    import_path = QFileDialog.getExistingDirectoryUrl().path()
+                    if not (import_path == ""):
+                        import_path = import_path + DIV + fileName + '.xlsx'
+                        if (platform.system() == "Windows"):
+                            import_path = import_path[1:]
+                        self.save_prediction(import_path)
+                        # pops a message box
+                        pop_message_box("Prediction saved successfully")
+                        self.sealDataImport = None
+                        self.output_label.setText("")
             else:
                 pop_message_box("Please predict something first.")
-            self.input_filename.setText("")
-            self.sealData = None
+                self.input_filename.setText("")
+                self.sealDataImport = None
 
     def save_prediction(self, import_path):
         # Create an Excel file
         excelFile = Workbook()
         spreadSheet = excelFile.active
 
+        if self.sealDataManualInput is None:
+            sealData = self.sealDataImport
+        else:
+            sealData = self.sealDataManualInput
+
         featureListLength = len(self.featureList)
-        sealDataLength = len(self.sealData)
+        sealDataLength = len(sealData)
 
         # Fill in the features
         spreadSheet.cell(row=1, column=1).value = "SEAL-TAG"
@@ -260,16 +282,16 @@ class PredictionWindow(QWidget):
         spreadSheet.cell(row=featureListLength + 5, column=1).value = "SURVIVAL"
 
         # Fill in the values
-        spreadSheet.cell(row=1, column=2).value = self.sealData[0]
+        spreadSheet.cell(row=1, column=2).value = sealData[0]
         spreadSheet.cell(row=2, column=2).value = self.modelName
-        for i in range(len(self.sealData) - 3):
-            spreadSheet.cell(row=i + 3, column=2).value = self.sealData[i+1]
+        for i in range(len(sealData) - 3):
+            spreadSheet.cell(row=i + 3, column=2).value = sealData[i + 1]
 
-        spreadSheet.cell(row=sealDataLength - 1, column=2).value = get_sex_str_from_int(int(float(self.sealData[sealDataLength - 2])))
+        spreadSheet.cell(row=sealDataLength - 1, column=2).value = get_sex_str_from_int(int(float(sealData[sealDataLength - 3])))
         spreadSheet.cell(row=sealDataLength, column=2).value = get_seal_species_str_from_int(int(float(
-            self.sealData[sealDataLength - 1])))
+            sealData[sealDataLength - 2])))
         spreadSheet.cell(row=sealDataLength + 1, column=2).value = get_chances_str_from_int(int(float(
-            self.sealData[sealDataLength-1])))
+            sealData[sealDataLength - 1])))
 
         excelFile.save(import_path)
 
@@ -296,6 +318,7 @@ class PredictionWindow(QWidget):
 
     # if the result is zero, there´s a problem when taking the input
     def get_import(self):
+        self.clear_input_fields()
         result = 0
         import_path_null = False
         import_path = QFileDialog.getOpenFileName(filter='Excel files (*.xlsx)')[0]
@@ -305,14 +328,15 @@ class PredictionWindow(QWidget):
         sex = get_sex_int(self.combo1.currentText())
         species = get_seal_species_int(self.combo2.currentText())
         if not import_path_null:
-            result, self.sealData = make_prediction(import_path, sex, species, self.model, self.featureList)
+            result, self.sealDataImport = make_prediction(import_path, sex, species, self.model, self.featureList)
             sealTag = self.get_seal_tag(import_path)
             if sealTag == "":
                 pop_message_box("Check that the correct file is being uploaded and contains a seal tag")
                 result = 0
             else:
                 sealTag = "T" + sealTag
-                self.sealData = np.concatenate((np.array([sealTag]), self.sealData), axis=0)
+                self.sealDataImport = np.concatenate((np.array([sealTag]), self.sealDataImport), axis=0)
+            self.sealDataManualInput = None
         if not (result == 0):
             self.output_label.setText("Seal tag - " + sealTag + "\n\n" + result)
 
@@ -327,15 +351,20 @@ class PredictionWindow(QWidget):
                     tag = new_seal_data[sealTag[0]][i]
         return tag
 
-    def run_prediction(self):
+    def get_manual_input_prediction(self):
         sex = get_sex_int(self.combo1.currentText())
         species = get_seal_species_int(self.combo2.currentText())
         data = []
         try:
             for feature in self.featureList:
-                data = np.append(data, [float(self.featureInputDict.get(feature).text())])
+                data.append(float(self.featureInputDict.get(feature).text()))
+            self.sealDataManualInput = data
             result, survival = find_prediction(data, self.model, sex, species)
+            self.sealDataManualInput.append(sex)
+            self.sealDataManualInput.append(species)
+            self.sealDataManualInput.append(survival)
             self.output_label.setText(result)
+            self.sealDataImport = None
         except ValueError as ve1:
             pop_message_box(
                 "Something went wrong.\nCheck that you filled in all the boxes only entered numbers.\nMake sure to write decimals with a dot ( . ) and not a comma ( , )")
