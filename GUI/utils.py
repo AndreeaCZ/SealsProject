@@ -69,9 +69,9 @@ def pop_message_box(string):
 
 # returns the species from the integer representation
 def get_seal_species_str_from_int(x):
-    if x == 0:
+    if x == 0 or x == '0':
         return "Phoca Vitulina"
-    if x == 1:
+    if x == 1 or x == '1':
         return "Halichoerus Grypus"
 
 
