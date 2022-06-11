@@ -15,7 +15,7 @@ class testDataParsing(unittest.TestCase):
         z="Halichoe Grypus"
         self.assertEqual(get_seal_species_str(x),"PV")
         self.assertEqual(get_seal_species_str(y), "HG")
-        self.assertEqual(get_seal_species_str(z), None)
+        self.assertIsNone(get_seal_species_str(z))
 
     def test_get_values(self):
         # Checks so that the output is correct when all parameters are correct
@@ -32,12 +32,12 @@ class testDataParsing(unittest.TestCase):
         self.assertEqual(values[0][12], 666)
 
         #Survival should be True
-        self.assertEqual(values[0][13],True)
+        self.assertTrue(values[0][13])
 
         # Survival should be false
         survival="dead"
         values = get_values(x, survival, tag, sex, species)
-        self.assertEqual(values[0][13], False)
+        self.assertFalse(values[0][13])
 
 if __name__ == '__main__':
     unittest.main()
