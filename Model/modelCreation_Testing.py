@@ -103,15 +103,6 @@ def export_model(model):
 ########################################################################################################################
 # Testing only
 ########################################################################################################################
-def feature_importance(model):
-    """
-    Feature importance of the model
-    :param model: model of which the features' importance is to be calculated
-    :return:
-    """
-    data = get_model_data()
-    for i, column in enumerate(data.drop(['Survival'], axis=1).columns):
-        print(column, ':', model.feature_importances_[i])
 
 # X_Train, X_Test, y_Train, y_Test = data_preprocessing()
 # test_model = rf_Model()

@@ -1,16 +1,11 @@
 import platform
 
-import joblib
+import matplotlib.pyplot as plt
+import numpy as np
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QPalette, QColor
 from PyQt6.QtWidgets import *
 from openpyxl import load_workbook
-from sklearn import tree
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
-
-from Database.modelDataGeneration import get_model_data
 from GUI.utils import lightgray, pop_message_box
 from Model.modelCreation_Testing import *
 from variables import DIV
@@ -27,7 +22,7 @@ class TrainModelWindow(QWidget):
         super().__init__()
         self.model = None
         self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-        self.setFixedSize(QSize(500, 450))
+        self.setFixedSize(QSize(500, 520))
         self.setWindowTitle("Train a model")
         # close home page
         self.dashboard = dashboard
@@ -48,6 +43,7 @@ class TrainModelWindow(QWidget):
         self.mpv = QCheckBox("MPV")
         self.plt = QCheckBox("PLT")
         self.accu_label = QLabel()
+        self.feature_imp = QLabel()
         self.train_button = QPushButton('Train')
         self.input_model_name = QLineEdit()
         self.save_button = QPushButton('Save')
@@ -71,6 +67,7 @@ class TrainModelWindow(QWidget):
         """
         # Setting elements:
         self.accu_label.setText("Model accuracy")
+        self.feature_imp.setText("Feature importance")
         self.input_model_name.setPlaceholderText("Enter model name")
         self.train_button.clicked.connect(self.train_new_model)
         self.save_button.clicked.connect(self.save_model)
@@ -88,6 +85,8 @@ class TrainModelWindow(QWidget):
         layout.addWidget(self.mpv)
         layout.addWidget(self.plt)
         layout.addWidget(self.accu_label)
+        layout.addWidget(self.feature_imp)
+        layout.addSpacing(10)
         layout.addWidget(self.train_button)
         layout.addWidget(self.input_model_name)
         layout.addWidget(self.save_button)
@@ -184,6 +183,12 @@ class TrainModelWindow(QWidget):
             predictions = randomForest.predict(X_test)  # make predictions on the test set
             self.accu_label.setText(
                 "Your new model's accuracy " + str(round(accuracy_score(y_test, predictions) * 100, 1)) + "%")
+            self.feature_imp.setText(
+                "Feature importance: " + "\n" + str((datasetLabeledSeals.drop(['Survival'], axis=1)).columns.values) + "\n" + str(randomForest.feature_importances_)
+            )
+            # make feature_imp fit all the text
+
+
             pop_message_box("Model trained successfully")
         else:
             pop_message_box("Please select features to train on.")
