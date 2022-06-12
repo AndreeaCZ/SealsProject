@@ -1,13 +1,12 @@
 import platform
 
-import matplotlib.pyplot as plt
-import numpy as np
+
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QPalette, QColor
 from PyQt6.QtWidgets import *
 from openpyxl import load_workbook
 from GUI.utils import lightgray, pop_message_box
-from Model.modelCreation_Testing import *
+from Model.modelCreation import *
 from variables import DIV
 
 ########################################################################################################################
@@ -100,14 +99,14 @@ class TrainModelWindow(QWidget):
             pop_message_box("Please enter a model name.")
         else:
             # the user tries to save a model only after training it
-            if not (self.model is None):
+            if self.model is not None:
                 import_path = QFileDialog.getExistingDirectoryUrl().path()
-                if not (import_path == ""):
+                if import_path != "":
                     import_path = import_path + DIV + model_name + '.pkl'
                     # save the model details into the Excel file (featuresChecklist.xlsx)
-                    isSuccessful = save_features(self.excelRowIndex, model_name)
-                    if isSuccessful == 1:
-                        if (platform.system() == "Windows"):
+                    is_successful = save_features(self.excelRowIndex, model_name)
+                    if is_successful == 1:
+                        if platform.system() == "Windows":
                             import_path = import_path[1:]
                         joblib.dump(self.model, import_path)
                         # pops a message box
@@ -119,72 +118,71 @@ class TrainModelWindow(QWidget):
 
     # Trains a model based on the features selected
     def train_new_model(self):
-        datasetLabeledSeals = get_model_data()
+        dataset_labeled_seals = get_model_data()
 
         # Features not included in training
-        excludedFeaturesNum = 0
+        excluded_features_num = 0
         self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
         # if a feature is unchecked, it is removed from the training model params
         if not self.wbc.isChecked():
-            datasetLabeledSeals = datasetLabeledSeals.drop(['WBC'], axis=1)  # drop tag column
+            dataset_labeled_seals = dataset_labeled_seals.drop(['WBC'], axis=1)  # drop tag column
             self.excelRowIndex.remove(2)
-            excludedFeaturesNum += 1
+            excluded_features_num += 1
         if not self.lymf.isChecked():
-            datasetLabeledSeals = datasetLabeledSeals.drop(['LYMF'], axis=1)  # drop tag column
+            dataset_labeled_seals = dataset_labeled_seals.drop(['LYMF'], axis=1)  # drop tag column
             self.excelRowIndex.remove(3)
-            excludedFeaturesNum += 1
+            excluded_features_num += 1
         if not self.gran.isChecked():
-            datasetLabeledSeals = datasetLabeledSeals.drop(['GRAN'], axis=1)  # drop tag column
+            dataset_labeled_seals = dataset_labeled_seals.drop(['GRAN'], axis=1)  # drop tag column
             self.excelRowIndex.remove(4)
-            excludedFeaturesNum += 1
+            excluded_features_num += 1
         if not self.mid.isChecked():
-            datasetLabeledSeals = datasetLabeledSeals.drop(['MID'], axis=1)  # drop tag column
+            dataset_labeled_seals = dataset_labeled_seals.drop(['MID'], axis=1)  # drop tag column
             self.excelRowIndex.remove(5)
-            excludedFeaturesNum += 1
+            excluded_features_num += 1
         if not self.rbc.isChecked():
-            datasetLabeledSeals = datasetLabeledSeals.drop(['RBC'], axis=1)  # drop tag column
+            dataset_labeled_seals = dataset_labeled_seals.drop(['RBC'], axis=1)  # drop tag column
             self.excelRowIndex.remove(6)
-            excludedFeaturesNum += 1
+            excluded_features_num += 1
         if not self.hgb.isChecked():
-            datasetLabeledSeals = datasetLabeledSeals.drop(['HGB'], axis=1)  # drop tag column
+            dataset_labeled_seals = dataset_labeled_seals.drop(['HGB'], axis=1)  # drop tag column
             self.excelRowIndex.remove(7)
-            excludedFeaturesNum += 1
+            excluded_features_num += 1
         if not self.mch.isChecked():
-            datasetLabeledSeals = datasetLabeledSeals.drop(['MCH'], axis=1)  # drop tag column
+            dataset_labeled_seals = dataset_labeled_seals.drop(['MCH'], axis=1)  # drop tag column
             self.excelRowIndex.remove(8)
-            excludedFeaturesNum += 1
+            excluded_features_num += 1
         if not self.mchc.isChecked():
-            datasetLabeledSeals = datasetLabeledSeals.drop(['MCHC'], axis=1)  # drop tag column
+            dataset_labeled_seals = dataset_labeled_seals.drop(['MCHC'], axis=1)  # drop tag column
             self.excelRowIndex.remove(9)
-            excludedFeaturesNum += 1
+            excluded_features_num += 1
         if not self.mpv.isChecked():
-            datasetLabeledSeals = datasetLabeledSeals.drop(['MPV'], axis=1)  # drop tag column
+            dataset_labeled_seals = dataset_labeled_seals.drop(['MPV'], axis=1)  # drop tag column
             self.excelRowIndex.remove(10)
-            excludedFeaturesNum += 1
+            excluded_features_num += 1
         if not self.plt.isChecked():
-            datasetLabeledSeals = datasetLabeledSeals.drop(['PLT'], axis=1)  # drop tag column
+            dataset_labeled_seals = dataset_labeled_seals.drop(['PLT'], axis=1)  # drop tag column
             self.excelRowIndex.remove(11)
-            excludedFeaturesNum += 1
+            excluded_features_num += 1
 
 #############################################
 
-        if excludedFeaturesNum != maxExcludedFeatures:
-            randomForest = rf_Model()
-            # survivalDecisionTree = tree.DecisionTreeClassifier(criterion='entropy', max_depth=5, min_samples_leaf=6)
-            X = datasetLabeledSeals.drop(['Survival'], axis=1)  # separate features from labels
+        if excluded_features_num != maxExcludedFeatures:
+            random_forest = rf_model()
+            X = dataset_labeled_seals.drop(['Survival'], axis=1)  # separate features from labels
             scaler = MinMaxScaler()
             X = scaler.fit_transform(X)  # normalize the data ( MinMaxScaler ) - scale the data to be between 0 and 1
-            y = datasetLabeledSeals['Survival'].values  # get all labels
+            y = dataset_labeled_seals['Survival'].values  # get all labels
 
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3,
+            x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.3,
                                                                 random_state=42)  # split data into training
             # and test
-            self.model = randomForest.fit(X_train, y_train)  # train the model
-            predictions = randomForest.predict(X_test)  # make predictions on the test set
+            self.model = random_forest.fit(x_train, y_train)  # train the model
+            predictions = random_forest.predict(x_test)  # make predictions on the test set
             self.accu_label.setText(
                 "Your new model's accuracy " + str(round(accuracy_score(y_test, predictions) * 100, 1)) + "%")
             self.feature_imp.setText(
-                "Feature importance: " + "\n" + str((datasetLabeledSeals.drop(['Survival'], axis=1)).columns.values) + "\n" + str(randomForest.feature_importances_)
+                "Feature importance: " + "\n" + str((dataset_labeled_seals.drop(['Survival'], axis=1)).columns.values) + "\n" + str(random_forest.feature_importances_)
             )
             # make feature_imp fit all the text
 
@@ -193,47 +191,33 @@ class TrainModelWindow(QWidget):
         else:
             pop_message_box("Please select features to train on.")
 
-        # if excludedFeaturesNum != maxExcludedFeatures:
-        #     randomForest = rf_Model()
-        #
-        #
-        #
-        #     X_train, X_test, y_train, y_test = data_preprocessing()
-        #     # and test
-        #     self.model = randomForest.fit(X_train, y_train)  # train the model
-        #     predictions = randomForest.predict(X_test)  # make predictions on the test set
-        #     self.accu_label.setText(
-        #         "Your new model's accuracy " + str(round(accuracy_score(y_test, predictions) * 100, 1)) + "%")
-        #     pop_message_box("Model trained successfully")
-        # else:
-        #     pop_message_box("Please select features to train on.")
 
 
 # This function is used to update the Excel file. This Excel file is used to note down all the selected features
 # for the trained models. If a feature was used, then the corresponding cell will be filled with 1.
-def save_features(rowIndexList, modelName):
+def save_features(row_index_list, model_name):
     # load a workbook and worksheet.
     try:
         wb = load_workbook("featuresChecklist.xlsx")
         ws = wb.active
-        maxCol = ws.max_column
-        isModelNameUnique = True
-        for j in range(2, maxCol + 1):
-            if ws.cell(row=1, column=j).value == modelName:
+        max_col = ws.max_column
+        is_model_name_unique = True
+        for j in range(2, max_col + 1):
+            if ws.cell(row=1, column=j).value == model_name:
                 pop_message_box("Model names need to be unique, please enter a new model name")
-                isModelNameUnique = False
+                is_model_name_unique = False
                 break
-        if isModelNameUnique:
-            ws.insert_cols(maxCol + 1)
+        if is_model_name_unique:
+            ws.insert_cols(max_col + 1)
             # Fill in the corresponding values
-            ws.cell(row=1, column=maxCol + 1).value = modelName
-            for i in rowIndexList:
+            ws.cell(row=1, column=max_col + 1).value = model_name
+            for i in row_index_list:
                 # fill in the cell with 1
-                ws.cell(row=i, column=maxCol + 1).value = 1
+                ws.cell(row=i, column=max_col + 1).value = 1
             wb.save("featuresChecklist.xlsx")
             return 1
         else:
             return 0
-    except:
+    except LookupError:
         pop_message_box("Can't find the featuresChecklist.xlsx file")
     return 0

@@ -57,10 +57,7 @@ class TestAddSealWindow(TestCase):
             QTest.mouseClick(homeButton, Qt.MouseButton.LeftButton)
             self.assertTrue(clickCheck.called)
 
-    def test_add_to_database_in_success(self):
-
-
-
+# def test_add_to_database_in_success(self):
 
 
 # add Seal
@@ -118,8 +115,8 @@ class TestAddSealWindow(TestCase):
     #     # check value in dummyDB
     #     sql = """SELECT * FROM dummy_db WHERE sealTag = 2"""
     #     c.execute(sql, (sealTag,))
-    #     sealData = c.fetchone()
-    #     npSealData = np.array(sealData)
+    #     seal_data = c.fetchone()
+    #     npSealData = np.array(seal_data)
     #     self.show_seal_data(npSealData)
 
 

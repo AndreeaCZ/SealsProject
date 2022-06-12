@@ -1,7 +1,5 @@
 import os
 
-import joblib
-
 DB_NAME = 'sealPredictionData.db'
 DIV = '/'
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -10,5 +8,4 @@ MODEL_PATH = os.path.join(ROOT_DIR, 'Model/RFDecisionTree.pkl')
 ABOUT_PATH = os.path.join(ROOT_DIR, 'GUI/about.txt')
 DESCRIPTION_PATH = os.path.join(ROOT_DIR, 'GUI/description.txt')
 ARRIVED_SEALS_PATH = os.path.join(ROOT_DIR, 'Arrived_seals_2014-2021.xlsx')
-CLIENT_DATA_PATH = os.path.join(ROOT_DIR, 'clientData') # path to client data folder
-#MODEL = joblib.load(MODEL_PATH)
+CLIENT_DATA_PATH = os.path.join(ROOT_DIR, 'clientData')

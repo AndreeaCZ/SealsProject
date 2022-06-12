@@ -12,12 +12,12 @@ def get_model_data():
     """
     conn = connect(DB_PATH)
     sql_query = pd.read_sql_query('SELECT *  FROM sealPredictionData where Species = 0', conn)
-    sealDataframe = pd.DataFrame(sql_query, columns=['WBC', 'LYMF', 'GRAN', 'MID', 'RBC', 'HGB', 'MCH', 'MCHC', 'MPV', 'PLT',
+    seal_dataframe = pd.DataFrame(sql_query, columns=['WBC', 'LYMF', 'GRAN', 'MID', 'RBC', 'HGB', 'MCH', 'MCHC', 'MPV', 'PLT',
                                                      'Survival', 'Sex', 'Species'])
-    survivalData = sealDataframe[sealDataframe['Survival'] == 1]
-    deceasedData = sealDataframe[sealDataframe['Survival'] == 0]
-    deceasedNumber = len(deceasedData)
-    filteredSurvivalData = survivalData.sample(deceasedNumber)
-    undersampledData = pd.concat([filteredSurvivalData, deceasedData], axis=0)
+    survival_data = seal_dataframe[seal_dataframe['Survival'] == 1]
+    deceased_data = seal_dataframe[seal_dataframe['Survival'] == 0]
+    deceased_number = len(deceased_data)
+    filtered_survival_data = survival_data.sample(deceased_number)
+    undersampled_data = pd.concat([filtered_survival_data, deceased_data], axis=0)
 
-    return undersampledData
+    return undersampled_data

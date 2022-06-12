@@ -18,7 +18,7 @@ darkgray = '#3F4B5A'
 lightgray = '#6A7683'
 
 
-def make_prediction(file_path, sex, species, model, featureList):
+def make_prediction(file_path, sex, species, model, feature_list):
     """
     Makes the prediction and returns an array of values if input validation succeeds.
     If not, it returns 0.
@@ -26,15 +26,15 @@ def make_prediction(file_path, sex, species, model, featureList):
     :param sex: sex of the seal
     :param species: species of the seal
     :param model: model to be used for prediction
-    :param featureList: features to be used for prediction
+    :param feature_list: features to be used for prediction
     :return: prediction string ready for output, blood values of the seal
     """
     new_seal_data = pd.read_excel(file_path).to_numpy()
-    blood_results = get_blood_test_values(new_seal_data, featureList)
-    if not (blood_results == 0):
-        resultStr, survival = find_prediction(blood_results, model, sex, species)
+    blood_results = get_blood_test_values(new_seal_data, feature_list)
+    if blood_results != 0:
+        result_str, survival = find_prediction(blood_results, model, sex, species)
         blood_results = np.append(blood_results, [sex] + [species] + [survival])
-        return resultStr, blood_results
+        return result_str, blood_results
     else:
         return 0, []
 
@@ -48,12 +48,12 @@ def find_prediction(data, model, sex, species):
     :param species: species of the seal
     :return: result string ready for output
     """
-    predictionArr = np.append(data, [sex] + [species])
-    predictionArr = np.array(predictionArr).reshape(1, -1)
-    sexString = get_sex_str_from_int(sex)
-    speciesString = get_seal_species_str_from_int(species)
-    compare = int(model.predict(predictionArr))
-    output = "Values you entered:\n" + ", ".join(map(str, data)) + ", " + sexString + ", " + speciesString + "\n\nModel prediction:\n"
+    prediction_arr = np.append(data, [sex] + [species])
+    prediction_arr = np.array(prediction_arr).reshape(1, -1)
+    sex_string = get_sex_str_from_int(sex)
+    species_string = get_seal_species_str_from_int(species)
+    compare = int(model.predict(prediction_arr))
+    output = "Values you entered:\n" + ", ".join(map(str, data)) + ", " + sex_string + ", " + species_string + "\n\nModel prediction:\n"
     if compare == 1:
         return output + "Will survive", 1
     else:
@@ -62,9 +62,9 @@ def find_prediction(data, model, sex, species):
 
 # pops open a message box with the passed str as the message
 def pop_message_box(string):
-    msgBox = QMessageBox()
-    msgBox.setText(string)
-    msgBox.exec()
+    msg_box = QMessageBox()
+    msg_box.setText(string)
+    msg_box.exec()
 
 
 # returns the species from the integer representation

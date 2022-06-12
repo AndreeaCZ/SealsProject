@@ -64,29 +64,29 @@ class GetSealDataWindow(QWidget):
         self.close()
 
     # presents the seal data to the output panel
-    def show_seal_data(self, sealData):
-        sealDataLen = len(sealData)
+    def show_seal_data(self, seal_data):
+        seal_data_len = len(seal_data)
         s = ""
-        for i in range(sealDataLen-3):
-            s = s + dataLabels[i] + " - " + sealData[i] + "\n"
-        s = s + dataLabels[sealDataLen-3] + " - " + get_survival_str_from_int(int(sealData[sealDataLen-3])) + "\n"
-        s = s + dataLabels[sealDataLen-2] + " - " + get_sex_str_from_int(int(sealData[sealDataLen-2])) + "\n"
-        s = s + dataLabels[sealDataLen-1] + " - " + get_seal_species_str_from_int(int(sealData[sealDataLen-1])) + "\n"
+        for i in range(seal_data_len-3):
+            s = s + dataLabels[i] + " - " + seal_data[i] + "\n"
+        s = s + dataLabels[seal_data_len-3] + " - " + get_survival_str_from_int(int(seal_data[seal_data_len - 3])) + "\n"
+        s = s + dataLabels[seal_data_len-2] + " - " + get_sex_str_from_int(int(seal_data[seal_data_len - 2])) + "\n"
+        s = s + dataLabels[seal_data_len-1] + " - " + get_seal_species_str_from_int(int(seal_data[seal_data_len - 1])) + "\n"
         self.output_label.setText(s)
 
     # retrieves the data of the seal with a seal tag
     # if the result is zero, there´s a problem when taking the input
     def get_seal_data(self):
-        sealTag = self.sealTag_input_line.text()
+        seal_tag = self.sealTag_input_line.text()
         connection = sqlite3.connect(DB_PATH)  # create a database for model training data
         c = connection.cursor()
         try:
             sql = """SELECT * FROM sealPredictionData WHERE sealTag = ?"""
-            c.execute(sql, (sealTag,))
-            sealData = c.fetchone()
-            npSealData = np.array(sealData)
-            self.show_seal_data(npSealData)
-        except:
+            c.execute(sql, (seal_tag,))
+            seal_data = c.fetchone()
+            np_seal_data = np.array(seal_data)
+            self.show_seal_data(np_seal_data)
+        except SyntaxError:
             pop_message_box("Something went wrong. Ensure that you've provided the seal tag of a seal present in the database.")
             self.output_label.setText("")
         connection.close()

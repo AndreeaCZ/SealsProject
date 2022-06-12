@@ -1,13 +1,11 @@
 from pathlib import Path
-
 import joblib
 import platform
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QPalette, QColor
-from PyQt6.QtWidgets import QGridLayout, QWidget, QLineEdit, QPushButton, QLabel, QComboBox, QFileDialog
+from PyQt6.QtWidgets import QGridLayout, QWidget, QLineEdit, QPushButton, QLabel, QComboBox, QFileDialog, QInputDialog
 from openpyxl import load_workbook
 from openpyxl.workbook import Workbook
-
 from GUI.utils import *
 from variables import MODEL_PATH, DIV
 
@@ -71,9 +69,9 @@ class PredictionWindow(QWidget):
         self.plt_input = QLineEdit()
 
         # textField dict
-        defaultInputList = [self.wbc_input, self.lymf_input, self.gran_input, self.mid_input, self.rbc_input,
+        default_input_list = [self.wbc_input, self.lymf_input, self.gran_input, self.mid_input, self.rbc_input,
                             self.hgb_input, self.mch_input, self.mchc_input, self.mpv_input, self.plt_input]
-        self.featureInputDict = dict(zip(defaultFeatureList, defaultInputList))
+        self.featureInputDict = dict(zip(defaultFeatureList, default_input_list))
 
         # Creating a home button
         self.home_button = QPushButton('Home')
@@ -199,56 +197,53 @@ class PredictionWindow(QWidget):
         self.featureList = defaultFeatureList
         pop_message_box("Can't find the featuresChecklist.xlsx file. Default model loaded successfully")
 
-    # clear input fields
-    def clear_input_fields(self):
-        for input in self.featureInputDict.values():
-            input.setText("")
+
 
     # Update the list of features used for predicting based on the parameters the new model was trained on
     def update_feature_list(self, filename):
         try:
             wb = load_workbook("featuresChecklist.xlsx")
             ws = wb.active
-            maxCol = ws.max_column
-            maxRow = ws.max_row
-            featureListTemp = []
+            max_col = ws.max_column
+            max_row = ws.max_row
+            feature_list_temp = []
             flag = False
-            colNum = -1
+            col_num = -1
             # find the column corresponding to the loaded model
-            for j in range(2, maxCol + 1):
+            for j in range(2, max_col + 1):
                 if ws.cell(row=1, column=j).value == filename:
                     flag = True
-                    colNum = j
+                    col_num = j
                     break
             # The model file exists but its data is not present in the features checklist
             if not flag:
                 pop_message_box("Please select another model")
             else:
                 # create a list of features the model was trained on
-                self.modelName = ws.cell(row=1, column=colNum).value
-                for i in range(2, maxRow + 1):
-                    if ws.cell(row=i, column=colNum).value is not None:
-                        featureListTemp.append(ws.cell(row=i, column=1).value)
-                self.featureList = featureListTemp
+                self.modelName = ws.cell(row=1, column=col_num).value
+                for i in range(2, max_row + 1):
+                    if ws.cell(row=i, column=col_num).value is not None:
+                        feature_list_temp.append(ws.cell(row=i, column=1).value)
+                self.featureList = feature_list_temp
                 pop_message_box("Model loaded successfully")
-        except:
+        except FileNotFoundError:
             self.load_default_model_with_new_msg()
 
     # saves the results of the prediction
     def save_results(self):
         if self.sealDataManualInput is not None:
-            sealTag = self.get_seal_tag_popup()
-            self.sealDataManualInput.insert(0, sealTag)
-        fileName = self.input_filename.text()
-        if fileName == "":
+            seal_tag = self.get_seal_tag_popup()
+            self.sealDataManualInput.insert(0, seal_tag)
+        file_name = self.input_filename.text()
+        if file_name == "":
             pop_message_box("Please enter a file name first.")
         else:
-            if self.sealDataManualInput is not None or self.sealDataManualInput is not None:
-                if (sealTag != 0):
+            if self.sealDataManualInput is not None:
+                if seal_tag != 0:
                     import_path = QFileDialog.getExistingDirectoryUrl().path()
-                    if not (import_path == ""):
-                        import_path = import_path + DIV + fileName + '.xlsx'
-                        if (platform.system() == "Windows"):
+                    if import_path != "":
+                        import_path = import_path + DIV + file_name + '.xlsx'
+                        if platform.system() == "Windows":
                             import_path = import_path[1:]
                         self.save_prediction(import_path)
                         # pops a message box
@@ -262,39 +257,39 @@ class PredictionWindow(QWidget):
 
     def save_prediction(self, import_path):
         # Create an Excel file
-        excelFile = Workbook()
-        spreadSheet = excelFile.active
+        excel_file = Workbook()
+        spread_sheet = excel_file.active
 
         if self.sealDataManualInput is None:
-            sealData = self.sealDataImport
+            seal_data = self.sealDataImport
         else:
-            sealData = self.sealDataManualInput
+            seal_data = self.sealDataManualInput
 
-        featureListLength = len(self.featureList)
-        sealDataLength = len(sealData)
+        feature_list_length = len(self.featureList)
+        seal_data_length = len(seal_data)
 
         # Fill in the features
-        spreadSheet.cell(row=1, column=1).value = "SEAL-TAG"
-        spreadSheet.cell(row=2, column=1).value = "MODEL NAME"
-        for i in range(featureListLength):
-            spreadSheet.cell(row=i + 3, column=1).value = self.featureList[i]
-        spreadSheet.cell(row=featureListLength + 3, column=1).value = "SEX"
-        spreadSheet.cell(row=featureListLength + 4, column=1).value = "SPECIES"
-        spreadSheet.cell(row=featureListLength + 5, column=1).value = "SURVIVAL"
+        spread_sheet.cell(row=1, column=1).value = "SEAL-TAG"
+        spread_sheet.cell(row=2, column=1).value = "MODEL NAME"
+        for i in range(feature_list_length):
+            spread_sheet.cell(row=i + 3, column=1).value = self.featureList[i]
+        spread_sheet.cell(row=feature_list_length + 3, column=1).value = "SEX"
+        spread_sheet.cell(row=feature_list_length + 4, column=1).value = "SPECIES"
+        spread_sheet.cell(row=feature_list_length + 5, column=1).value = "SURVIVAL"
 
         # Fill in the values
-        spreadSheet.cell(row=1, column=2).value = sealData[0]
-        spreadSheet.cell(row=2, column=2).value = self.modelName
-        for i in range(len(sealData) - 3):
-            spreadSheet.cell(row=i + 3, column=2).value = sealData[i + 1]
+        spread_sheet.cell(row=1, column=2).value = seal_data[0]
+        spread_sheet.cell(row=2, column=2).value = self.modelName
+        for i in range(len(seal_data) - 3):
+            spread_sheet.cell(row=i + 3, column=2).value = seal_data[i + 1]
 
-        spreadSheet.cell(row=sealDataLength - 1, column=2).value = get_sex_str_from_int(int(float(sealData[sealDataLength - 3])))
-        spreadSheet.cell(row=sealDataLength, column=2).value = get_seal_species_str_from_int(int(float(
-            sealData[sealDataLength - 2])))
-        spreadSheet.cell(row=sealDataLength + 1, column=2).value = get_chances_str_from_int(int(float(
-            sealData[sealDataLength - 1])))
+        spread_sheet.cell(row=seal_data_length - 1, column=2).value = get_sex_str_from_int(int(float(seal_data[seal_data_length - 3])))
+        spread_sheet.cell(row=seal_data_length, column=2).value = get_seal_species_str_from_int(int(float(
+            seal_data[seal_data_length - 2])))
+        spread_sheet.cell(row=seal_data_length + 1, column=2).value = get_chances_str_from_int(int(float(
+            seal_data[seal_data_length - 1])))
 
-        excelFile.save(import_path)
+        excel_file.save(import_path)
 
     # Load the default model
     def load_default_model(self):
@@ -310,16 +305,16 @@ class PredictionWindow(QWidget):
     def load_model(self):
         self.output_label.setText("")
         import_path = QFileDialog.getOpenFileName(filter='PKL files (*.pkl)')[0]
-        if not (import_path == ""):
+        if import_path != "":
             self.model = joblib.load(import_path)
-            fileName = Path(import_path).stem
-            self.update_feature_list(fileName)
+            file_name = Path(import_path).stem
+            self.update_feature_list(file_name)
             self.reset_input_fields_text()
             self.update_input_and_labels()
 
     # if the result is zero, there´s a problem when taking the input
     def get_import(self):
-        self.clear_input_fields()
+        self.reset_input_fields_text()
         result = 0
         import_path_null = False
         import_path = QFileDialog.getOpenFileName(filter='Excel files (*.xlsx)')[0]
@@ -330,26 +325,26 @@ class PredictionWindow(QWidget):
         species = get_seal_species_int(self.combo2.currentText())
         if not import_path_null:
             result, self.sealDataImport = make_prediction(import_path, sex, species, self.model, self.featureList)
-            sealTag = self.get_seal_tag(import_path)
-            if sealTag == "":
+            seal_tag = self.get_seal_tag(import_path)
+            if seal_tag == "":
                 pop_message_box("Check that the correct file is being uploaded and contains a seal tag")
                 result = 0
             else:
-                sealTag = "T" + sealTag
-                self.sealDataImport = np.concatenate((np.array([sealTag]), self.sealDataImport), axis=0)
+                seal_tag = "T" + seal_tag
+                self.sealDataImport = np.concatenate((np.array([seal_tag]), self.sealDataImport), axis=0)
             self.sealDataManualInput = None
-        if not (result == 0):
-            self.output_label.setText("Seal tag - " + sealTag + "\n\n" + result)
+        if result != 0:
+            self.output_label.setText("Seal tag - " + seal_tag + "\n\n" + result)
 
     # retrieves the seal tag of the seal whose data is present in the file
     def get_seal_tag(self, import_path):
         new_seal_data = pd.read_excel(import_path).to_numpy()
-        sealTag = np.where((new_seal_data == 'Rhb. number:') | (new_seal_data == 'Rhb. number: '))[0]
+        seal_tag = np.where((new_seal_data == 'Rhb. number:') | (new_seal_data == 'Rhb. number: '))[0]
         tag = ""
-        if not (np.where((new_seal_data == 'Rhb. number:') | (new_seal_data == 'Rhb. number: '))[0].size == 0):
+        if np.where((new_seal_data != 'Rhb. number:') | (new_seal_data != 'Rhb. number: '))[0].size == 0:
             for i in range(1, 5):
-                if not (pd.isnull(new_seal_data[sealTag[0]][i])):
-                    tag = new_seal_data[sealTag[0]][i]
+                if not (pd.isnull(new_seal_data[seal_tag[0]][i])):
+                    tag = new_seal_data[seal_tag[0]][i]
         return tag
 
     def get_manual_input_prediction(self):
@@ -366,6 +361,6 @@ class PredictionWindow(QWidget):
             self.sealDataManualInput.append(survival)
             self.output_label.setText(result)
             self.sealDataImport = None
-        except ValueError as ve1:
+        except ValueError:
             pop_message_box(
                 "Something went wrong.\nCheck that you filled in all the boxes only entered numbers.\nMake sure to write decimals with a dot ( . ) and not a comma ( , )")

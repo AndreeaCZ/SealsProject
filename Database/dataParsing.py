@@ -21,13 +21,13 @@ arrivedSeals = pd.read_excel(
     sheet_name='Arrived Seals', keep_default_na=False).to_numpy()
 
 
-def get_values(nparray, sur, sealTag, sealSex, species):
+def get_values(nparray, sur, seal_tag, seal_sex, species):
     """
     Extracts data from the database for a certain seal
     :param nparray: raw array from the excel file
     :param sur: the survival status of the seal
-    :param sealTag: the seal's tag
-    :param sealSex: the seal's sex
+    :param seal_tag: the seal's tag
+    :param seal_sex: the seal's sex
     :param species: the seal's species
     :return: list of the values for the seal
     """
@@ -38,7 +38,7 @@ def get_values(nparray, sur, sealTag, sealSex, species):
             surv = False
         blood_values = get_blood_test_values(nparray,
                                              ["WBC", "LYMF", "GRAN", "MID", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"])
-        return [[sealTag] + blood_values + [surv] + [sealSex] + [species]]
+        return [[seal_tag] + blood_values + [surv] + [seal_sex] + [species]]
 
     except Exception as err1:
         print(Exception, err1)
@@ -67,7 +67,7 @@ for i in range(221, arrivedSeals.shape[0]):
         file = folderPath + DIV + filename
         allData = pd.read_excel(file, na_filter=True, engine='openpyxl').to_numpy()
         values = get_values(allData, survival, tag, sex, get_seal_species_int(arrivedSeals[i][6]))
-        if not (values == 0):
+        if values != 0:
             sealData = pd.DataFrame(values, columns=dataLabels)
             sealData.to_sql(name='sealPredictionData', con=connection, if_exists='append', index=False)
     except Exception as err:

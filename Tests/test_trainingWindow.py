@@ -44,24 +44,24 @@ class TestAddSealWindow(TestCase):
         with mock.patch('GUI.trainingWindow.TrainModelWindow.train_new_model') as clickCheck:
             m = mock.Mock()
             test_window = TrainModelWindow(m)
-            trainButton = test_window.train_button
-            QTest.mouseClick(trainButton, Qt.MouseButton.LeftButton)
+            train_button = test_window.train_button
+            QTest.mouseClick(train_button, Qt.MouseButton.LeftButton)
             self.assertTrue(clickCheck.called)
 
     def test_save_button_clicked(self):
         with mock.patch('GUI.trainingWindow.TrainModelWindow.save_model') as clickCheck:
             m = mock.Mock()
             test_window = TrainModelWindow(m)
-            saveButton = test_window.save_button
-            QTest.mouseClick(saveButton, Qt.MouseButton.LeftButton)
+            save_button = test_window.save_button
+            QTest.mouseClick(save_button, Qt.MouseButton.LeftButton)
             self.assertTrue(clickCheck.called)
 
     def test_home_button_clicked(self):
         with mock.patch('GUI.trainingWindow.TrainModelWindow.go_to_home') as clickCheck:
             m = mock.Mock()
             test_window = TrainModelWindow(m)
-            homeButton = test_window.home_button
-            QTest.mouseClick(homeButton, Qt.MouseButton.LeftButton)
+            home_button = test_window.home_button
+            QTest.mouseClick(home_button, Qt.MouseButton.LeftButton)
             self.assertTrue(clickCheck.called)
 
 if __name__ == '__main__':

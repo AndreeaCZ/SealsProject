@@ -1,4 +1,5 @@
 import sys
+import unittest
 from unittest import TestCase
 from unittest import TestCase, mock
 from unittest.mock import patch
@@ -10,10 +11,10 @@ from PyQt6.QtWidgets import QApplication
 
 from GUI.aboutPage import *
 
-
 app = QApplication(sys.argv)
 
-class TestAbout(TestCase):
+
+class test_about(TestCase):
     def setUp(self):
         m = mock.Mock()
         self.test_window = About(m)
@@ -28,9 +29,10 @@ class TestAbout(TestCase):
         with mock.patch('GUI.aboutPage.About.go_to_home') as clickCheck:
             m = mock.Mock()
             test_window = About(m)
-            homeButton = test_window.home_button
-            QTest.mouseClick(homeButton, Qt.MouseButton.LeftButton)
+            home_button = test_window.home_button
+            QTest.mouseClick(home_button, Qt.MouseButton.LeftButton)
             self.assertTrue(clickCheck.called)
+
 
 if __name__ == '__main__':
     unittest.main()

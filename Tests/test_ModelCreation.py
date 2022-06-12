@@ -5,14 +5,14 @@ import sys
 import numpy
 #numpy.set_printoptions(threshold=sys.maxsize)
 
-from Model.modelCreation_Testing import *
+from Model.modelCreation import *
 
 collections.Callable = collections.abc.Callable
 
-class testDataVisualization(unittest.TestCase):
+class test_data_visualization(unittest.TestCase):
 
     def test_data_preprocessing(self):
-        X_train, X_test, y_train, y_test = data_preprocessing()
+        x_train, x_test, y_train, y_test = data_preprocessing()
 
         # y_train and y_test should only hold value 1 or 0
         y=all((y_train==0)|(y_train==1))
@@ -22,14 +22,14 @@ class testDataVisualization(unittest.TestCase):
         self.assertTrue(z)
 
         # X_train and X_test should only hold values between 1-0 #TODO: These fails sometimes
-        x = ((X_train >= 0)&(X_train <= 1))
+        x = ((x_train >= 0)&(x_train <= 1))
         self.assertNotIn(False,x)
 
-        t = ((X_test >= 0) & (X_test <= 1))
+        t = ((x_test >= 0) & (x_test <= 1))
         self.assertNotIn(False, t)
 
     def test_rf_Model(self):
-        rf=rf_Model()
+        rf=rf_model()
 
         # Check the properties
         self.assertEqual(rf.max_depth,7)
@@ -38,9 +38,9 @@ class testDataVisualization(unittest.TestCase):
         self.assertEqual(rf.n_estimators,300)
 
         # Predictions should only hold values of 1 or 0
-        X_train, X_test, y_train, y_test = data_preprocessing()
-        rf = rf.fit(X_train, y_train)  # train the model
-        predictions = rf.predict(X_test)  # make predictions on the test set
+        x_train, x_test, y_train, y_test = data_preprocessing()
+        rf = rf.fit(x_train, y_train)  # train the model
+        predictions = rf.predict(x_test)  # make predictions on the test set
         y = all((predictions == 0) | (predictions == 1))
         self.assertTrue(y)
 

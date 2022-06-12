@@ -7,7 +7,7 @@ from Database.dataParsing import *
 
 collections.Callable = collections.abc.Callable
 
-class testDataParsing(unittest.TestCase):
+class test_data_parsing(unittest.TestCase):
 
     def test_get_seal_species_str(self):
         x="Phoca Vitulina"

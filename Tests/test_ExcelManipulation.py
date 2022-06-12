@@ -8,7 +8,7 @@ from Utilities.excelManipulation import *
 
 collections.Callable = collections.abc.Callable
 
-class testExcelManipulation(unittest.TestCase):
+class test_excel_manipulation(unittest.TestCase):
 
     def test_label_in_array(self):
         # Should return False if the label is in the array

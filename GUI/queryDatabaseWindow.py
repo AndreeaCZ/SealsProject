@@ -11,6 +11,8 @@ from GUI.utils import lightgray, pop_message_box
 from variables import DB_PATH, DIV
 
 
+query_error = "Something went wrong when querying"
+
 class QueryDatabaseWindow(QWidget):
     def __init__(self, dashboard):
         super().__init__()
@@ -137,33 +139,33 @@ class QueryDatabaseWindow(QWidget):
         :return maxYear: the largest seal tag possible for the max year
         """
         if (self.minYear.text() == ""):
-            minYear = 2014
+            min_year = 2014
         else:
-            minYear = int(float(self.minYear.text()))
+            min_year = int(float(self.minYear.text()))
 
         if (self.maxYear.text() == ""):
-            currentDateTime = datetime.datetime.now()
-            date = currentDateTime.date()
-            maxYear = int(date.strftime("%Y"))
+            current_date_time = datetime.datetime.now()
+            date = current_date_time.date()
+            max_year = int(date.strftime("%Y"))
         else:
-            maxYear = int(float(self.maxYear.text()))
+            max_year = int(float(self.maxYear.text()))
 
-        minStr = self.get_min_tag_for_year(minYear)
-        maxStr = self.get_max_tag_for_year(maxYear)
-        return minStr, maxStr
+        min_str = self.get_min_tag_for_year(min_year)
+        max_str = self.get_max_tag_for_year(max_year)
+        return min_str, max_str
 
     def save_data(self, df):
         """
         Saves the data from the dataframe passed into an excel file
         :param df: the dataframe to be saved
         """
-        fileName = self.fileName.text()
-        if fileName == "":
+        file_name = self.fileName.text()
+        if file_name == "":
             pop_message_box("Please enter a file name first.")
         else:
             import_path = QFileDialog.getExistingDirectoryUrl().path()
-            if not (import_path == ""):
-                import_path = import_path + DIV + fileName + '.xlsx'
+            if import_path != "":
+                import_path = import_path + DIV + file_name + '.xlsx'
                 df.to_excel(import_path)
                 # pops a message box
                 pop_message_box("Subsets saved successfully")
@@ -175,55 +177,55 @@ class QueryDatabaseWindow(QWidget):
         """
         # get blood values from text fields
         self.set_default_values()
-        noNumInput = False
+        no_num_input = False
         try:
-            minWBC = float(self.minWBC.text())
-            maxWBC = float(self.maxWBC.text())
-            minLYMF = float(self.minLYMF.text())
-            maxLYMF = float(self.maxLYMF.text())
-            minGRAN = float(self.minGRAN.text())
-            maxGRAN = float(self.maxGRAN.text())
-            minMID = float(self.minMID.text())
-            maxMID = float(self.maxMID.text())
-            minHCT = float(self.minHCT.text())
-            maxHCT = float(self.maxHCT.text())
-            minMCV = float(self.minMCV.text())
-            maxMCV = float(self.maxMCV.text())
-            minRBC = float(self.minRBC.text())
-            maxRBC = float(self.maxRBC.text())
-            minHGB = float(self.minHGB.text())
-            maxHGB = float(self.maxHGB.text())
-            minMCH = float(self.minMCH.text())
-            maxMCH = float(self.maxMCH.text())
-            minMCHC = float(self.minMCHC.text())
-            maxMCHC = float(self.maxMCHC.text())
-            minMPV = float(self.minMPV.text())
-            maxMPV = float(self.maxMPV.text())
-            minPLT = float(self.minPLT.text())
-            maxPLT = float(self.maxPLT.text())
+            min_wbc = float(self.minWBC.text())
+            max_wbc = float(self.maxWBC.text())
+            min_lymf = float(self.minLYMF.text())
+            max_lymf = float(self.maxLYMF.text())
+            min_gran = float(self.minGRAN.text())
+            max_gran = float(self.maxGRAN.text())
+            min_mid = float(self.minMID.text())
+            max_mid = float(self.maxMID.text())
+            min_hct = float(self.minHCT.text())
+            max_hct = float(self.maxHCT.text())
+            min_mcv = float(self.minMCV.text())
+            max_mcv = float(self.maxMCV.text())
+            min_rbc = float(self.minRBC.text())
+            max_rbc = float(self.maxRBC.text())
+            min_hgb = float(self.minHGB.text())
+            max_hgb = float(self.maxHGB.text())
+            min_mch = float(self.minMCH.text())
+            max_mch = float(self.maxMCH.text())
+            min_mchc = float(self.minMCHC.text())
+            max_mchc = float(self.maxMCHC.text())
+            min_mpv = float(self.minMPV.text())
+            max_mpv = float(self.maxMPV.text())
+            min_plt = float(self.minPLT.text())
+            max_plt = float(self.maxPLT.text())
             # check which of the checkboxes are checked
             surv = self.get_excluded_value(self.survY.isChecked(), self.survN.isChecked())
             sex = self.get_excluded_value(self.sexF.isChecked(), self.sexM.isChecked())
             species = self.get_excluded_value(self.speciesPV.isChecked(), self.speciesHG.isChecked())
-            minStr = (self.get_year())[0]
-            maxStr = (self.get_year())[1]
-        except:
+            min_str = (self.get_year())[0]
+            max_str = (self.get_year())[1]
+        except ValueError:
             pop_message_box("Something went wrong. The input fields contain non-numeric input, change it.")
-            noNumInput = True
+            no_num_input = True
 
         # get the column name for sorting
-        orderBy = self.orderBy.currentText()
-        if orderBy == 'Default':
-            orderBy = 'sealTag'
+        order_by = self.orderBy.currentText()
+        if order_by == 'Default':
+            order_by = 'sealTag'
 
         # ascending or descending
-        sortIn = self.order.currentText()
-        if sortIn == 'Ascending':
-            isAscending = True
+        sort_in = self.order.currentText()
+        if sort_in == 'Ascending':
+            is_ascending = True
         else:
-            isAscending = False
+            is_ascending = False
 
-        if not noNumInput:
+        if not no_num_input:
             connection = sqlite3.connect(DB_PATH)
             c = connection.cursor()
             try:
@@ -232,25 +234,25 @@ class QueryDatabaseWindow(QWidget):
                 and RBC >= ? and RBC <= ? and HGB >= ? and HGB <= ? and MCH >= ? and MCH <= ? and MCHC >= ? and MCHC <= ? 
                 and MPV >= ? and MPV <= ? and PLT >= ? and PLT <= ? and Survival != ? and Sex != ? and Species != ? and 
                 sealTag >= ? and sealTag <= ?"""
-                c.execute(sql, (minWBC, maxWBC, minLYMF, maxLYMF, minGRAN, maxGRAN, minMID, maxMID, minHCT, maxHCT, minMCV,
-                                maxMCV, minRBC, maxRBC, minHGB, maxHGB, minMCH, maxMCH, minMCHC, maxMCHC, minMPV,
-                                maxMPV, minPLT, maxPLT, surv, sex, species, minStr, maxStr))
-                sealData = c.fetchall()
-                npSealData = np.array(sealData)
-                if (npSealData.size != 0):
-                    df = pd.DataFrame(npSealData,
+                c.execute(sql, (min_wbc, max_wbc, min_lymf, max_lymf, min_gran, max_gran, min_mid, max_mid, min_hct, max_hct, min_mcv,
+                                max_mcv, min_rbc, max_rbc, min_hgb, max_hgb, min_mch, max_mch, min_mchc, max_mchc, min_mpv,
+                                max_mpv, min_plt, max_plt, surv, sex, species, min_str, max_str))
+                seal_data = c.fetchall()
+                np_seal_data = np.array(seal_data)
+                if (np_seal_data.size != 0):
+                    df = pd.DataFrame(np_seal_data,
                                       columns=['sealTag', 'WBC', 'LYMF', 'GRAN', 'MID', 'HCT', 'MCV', 'RBC', 'HGB',
                                                'MCH', 'MCHC', 'MPV', 'PLT', 'Survival', 'Sex', 'Species'])
                     df = df.astype({'WBC': np.float, 'LYMF': np.float, 'GRAN': np.float, 'MID': np.float,
                                     'HCT': np.float, 'MCV': np.float, 'RBC': np.float, 'HGB': np.float, 'MCH': np.float,
                                     'MCHC': np.float, 'MPV': np.float, 'PLT': np.float})
-                    df.sort_values(orderBy, ascending=isAscending, inplace=True)
+                    df.sort_values(order_by, ascending=is_ascending, inplace=True)
                     self.update_dataframe(df)
                     self.save_data(df)
                 else:
                     pop_message_box("There is no data to save.")
-            except:
-                pop_message_box("Something went wrong when querying")
+            except sqlite3.OperationalError:
+                pop_message_box(query_error)
             connection.close()
 
     def update_dataframe(self, df):
@@ -279,217 +281,217 @@ class QueryDatabaseWindow(QWidget):
             try:
                 sql = """SELECT min(WBC) FROM sealPredictionData"""
                 c.execute(sql, ())
-                minWBC = c.fetchall()
-                self.minWBC.setText(str(minWBC[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                min_wbc = c.fetchall()
+                self.minWBC.setText(str(min_wbc[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # max wbc
         if self.maxWBC.text() == "":
             try:
                 sql = """SELECT max(WBC) FROM sealPredictionData"""
                 c.execute(sql, ())
-                maxWBC = c.fetchall()
-                self.maxWBC.setText(str(maxWBC[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                max_wbc = c.fetchall()
+                self.maxWBC.setText(str(max_wbc[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # min lymf
         if self.minLYMF.text() == "":
             try:
                 sql = """SELECT min(LYMF) FROM sealPredictionData"""
                 c.execute(sql, ())
-                minLYMF = c.fetchall()
-                self.minLYMF.setText(str(minLYMF[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                min_lymf = c.fetchall()
+                self.minLYMF.setText(str(min_lymf[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # max lymf
         if self.maxLYMF.text() == "":
             try:
                 sql = """SELECT max(LYMF) FROM sealPredictionData"""
                 c.execute(sql, ())
-                maxLYMF = c.fetchall()
-                self.maxLYMF.setText(str(maxLYMF[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                max_lymf = c.fetchall()
+                self.maxLYMF.setText(str(max_lymf[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # min gran
         if self.minGRAN.text() == "":
             try:
                 sql = """SELECT min(GRAN) FROM sealPredictionData"""
                 c.execute(sql, ())
-                minGRAN = c.fetchall()
-                self.minGRAN.setText(str(minGRAN[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                min_gran = c.fetchall()
+                self.minGRAN.setText(str(min_gran[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # max gran
         if self.maxGRAN.text() == "":
             try:
                 sql = """SELECT max(GRAN) FROM sealPredictionData"""
                 c.execute(sql, ())
-                maxGRAN = c.fetchall()
-                self.maxGRAN.setText(str(maxGRAN[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                max_gran = c.fetchall()
+                self.maxGRAN.setText(str(max_gran[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # min mid
         if self.minMID.text() == "":
             try:
                 sql = """SELECT min(MID) FROM sealPredictionData"""
                 c.execute(sql, ())
-                minMID = c.fetchall()
-                self.minMID.setText(str(minMID[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                min_mid = c.fetchall()
+                self.minMID.setText(str(min_mid[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # max mid
         if self.maxMID.text() == "":
             try:
                 sql = """SELECT max(MID) FROM sealPredictionData"""
                 c.execute(sql, ())
-                maxMID = c.fetchall()
-                self.maxMID.setText(str(maxMID[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                max_mid = c.fetchall()
+                self.maxMID.setText(str(max_mid[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # min hct
         if self.minHCT.text() == "":
             try:
                 sql = """SELECT min(HCT) FROM sealPredictionData"""
                 c.execute(sql, ())
-                minHCT = c.fetchall()
-                self.minHCT.setText(str(minHCT[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                min_hct = c.fetchall()
+                self.minHCT.setText(str(min_hct[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # max hct
         if self.maxHCT.text() == "":
             try:
                 sql = """SELECT max(HCT) FROM sealPredictionData"""
                 c.execute(sql, ())
-                maxHCT = c.fetchall()
-                self.maxHCT.setText(str(maxHCT[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                max_hct = c.fetchall()
+                self.maxHCT.setText(str(max_hct[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # min mcv
         if self.minMCV.text() == "":
             try:
                 sql = """SELECT min(MCV) FROM sealPredictionData"""
                 c.execute(sql, ())
-                minMCV = c.fetchall()
-                self.minMCV.setText(str(minMCV[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                min_mcv = c.fetchall()
+                self.minMCV.setText(str(min_mcv[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # max mcv
         if self.maxMCV.text() == "":
             try:
                 sql = """SELECT max(MCV) FROM sealPredictionData"""
                 c.execute(sql, ())
-                maxMCV = c.fetchall()
-                self.maxMCV.setText(str(maxMCV[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                max_mcv = c.fetchall()
+                self.maxMCV.setText(str(max_mcv[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # min rbc
         if self.minRBC.text() == "":
             try:
                 sql = """SELECT min(RBC) FROM sealPredictionData"""
                 c.execute(sql, ())
-                minRBC = c.fetchall()
-                self.minRBC.setText(str(minRBC[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                min_rbc = c.fetchall()
+                self.minRBC.setText(str(min_rbc[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # max rbc
         if self.maxRBC.text() == "":
             try:
                 sql = """SELECT max(RBC) FROM sealPredictionData"""
                 c.execute(sql, ())
-                maxRBC = c.fetchall()
-                self.maxRBC.setText(str(maxRBC[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                max_rbc = c.fetchall()
+                self.maxRBC.setText(str(max_rbc[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # min hgb
         if self.minHGB.text() == "":
             try:
                 sql = """SELECT min(HGB) FROM sealPredictionData"""
                 c.execute(sql, ())
-                minHGB = c.fetchall()
-                self.minHGB.setText(str(minHGB[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                min_hgb = c.fetchall()
+                self.minHGB.setText(str(min_hgb[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # max hgb
         if self.maxHGB.text() == "":
             try:
                 sql = """SELECT max(HGB) FROM sealPredictionData"""
                 c.execute(sql, ())
-                maxHGB = c.fetchall()
-                self.maxHGB.setText(str(maxHGB[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                max_hgb = c.fetchall()
+                self.maxHGB.setText(str(max_hgb[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # min mch
         if self.minMCH.text() == "":
             try:
                 sql = """SELECT min(MCH) FROM sealPredictionData"""
                 c.execute(sql, ())
-                minMCH = c.fetchall()
-                self.minMCH.setText(str(minMCH[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                min_mch = c.fetchall()
+                self.minMCH.setText(str(min_mch[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # max mch
         if self.maxMCH.text() == "":
             try:
                 sql = """SELECT max(MCH) FROM sealPredictionData"""
                 c.execute(sql, ())
-                maxMCH = c.fetchall()
-                self.maxMCH.setText(str(maxMCH[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                max_mch = c.fetchall()
+                self.maxMCH.setText(str(max_mch[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # min mchc
         if self.minMCHC.text() == "":
             try:
                 sql = """SELECT min(MCHC) FROM sealPredictionData"""
                 c.execute(sql, ())
-                minMCHC = c.fetchall()
-                self.minMCHC.setText(str(minMCHC[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                min_mchc = c.fetchall()
+                self.minMCHC.setText(str(min_mchc[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # max mchc
         if self.maxMCHC.text() == "":
             try:
                 sql = """SELECT max(MCHC) FROM sealPredictionData"""
                 c.execute(sql, ())
-                maxMCHC = c.fetchall()
-                self.maxMCHC.setText(str(maxMCHC[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                max_mchc = c.fetchall()
+                self.maxMCHC.setText(str(max_mchc[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # min mpv
         if self.minMPV.text() == "":
             try:
                 sql = """SELECT min(MPV) FROM sealPredictionData"""
                 c.execute(sql, ())
-                minMPV = c.fetchall()
-                self.minMPV.setText(str(minMPV[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                min_mpv = c.fetchall()
+                self.minMPV.setText(str(min_mpv[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # max mpv
         if self.maxMPV.text() == "":
             try:
                 sql = """SELECT max(MPV) FROM sealPredictionData"""
                 c.execute(sql, ())
-                maxMPV = c.fetchall()
-                self.maxMPV.setText(str(maxMPV[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                max_mpv = c.fetchall()
+                self.maxMPV.setText(str(max_mpv[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # min plt
         if self.minPLT.text() == "":
             try:
                 sql = """SELECT min(PLT) FROM sealPredictionData"""
                 c.execute(sql, ())
-                minPLT = c.fetchall()
-                self.minPLT.setText(str(minPLT[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                min_plt = c.fetchall()
+                self.minPLT.setText(str(min_plt[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         # max plt
         if self.maxPLT.text() == "":
             try:
                 sql = """SELECT max(PLT) FROM sealPredictionData"""
                 c.execute(sql, ())
-                maxPLT = c.fetchall()
-                self.maxPLT.setText(str(maxPLT[0][0]))
-            except:
-                pop_message_box("Something went wrong when querying")
+                max_plt = c.fetchall()
+                self.maxPLT.setText(str(max_plt[0][0]))
+            except SyntaxError:
+                pop_message_box(query_error)
         connection.close()
 
     def set_elements(self):

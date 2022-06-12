@@ -85,31 +85,31 @@ class AddSealWindow(QWidget):
     # if the result is zero, there´s a problem when taking the input
     def add_seal(self):
         import_path_null = False
-        sealTag = self.sealTag_input_line.text()
-        if not (sealTag == ""):
+        seal_tag = self.sealTag_input_line.text()
+        if seal_tag != "":
             import_path = QFileDialog.getOpenFileName(filter='Excel files (*.xlsx)')[0]
             if import_path == "":
                 import_path_null = True
             if not import_path_null:
-                self.add_to_database(import_path, sealTag)
+                self.add_to_database(import_path, seal_tag)
         else:
             pop_message_box("Provide a unique seal tag ID")
 
     # adds a seal to the database
-    def add_to_database(self, file, sealTag):
+    def add_to_database(self, file, seal_tag):
         sex1 = self.combo1.currentText()
         species1 = self.combo2.currentText()
-        Sex = get_sex_int(sex1)
-        Species = get_seal_species_int(species1)
-        Surv = self.combo3.currentText()
-        if Surv == "Released":
-            Survival = 1
+        sex = get_sex_int(sex1)
+        species = get_seal_species_int(species1)
+        surv = self.combo3.currentText()
+        if surv == "Released":
+            survival = 1
         else:
-            Survival = 0
+            survival = 0
         data = pd.read_excel(file, na_filter=True, engine='openpyxl').to_numpy()
         blood_values = get_blood_test_values(data,
                                              ["WBC", "LYMF", "GRAN", "MID", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"])
-        if not (blood_values == 0):
+        if blood_values != 0:
             WBC = blood_values[0]
             print(WBC)
             LYMF = blood_values[1]
@@ -138,9 +138,9 @@ class AddSealWindow(QWidget):
             c = connection.cursor()
             try:
                 sql = "INSERT INTO sealPredictionData(sealTag, WBC, LYMF, GRAN, MID, HCT, MCV, RBC, HGB, MCH, MCHC, MPV, PLT, Survival, Sex, Species) VALUES (?, ?, ?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
-                c.execute(sql, (sealTag, WBC, LYMF, GRAN, MID, HCT, MCV, RBC, HGB, MCH, MCHC, MPV, PLT, Survival, Sex, Species))
+                c.execute(sql, (seal_tag, WBC, LYMF, GRAN, MID, HCT, MCV, RBC, HGB, MCH, MCHC, MPV, PLT, survival, sex, species))
                 connection.commit()
                 pop_message_box("Successfully added seal to the database")
-            except:
+            except NameError:
                 pop_message_box("Something went wrong. Ensure that the seal tag is unique.")
             connection.close()

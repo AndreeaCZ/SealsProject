@@ -4,11 +4,11 @@ import collections
 
 import numpy as np
 
-from Model.modelCreation_Testing import *
+from Model.modelCreation import *
 
 collections.Callable = collections.abc.Callable
 
-class testModelDataGeneration(unittest.TestCase):
+class test_model_data_generation(unittest.TestCase):
 
     def test_label_in_array(self):
         # The amount of columns in database should be 13
@@ -25,18 +25,18 @@ class testModelDataGeneration(unittest.TestCase):
         self.assertTrue(x)
 
         # Survival column should only hold values of 0 or 1
-        survivalData = data['Survival']
-        y = all(( survivalData == 0) | (survivalData == 1))
+        survival_data = data['Survival']
+        y = all(( survival_data == 0) | (survival_data == 1))
         self.assertTrue(y)
 
         # Sex column should only hold values of 0 or 1
-        sexData = data['Sex']
-        y = all((sexData == 0) | (sexData == 1))
+        sex_data = data['Sex']
+        y = all((sex_data == 0) | (sex_data == 1))
         self.assertTrue(y)
 
         # Species column should only hold values of 0
-        speciesData = data['Species']
-        y = all((speciesData == 0))
+        species_data = data['Species']
+        y = all((species_data == 0))
         self.assertTrue(y)
 
 
