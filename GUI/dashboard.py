@@ -1,9 +1,8 @@
 import sys
-
 import joblib
 from PyQt6.QtCore import QSize
-from PyQt6.QtGui import *
-from PyQt6.QtWidgets import *
+from PyQt6.QtGui import QColor, QPalette
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget, QGridLayout
 
 from GUI.addSealWindow import AddSealWindow
 from GUI.descriptionWindow import DescriptionWindow
@@ -12,7 +11,7 @@ from GUI.predictionWindow import PredictionWindow
 from GUI.queryDatabaseWindow import QueryDatabaseWindow
 from GUI.trainingWindow import TrainModelWindow
 from GUI.aboutPage import About
-from GUI.utils import *
+from GUI.utils import darkgray
 from variables import MODEL_PATH
 
 ########################################################################################################################

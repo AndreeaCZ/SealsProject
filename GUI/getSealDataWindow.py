@@ -3,9 +3,10 @@ import sqlite3
 import numpy as np
 from PyQt6.QtGui import QPalette, QColor
 
-from GUI.utils import *
+from GUI.utils import lightgray, pop_message_box, get_survival_str_from_int, get_sex_str_from_int, \
+    get_seal_species_str_from_int
 from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import *
+from PyQt6.QtWidgets import QWidget, QLineEdit, QLabel, QPushButton, QGridLayout
 from variables import DB_PATH
 
 ########################################################################################################################

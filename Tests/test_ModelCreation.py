@@ -1,11 +1,8 @@
 
 import unittest
 import collections
-import sys
-import numpy
-#numpy.set_printoptions(threshold=sys.maxsize)
 
-from Model.modelCreation import *
+from Model.modelCreation import data_preprocessing, rf_model
 
 collections.Callable = collections.abc.Callable
 

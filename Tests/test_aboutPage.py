@@ -2,14 +2,14 @@ import sys
 import unittest
 from unittest import TestCase
 from unittest import TestCase, mock
-from unittest.mock import patch
 
-from PyQt6.QtCore import Qt
+
+from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtTest import QTest
 
 from PyQt6.QtWidgets import QApplication
 
-from GUI.aboutPage import *
+from GUI.aboutPage import About
 
 app = QApplication(sys.argv)
 

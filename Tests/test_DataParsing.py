@@ -3,7 +3,7 @@ import unittest
 import collections
 import numpy as np
 
-from Database.dataParsing import *
+from Database.dataParsing import get_seal_species_str, get_values
 
 collections.Callable = collections.abc.Callable
 

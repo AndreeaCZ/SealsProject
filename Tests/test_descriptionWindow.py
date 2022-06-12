@@ -1,10 +1,10 @@
 import sys
 import unittest
 from unittest import TestCase, mock
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication
-from GUI.descriptionWindow import *
+from GUI.descriptionWindow import DescriptionWindow
 
 
 app = QApplication(sys.argv)

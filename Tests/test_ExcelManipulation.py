@@ -4,7 +4,7 @@ import collections
 
 import numpy as np
 
-from Utilities.excelManipulation import *
+from Utilities.excelManipulation import label_in_array, low_in_array, is_numeric, is_empty, get_blood_test_values
 
 collections.Callable = collections.abc.Callable
 

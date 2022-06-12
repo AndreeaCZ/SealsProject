@@ -1,12 +1,17 @@
 import platform
 
-
+import joblib
 from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QPalette, QColor
-from PyQt6.QtWidgets import *
+from PyQt6.QtWidgets import QWidget, QPushButton, QCheckBox, QLabel, QLineEdit, QVBoxLayout, QFileDialog
 from openpyxl import load_workbook
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+
+from Database.modelDataGeneration import get_model_data
 from GUI.utils import lightgray, pop_message_box
-from Model.modelCreation import *
+from Model.modelCreation import rf_model
 from variables import DIV
 
 ########################################################################################################################

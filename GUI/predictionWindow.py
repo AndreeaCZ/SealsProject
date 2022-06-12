@@ -1,12 +1,15 @@
 from pathlib import Path
 import joblib
 import platform
+import pandas as pd
+import numpy as np
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QPalette, QColor
 from PyQt6.QtWidgets import QGridLayout, QWidget, QLineEdit, QPushButton, QLabel, QComboBox, QFileDialog, QInputDialog
 from openpyxl import load_workbook
 from openpyxl.workbook import Workbook
-from GUI.utils import *
+from GUI.utils import lightgray, pop_message_box, get_chances_str_from_int, get_seal_species_str_from_int, \
+    get_sex_str_from_int, get_sex_int, get_seal_species_int, find_prediction, darkgray, make_prediction
 from variables import MODEL_PATH, DIV
 
 ########################################################################################################################
