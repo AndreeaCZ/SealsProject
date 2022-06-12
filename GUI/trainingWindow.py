@@ -1,14 +1,16 @@
+import os
 import platform
 
 import joblib
+import matplotlib
 from PyQt6.QtCore import QSize
-from PyQt6.QtGui import QPalette, QColor
+from PyQt6.QtGui import QPalette, QColor, QPixmap
 from PyQt6.QtWidgets import QWidget, QPushButton, QCheckBox, QLabel, QLineEdit, QVBoxLayout, QFileDialog
 from openpyxl import load_workbook
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
-
+import matplotlib.pyplot as plt
 from Database.modelDataGeneration import get_model_data
 from GUI.utils import lightgray, pop_message_box
 from Model.modelCreation import rf_model
@@ -20,17 +22,18 @@ from variables import DIV
 
 maxExcludedFeatures = 10
 
-
 class TrainModelWindow(QWidget):
     def __init__(self, dashboard):
         super().__init__()
         self.model = None
         self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-        self.setFixedSize(QSize(500, 520))
+        self.setFixedSize(QSize(700, 800))
         self.setWindowTitle("Train a model")
         # close home page
         self.dashboard = dashboard
         dashboard.close()
+
+        self.displayWindow = None
 
         # Creating a home button
         self.home_button = QPushButton('Home')
@@ -47,7 +50,8 @@ class TrainModelWindow(QWidget):
         self.mpv = QCheckBox("MPV")
         self.plt = QCheckBox("PLT")
         self.accu_label = QLabel()
-        self.feature_imp = QLabel()
+        self.display_feature_importance_graph = QLabel()
+        self.feature_importance = QLabel()
         self.train_button = QPushButton('Train')
         self.input_model_name = QLineEdit()
         self.save_button = QPushButton('Save')
@@ -71,7 +75,7 @@ class TrainModelWindow(QWidget):
         """
         # Setting elements:
         self.accu_label.setText("Model accuracy")
-        self.feature_imp.setText("Feature importance")
+        self.feature_importance.setText("Feature importance")
         self.input_model_name.setPlaceholderText("Enter model name")
         self.train_button.clicked.connect(self.train_new_model)
         self.save_button.clicked.connect(self.save_model)
@@ -89,12 +93,13 @@ class TrainModelWindow(QWidget):
         layout.addWidget(self.mpv)
         layout.addWidget(self.plt)
         layout.addWidget(self.accu_label)
-        layout.addWidget(self.feature_imp)
+        layout.addWidget(self.feature_importance)
         layout.addSpacing(10)
         layout.addWidget(self.train_button)
         layout.addWidget(self.input_model_name)
         layout.addWidget(self.save_button)
         layout.addWidget(self.home_button)
+        layout.addWidget(self.display_feature_importance_graph, 1)
         return layout
 
     # Saves a user trained model
@@ -124,7 +129,6 @@ class TrainModelWindow(QWidget):
     # Trains a model based on the features selected
     def train_new_model(self):
         dataset_labeled_seals = get_model_data()
-
         # Features not included in training
         excluded_features_num = 0
         self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
@@ -170,8 +174,6 @@ class TrainModelWindow(QWidget):
             self.excelRowIndex.remove(11)
             excluded_features_num += 1
 
-#############################################
-
         if excluded_features_num != maxExcludedFeatures:
             random_forest = rf_model()
             X = dataset_labeled_seals.drop(['Survival'], axis=1)  # separate features from labels
@@ -184,14 +186,14 @@ class TrainModelWindow(QWidget):
             # and test
             self.model = random_forest.fit(x_train, y_train)  # train the model
             predictions = random_forest.predict(x_test)  # make predictions on the test set
+            # get and set accuracy
             self.accu_label.setText(
                 "Your new model's accuracy " + str(round(accuracy_score(y_test, predictions) * 100, 1)) + "%")
-            self.feature_imp.setText(
-                "Feature importance: " + "\n" + str((dataset_labeled_seals.drop(['Survival'], axis=1)).columns.values) + "\n" + str(random_forest.feature_importances_)
-            )
-            # make feature_imp fit all the text
-
-
+            feature_importance_str = "Feature importance: " + "\n"
+            # get and set feature importance
+            for i in range(len((dataset_labeled_seals.drop(['Survival'], axis=1)).columns.values)):
+                feature_importance_str = feature_importance_str + str((dataset_labeled_seals.drop(['Survival'], axis=1)).columns.values[i]) + ": " + str(round((random_forest.feature_importances_*100)[i], 1)) + "%\n"
+            self.feature_importance.setText(feature_importance_str)
             pop_message_box("Model trained successfully")
         else:
             pop_message_box("Please select features to train on.")
