@@ -3,6 +3,7 @@ from PyQt6.QtGui import QPalette, QColor
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTextEdit, QPushButton
 
 from GUI.utils import lightgray
+from variables import ABOUT_PATH
 
 
 ########################################################################################################################
@@ -45,7 +46,7 @@ class About(QWidget):
         """
         # Setting elements:
         self.home_button.clicked.connect(self.go_to_home)
-        self.text.setMarkdown(open('about.txt').read())
+        self.text.setMarkdown(open(ABOUT_PATH).read())
         self.text.setReadOnly(True)
         # Adding elements to layout:
         layout = QVBoxLayout()
