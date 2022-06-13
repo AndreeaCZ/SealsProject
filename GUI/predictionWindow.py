@@ -40,7 +40,7 @@ class PredictionWindow(QWidget):
         self.save_button = QPushButton('Save')
         self.load_model_button = QPushButton('Load a model')
         self.load_default_model_button = QPushButton('Default model')
-        self.info_label_1 = QLabel('Select sex , species ans sealTag')
+        self.info_label_1 = QLabel('Select sex and sealTag')
         self.info_label_2 = QLabel('Select what model to use')
         self.info_label_3 = QLabel('Enter blood test values')
         self.info_label_4 = QLabel('Click to run prediction once all values are entered')
@@ -50,7 +50,6 @@ class PredictionWindow(QWidget):
 
         # Creating import subfields
         self.combo1 = QComboBox()
-        self.combo2 = QComboBox()
         self.wbc_label = QLabel("WBC: ")
         self.lymf_label = QLabel("LYMF: ")
         self.gran_label = QLabel("GRAN: ")
@@ -100,8 +99,6 @@ class PredictionWindow(QWidget):
         # Setting elements properties:
         self.combo1.addItem("Female")
         self.combo1.addItem("Male")
-        self.combo2.addItem("Phoca Vitulina")
-        self.combo2.addItem("Halichoerus Grypus")
         self.input_filename.setPlaceholderText('Enter an excel file name')
         self.import_button.clicked.connect(self.get_import)
         self.load_model_button.clicked.connect(self.load_model)
@@ -126,8 +123,7 @@ class PredictionWindow(QWidget):
         layout.addWidget(self.info_label_2, 0, 3, 1, 2)
         layout.addWidget(self.combo1, 1, 0, 1, 2)
         layout.addWidget(self.load_default_model_button, 1, 3, 1, 2)
-        layout.addWidget(self.combo2, 2, 0, 1, 2)
-        layout.addWidget(self.seal_tag_input, 3, 0, 1, 2)
+        layout.addWidget(self.seal_tag_input, 2, 0, 1, 2)
         layout.addWidget(self.load_model_button, 2, 3, 1, 2)
         layout.setRowMinimumHeight(3, 50)  # Row 3 is empty and is used as a space
         layout.addWidget(self.info_label_3, 4, 0, 1, 5)
@@ -161,10 +157,10 @@ class PredictionWindow(QWidget):
         layout.addWidget(self.import_button, 13, 4)
         layout.addWidget(self.output_label, 14, 0, 1, 5)
         layout.setRowMinimumHeight(14, 100)
-        layout.addWidget(self.input_filename, 15, 0, 1, 4)
-        layout.addWidget(self.save_button, 15, 4)
-        layout.addWidget(self.home_button, 16, 1, 1, 3)
-        layout.setRowMinimumHeight(16, 100)
+        layout.addWidget(self.input_filename, 18, 0, 1, 4)
+        layout.addWidget(self.save_button, 18, 4)
+        layout.addWidget(self.home_button, 19, 1, 1, 3)
+        layout.setRowMinimumHeight(19, 100)
         layout.setRowStretch(20, 1)
         return layout
 
