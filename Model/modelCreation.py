@@ -13,7 +13,7 @@ def data_preprocessing():
     :return: the preprocessed data
     """
     data = get_model_data()
-    X = data.drop(['Survival'], axis=1)
+    X = data.drop(['Survival', 'Species'], axis=1)
     # separate features from labels
 
     scaler = MinMaxScaler()
@@ -53,3 +53,9 @@ def export_model(model):
     :return: void function
     """
     joblib.dump(model, MODEL_PATH)
+
+# x_train, x_test, y_train, y_test = data_preprocessing()
+# testModel = rf_model()
+# testModel.fit(x_train, y_train)
+# test_accuracy(testModel)
+# export_model(testModel)

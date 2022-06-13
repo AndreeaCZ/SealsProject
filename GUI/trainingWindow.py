@@ -177,7 +177,7 @@ class TrainModelWindow(QWidget):
 
         if excluded_features_num != maxExcludedFeatures:
             random_forest = rf_model()
-            X = dataset_labeled_seals.drop(['Survival'], axis=1)  # separate features from labels
+            X = dataset_labeled_seals.drop(['Survival', 'Species'], axis=1)  # separate features from labels
             scaler = MinMaxScaler()
             X = scaler.fit_transform(X)  # normalize the data ( MinMaxScaler ) - scale the data to be between 0 and 1
             y = dataset_labeled_seals['Survival'].values  # get all labels
@@ -192,8 +192,8 @@ class TrainModelWindow(QWidget):
                 "Your new model's accuracy " + str(round(accuracy_score(y_test, predictions) * 100, 1)) + "%")
             feature_importance_str = "Feature importance: " + "\n"
             # get and set feature importance
-            for i in range(len((dataset_labeled_seals.drop(['Survival'], axis=1)).columns.values)):
-                feature_importance_str = feature_importance_str + str((dataset_labeled_seals.drop(['Survival'], axis=1)).columns.values[i]) + ": " + str(round((random_forest.feature_importances_*100)[i], 1)) + "%\n"
+            for i in range(len((dataset_labeled_seals.drop(['Survival', 'Species'], axis=1)).columns.values)):
+                feature_importance_str = feature_importance_str + str((dataset_labeled_seals.drop(['Survival', 'Species'], axis=1)).columns.values[i]) + ": " + str(round((random_forest.feature_importances_*100)[i], 1)) + "%\n"
             self.feature_importance.setText(feature_importance_str)
             # get and set the confusion matrix
             self.display_confusion_matrix(x_test, y_test)

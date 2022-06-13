@@ -18,7 +18,7 @@ darkgray = '#3F4B5A'
 lightgray = '#6A7683'
 
 
-def make_prediction(file_path, sex, species, model, feature_list):
+def make_prediction(file_path, sex, model, feature_list):
     """
     Makes the prediction and returns an array of values if input validation succeeds.
     If not, it returns 0.
@@ -32,28 +32,26 @@ def make_prediction(file_path, sex, species, model, feature_list):
     new_seal_data = pd.read_excel(file_path).to_numpy()
     blood_results = get_blood_test_values(new_seal_data, feature_list)
     if blood_results != 0:
-        result_str, survival = find_prediction(blood_results, model, sex, species)
-        blood_results = np.append(blood_results, [sex] + [species] + [survival])
+        result_str, survival = find_prediction(blood_results, model, sex)
+        blood_results = np.append(blood_results, [sex] + [survival])
         return result_str, blood_results
     else:
         return 0, []
 
 
-def find_prediction(data, model, sex, species):
+def find_prediction(data, model, sex):
     """
     Takes the data and uses the model to predict the seal's survival
     :param data: input data
     :param model: model to be used
     :param sex: sex of the seal
-    :param species: species of the seal
     :return: result string ready for output
     """
-    prediction_arr = np.append(data, [sex] + [species])
+    prediction_arr = np.append(data, [sex])
     prediction_arr = np.array(prediction_arr).reshape(1, -1)
     sex_string = get_sex_str_from_int(sex)
-    species_string = get_seal_species_str_from_int(species)
     compare = int(model.predict(prediction_arr))
-    output = "Values you entered:\n" + ", ".join(map(str, data)) + ", " + sex_string + ", " + species_string + "\n\nModel prediction:\n"
+    output = "Values you entered:\n" + ", ".join(map(str, data)) + ", " + sex_string + "\n\nModel prediction:\n"
     if compare == 1:
         return output + "Will survive", 1
     else:

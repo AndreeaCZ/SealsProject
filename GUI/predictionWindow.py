@@ -268,8 +268,7 @@ class PredictionWindow(QWidget):
         for i in range(feature_list_length):
             spread_sheet.cell(row=i + 3, column=1).value = self.featureList[i]
         spread_sheet.cell(row=feature_list_length + 3, column=1).value = "SEX"
-        spread_sheet.cell(row=feature_list_length + 4, column=1).value = "SPECIES"
-        spread_sheet.cell(row=feature_list_length + 5, column=1).value = "SURVIVAL"
+        spread_sheet.cell(row=feature_list_length + 4, column=1).value = "SURVIVAL"
 
         # Fill in the values
         spread_sheet.cell(row=1, column=2).value = seal_data[0]
@@ -277,9 +276,7 @@ class PredictionWindow(QWidget):
         for i in range(len(seal_data) - 3):
             spread_sheet.cell(row=i + 3, column=2).value = seal_data[i + 1]
 
-        spread_sheet.cell(row=seal_data_length - 1, column=2).value = get_sex_str_from_int(int(float(seal_data[seal_data_length - 3])))
-        spread_sheet.cell(row=seal_data_length, column=2).value = get_seal_species_str_from_int(int(float(
-            seal_data[seal_data_length - 2])))
+        spread_sheet.cell(row=seal_data_length, column=2).value = get_sex_str_from_int(int(float(seal_data[seal_data_length - 2])))
         spread_sheet.cell(row=seal_data_length + 1, column=2).value = get_chances_str_from_int(int(float(
             seal_data[seal_data_length - 1])))
 
@@ -289,6 +286,7 @@ class PredictionWindow(QWidget):
     # Load the default model
     def load_default_model(self):
         self.output_label.setText("")
+        self.seal_tag_input.setText("")
         self.modelName = defaultModelName
         self.model = joblib.load(MODEL_PATH)
         self.featureList = defaultFeatureList
@@ -299,6 +297,7 @@ class PredictionWindow(QWidget):
     # Load a model from the local machine
     def load_model(self):
         self.output_label.setText("")
+        self.seal_tag_input.setText("")
         import_path = QFileDialog.getOpenFileName(filter='PKL files (*.pkl)')[0]
         if import_path != "":
             self.model = joblib.load(import_path)
@@ -317,10 +316,8 @@ class PredictionWindow(QWidget):
         if import_path == "":
             import_path_null = True
         sex = get_sex_int(self.combo1.currentText())
-        species = get_seal_species_int(self.combo2.currentText())
         if not import_path_null:
-            result, self.sealDataImport = make_prediction(import_path, sex, species, self.model, self.featureList)
-
+            result, self.sealDataImport = make_prediction(import_path, sex, self.model, self.featureList)
             seal_tag = self.get_seal_tag(import_path)
             if seal_tag == "":
                 pop_message_box("Check that the correct file is being uploaded and contains a seal tag")
@@ -345,16 +342,14 @@ class PredictionWindow(QWidget):
 
     def get_manual_input_prediction(self):
         sex = get_sex_int(self.combo1.currentText())
-        species = get_seal_species_int(self.combo2.currentText())
         seal_tag = self.seal_tag_input.text()
         data = []
         try:
             for feature in self.featureList:
                 data.append(float(self.featureInputDict.get(feature).text()))
             self.sealDataManualInput = data
-            result, survival = find_prediction(data, self.model, sex, species)
+            result, survival = find_prediction(data, self.model, sex)
             self.sealDataManualInput.append(sex)
-            self.sealDataManualInput.append(species)
             self.sealDataManualInput.append(survival)
             self.sealDataManualInput.insert(0, seal_tag)
             self.output_label.setText("Seal tag - " + seal_tag + "\n\n" + result)

@@ -6,10 +6,9 @@ from GUI.utils import get_seal_species_int, get_sex_int
 from Utilities.excelManipulation import get_blood_test_values
 from variables import DB_NAME, ARRIVED_SEALS_PATH, CLIENT_DATA_PATH, DIV
 
-#########################################################################################################################
-# File used to import the client's Excel data into the app's database.
-# Run file to fill the database with the data.
-#########################################################################################################################
+# ########################################################################################################################
+# File used to import the client's Excel data into the app's database. Run file to fill the database with the data.
+# ########################################################################################################################
 
 connection = sqlite3.connect(DB_NAME)
 dataLabels = ["sealTag", "WBC", "LYMF", "GRAN", "MID", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT", "Survival", "Sex",
