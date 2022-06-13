@@ -2,12 +2,11 @@ import os
 import platform
 
 import joblib
-import matplotlib
 from PyQt6.QtCore import QSize
-from PyQt6.QtGui import QPalette, QColor, QPixmap
+from PyQt6.QtGui import QPalette, QColor
 from PyQt6.QtWidgets import QWidget, QPushButton, QCheckBox, QLabel, QLineEdit, QVBoxLayout, QFileDialog
 from openpyxl import load_workbook
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
@@ -27,7 +26,7 @@ class TrainModelWindow(QWidget):
         super().__init__()
         self.model = None
         self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-        self.setFixedSize(QSize(700, 800))
+        self.setFixedSize(QSize(600, 750))
         self.setWindowTitle("Train a model")
         # close home page
         self.dashboard = dashboard
@@ -52,6 +51,7 @@ class TrainModelWindow(QWidget):
         self.accu_label = QLabel()
         self.display_feature_importance_graph = QLabel()
         self.feature_importance = QLabel()
+        self.confusion_matrix = QLabel()
         self.train_button = QPushButton('Train')
         self.input_model_name = QLineEdit()
         self.save_button = QPushButton('Save')
@@ -94,6 +94,7 @@ class TrainModelWindow(QWidget):
         layout.addWidget(self.plt)
         layout.addWidget(self.accu_label)
         layout.addWidget(self.feature_importance)
+        layout.addWidget(self.confusion_matrix)
         layout.addSpacing(10)
         layout.addWidget(self.train_button)
         layout.addWidget(self.input_model_name)
@@ -194,10 +195,33 @@ class TrainModelWindow(QWidget):
             for i in range(len((dataset_labeled_seals.drop(['Survival'], axis=1)).columns.values)):
                 feature_importance_str = feature_importance_str + str((dataset_labeled_seals.drop(['Survival'], axis=1)).columns.values[i]) + ": " + str(round((random_forest.feature_importances_*100)[i], 1)) + "%\n"
             self.feature_importance.setText(feature_importance_str)
+            # get and set the confusion matrix
+            self.display_confusion_matrix(x_test, y_test)
+
             pop_message_box("Model trained successfully")
         else:
             pop_message_box("Please select features to train on.")
 
+    def display_confusion_matrix(self, x_test, y_test):
+        titles_options = [
+            ("Confusion matrix, without normalization", None),
+            ("Normalized confusion matrix", "true"),
+        ]
+        for title, normalize in titles_options:
+            disp = ConfusionMatrixDisplay.from_estimator(
+                self.model,
+                x_test,
+                y_test,
+                cmap=plt.cm.inferno,
+                normalize=normalize
+            )
+            disp.ax_.set_title(title)
+        confusion_matrix_str = "Confusion matrix: " \
+                               + "\nTrue negatives: " + str(round(disp.confusion_matrix[0][0], 1)) \
+                               + "\nFalse positives: " + str(round(disp.confusion_matrix[0][1], 1)) \
+                               + "\nFalse negatives: " + str(round(disp.confusion_matrix[1][0], 1))\
+                               + "\nTrue positives: " + str(round(disp.confusion_matrix[1][1], 1))
+        self.confusion_matrix.setText(confusion_matrix_str)
 
 
 # This function is used to update the Excel file. This Excel file is used to note down all the selected features
