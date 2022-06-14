@@ -156,11 +156,11 @@ class PredictionWindow(QWidget):
         layout.addWidget(self.info_label_5, 13, 0, 1, 4)
         layout.addWidget(self.import_button, 13, 4)
         layout.addWidget(self.output_label, 14, 0, 1, 5)
-        layout.setRowMinimumHeight(14, 100)
+        layout.setRowMinimumHeight(14, 120)
         layout.addWidget(self.input_filename, 18, 0, 1, 4)
         layout.addWidget(self.save_button, 18, 4)
         layout.addWidget(self.home_button, 19, 1, 1, 3)
-        layout.setRowMinimumHeight(19, 100)
+        layout.setRowMinimumHeight(19, 70)
         layout.setRowStretch(20, 1)
         return layout
 
