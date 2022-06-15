@@ -80,7 +80,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.trainModel_button, 1, 1)
         layout.addWidget(self.add_seal_button, 2, 0)
         layout.addWidget(self.get_seal_button, 2, 1)
-        layout.addWidget(self.about_button, 3, 0)
+        layout.addWidget(self.about_button, 3, 0, 1, 2)
         # Setting widget properties:
         widget = QWidget()
         widget.setAutoFillBackground(True)
