@@ -54,8 +54,3 @@ def export_model(model):
     """
     joblib.dump(model, MODEL_PATH)
 
-# x_train, x_test, y_train, y_test = data_preprocessing()
-# testModel = rf_model()
-# testModel.fit(x_train, y_train)
-# test_accuracy(testModel)
-# export_model(testModel)
