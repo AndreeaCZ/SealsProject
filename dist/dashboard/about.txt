@@ -1,0 +1,54 @@
+[//]: # (##############################################################################################################)
+[//]: # (This document is the basic text that gets processed in Markdown for the App Documentation)
+[//]: # (##############################################################################################################)
+
+
+# Blubber Technology Documentation
+
+This page offers information on the technologies and algorithms used when building the app.
+
+&nbsp;
+## Prediction model
+
+The prediction model chosen for the app is a [Random Forest model](https://en.wikipedia.org/wiki/Random_forest#:~:text=Random%20forests%20or%20random%20decision,class%20selected%20by%20most%20trees.).
+A random forest is a meta estimator that fits a number of decision tree classifiers on various sub-samples of the dataset
+ and uses averaging to improve the predictive accuracy and control over-fitting.
+
+A decision tree takes in a set of data and then creates a set of rules (that produce the highest accuracy) that can be
+used to make predictions.
+
+The parameters of the random forest are:
+- criterion='entropy'  - The function to measure the quality of a split.
+
+Entropy is a measure of information that indicates the disorder of the features with the target.
+Similar to the Gini Index, the optimum split is chosen by the feature with less entropy.
+It gets its maximum value when the probability of the two classes is the same and a node is pure when the entropy has its minimum value, which is 0
+
+- n_estimators=300 - The number of trees in the forest.
+
+- max_depth=7 - The maximum depth of the tree. The maximum depth is the highest number of splits in the tree.
+
+- random_state=42
+
+Controls both the randomness of the bootstrapping of the samples used when building trees (if bootstrap=True) and the
+sampling of the features to consider when looking for the best split at each node (if max_features < n_features).
+
+- bootstrap=True - Whether bootstrap samples are used when building trees. If False, the whole dataset is used to build each tree.
+
+- max_features='auto' - The number of features to consider when looking for the best split:
+
+    -- If 'auto', then `max_features=sqrt(n_features)`.
+
+
+- min_samples_leaf=1 - The minimum number of samples required to be at a leaf node.
+
+A split point at any depth will only be considered if it leaves at least min_samples_leaf training samples in each of
+the left and right branches. This may have the effect of smoothing the model, especially in regression.
+
+- min_samples_split=10 - The minimum number of samples required to split an internal node.
+
+For an in-depth explanation of every parameter, see this page:
+
+https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
+
+&nbsp;
