@@ -10,7 +10,7 @@ from openpyxl import load_workbook
 from openpyxl.workbook import Workbook
 from GUI.utils import lightgray, pop_message_box, get_chances_str_from_int, get_seal_species_str_from_int, \
     get_sex_str_from_int, get_sex_int, get_seal_species_int, find_prediction, darkgray, make_prediction
-from variables import MODEL_PATH, DIV
+from variables import MODEL_PATH, DIV, FEATURE_CHECKLIST_PATH
 
 ########################################################################################################################
 # Represents the window where the user can predict the outcome of a seal
@@ -194,7 +194,7 @@ class PredictionWindow(QWidget):
     # Update the list of features used for predicting based on the parameters the new model was trained on
     def update_feature_list(self, filename):
         try:
-            wb = load_workbook("featuresChecklist.xlsx")
+            wb = load_workbook(FEATURE_CHECKLIST_PATH)
             ws = wb.active
             max_col = ws.max_column
             max_row = ws.max_row

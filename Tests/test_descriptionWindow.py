@@ -1,12 +1,12 @@
 import sys
 from unittest import TestCase, mock
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtTest import QTest
 
 from PyQt6.QtWidgets import QApplication
 
-from GUI.descriptionWindow import *
+from GUI.descriptionWindow import DescriptionWindow
 
 
 app = QApplication(sys.argv)
@@ -28,8 +28,8 @@ class TestDescription(TestCase):
         with mock.patch('GUI.descriptionWindow.DescriptionWindow.go_to_home') as clickCheck:
             m = mock.Mock()
             test_window = DescriptionWindow(m)
-            homeButton = test_window.home_button
-            QTest.mouseClick(homeButton, Qt.MouseButton.LeftButton)
+            home_button = test_window.home_button
+            QTest.mouseClick(home_button, Qt.MouseButton.LeftButton)
             self.assertTrue(clickCheck.called)
 
 if __name__ == '__main__':
