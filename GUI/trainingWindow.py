@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from Database.modelDataGeneration import get_model_data
 from GUI.utils import lightgray, pop_message_box
 from Model.modelCreation import rf_model
-from variables import DIV
+from variables import DIV, FEATURE_CHECKLIST_PATH
 
 ########################################################################################################################
 # Represents the window that lets the user train their own model
@@ -229,7 +229,7 @@ class TrainModelWindow(QWidget):
 def save_features(row_index_list, model_name):
     # load a workbook and worksheet.
     try:
-        wb = load_workbook("featuresChecklist.xlsx")
+        wb = load_workbook(FEATURE_CHECKLIST_PATH)
         ws = wb.active
         max_col = ws.max_column
         is_model_name_unique = True
@@ -245,7 +245,7 @@ def save_features(row_index_list, model_name):
             for i in row_index_list:
                 # fill in the cell with 1
                 ws.cell(row=i, column=max_col + 1).value = 1
-            wb.save("featuresChecklist.xlsx")
+            wb.save(FEATURE_CHECKLIST_PATH)
             return 1
         else:
             return 0

@@ -1,3 +1,4 @@
+import platform
 import sqlite3
 
 import numpy as np
@@ -166,6 +167,8 @@ class QueryDatabaseWindow(QWidget):
             import_path = QFileDialog.getExistingDirectoryUrl().path()
             if import_path != "":
                 import_path = import_path + DIV + file_name + '.xlsx'
+                if platform.system() == "Windows":
+                    import_path = import_path[1:]
                 df.to_excel(import_path)
                 # pops a message box
                 pop_message_box("Subsets saved successfully")
@@ -204,7 +207,7 @@ class QueryDatabaseWindow(QWidget):
             min_plt = float(self.minPLT.text())
             max_plt = float(self.maxPLT.text())
             # check which of the checkboxes are checked
-            surv = self.get_excluded_value(self.survY.isChecked(), self.survN.isChecked())
+            surv = self.get_excluded_value(self.survN.isChecked(), self.survY.isChecked())
             sex = self.get_excluded_value(self.sexF.isChecked(), self.sexM.isChecked())
             species = self.get_excluded_value(self.speciesPV.isChecked(), self.speciesHG.isChecked())
             min_str = (self.get_year())[0]
