@@ -40,7 +40,7 @@ class PredictionWindow(QWidget):
         self.save_button = QPushButton('Save')
         self.load_model_button = QPushButton('Load a model')
         self.load_default_model_button = QPushButton('Default model')
-        self.info_label_1 = QLabel('Select sex and enter sealTag')
+        self.info_label_1 = QLabel('Select sex and enter a seal tag')
         self.info_label_2 = QLabel('Select what model to use')
         self.info_label_3 = QLabel('Enter blood test values')
         self.info_label_4 = QLabel('Click to run prediction once all values are entered')

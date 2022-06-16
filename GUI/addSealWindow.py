@@ -111,29 +111,17 @@ class AddSealWindow(QWidget):
                                              ["WBC", "LYMF", "GRAN", "MID", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT"])
         if blood_values != 0:
             WBC = blood_values[0]
-            print(WBC)
             LYMF = blood_values[1]
-            print(LYMF)
             GRAN = blood_values[2]
-            print(GRAN)
             MID = blood_values[3]
-            print(MID)
             HCT = blood_values[4]
-            print(HCT)
             MCV = blood_values[5]
-            print(MCV)
             RBC = blood_values[6]
-            print(RBC)
             HGB = blood_values[7]
-            print(HGB)
             MCH = blood_values[8]
-            print(MCH)
             MCHC = blood_values[9]
-            print(MCHC)
             MPV = blood_values[10]
-            print(MPV)
             PLT = blood_values[11]
-            print(PLT)
             connection = sqlite3.connect(DB_PATH)  # create a database for model training data
             c = connection.cursor()
             try:

@@ -31,7 +31,7 @@ class QueryDatabaseWindow(QWidget):
         # Creating labels:
         self.infoLabel1 = QLabel('Please enter ranges for the following values:')
         self.infoLabel2 = QLabel('Please select additional fields:')
-        self.infoLabel3 = QLabel('Please enter a file name and press Get the subsets so see results')
+        self.infoLabel3 = QLabel("Please enter a file name and press 'Get the subsets' so see results")
 
         # Blood values:
         self.minWBC = QLineEdit()
@@ -212,6 +212,7 @@ class QueryDatabaseWindow(QWidget):
             species = self.get_excluded_value(self.speciesPV.isChecked(), self.speciesHG.isChecked())
             min_str = (self.get_year())[0]
             max_str = (self.get_year())[1]
+            self.reset_elements()
         except ValueError:
             pop_message_box("Something went wrong. The input fields contain non-numeric input, change it.")
             no_num_input = True
@@ -497,12 +498,41 @@ class QueryDatabaseWindow(QWidget):
                 pop_message_box(query_error)
         connection.close()
 
+    def reset_elements(self):
+        # Setting placeholder tests for blood values:
+        self.minWBC.setText("")
+        self.maxWBC.setText("")
+        self.minLYMF.setText("")
+        self.maxLYMF.setText("")
+        self.minGRAN.setText("")
+        self.maxGRAN.setText("")
+        self.minMID.setText("")
+        self.maxMID.setText("")
+        self.minHCT.setText("")
+        self.maxHCT.setText("")
+        self.minMCV.setText("")
+        self.maxMCV.setText("")
+        self.minRBC.setText("")
+        self.maxRBC.setText("")
+        self.minHGB.setText("")
+        self.maxHGB.setText("")
+        self.minMCH.setText("")
+        self.maxMCH.setText("")
+        self.minMCHC.setText("")
+        self.maxMCHC.setText("")
+        self.minMPV.setText("")
+        self.maxMPV.setText("")
+        self.minPLT.setText("")
+        self.maxPLT.setText("")
+
+        self.minYear.setText('')
+        self.maxYear.setText('')
+
     def set_elements(self):
         """
         Sets the elements of the window
         :return: the layout of the window
         """
-        # Setting placeholder tests for blood values:
         self.minWBC.setPlaceholderText("min WBC")
         self.maxWBC.setPlaceholderText("max WBC")
         self.minLYMF.setPlaceholderText("min LYMF")
@@ -533,7 +563,6 @@ class QueryDatabaseWindow(QWidget):
 
         # Set placeholder for filename text field
         self.fileName.setPlaceholderText("Enter a file name")
-
         # Set order by
         self.orderBy.addItem("Default")
         self.orderBy.addItem("WBC")

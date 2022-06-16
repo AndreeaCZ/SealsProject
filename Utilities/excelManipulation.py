@@ -23,7 +23,7 @@ def get_blood_test_values(nparray, labels):
             else:
                 pop_message_box("Check that the correct file is being uploaded and contains a seal tag")
                 return 0
-        if (is_empty(wrong_labels)):
+        if is_empty(wrong_labels):
             return values
         # pops a message box if the input of the parameters is not a float or an integer
         else:
