@@ -64,8 +64,10 @@ class TrainModelWindow(QWidget):
         q.setColor(QPalette.ColorRole.Window, QColor(lightgray))
         self.setPalette(q)
 
-    # re-opens the dashboard and closes the current window
     def go_to_home(self):
+        """
+        re-opens the dashboard and closes the current window
+        """
         self.dashboard.show()
         self.close()
 
@@ -104,8 +106,10 @@ class TrainModelWindow(QWidget):
         layout.addWidget(self.display_feature_importance_graph, 1)
         return layout
 
-    # Saves a user trained model
     def save_model(self):
+        """
+        Saves a user trained model
+        """
         model_name = self.input_model_name.text()
         if model_name == "":
             pop_message_box("Please enter a model name.")
@@ -128,8 +132,10 @@ class TrainModelWindow(QWidget):
                 pop_message_box("Please train a model first.")
             self.input_model_name.setText("")
 
-    # Trains a model based on the features selected
     def train_new_model(self):
+        """
+        Trains a model based on the features selected
+        """
         dataset_labeled_seals = get_model_data()
         # Features not included in training
         excluded_features_num = 0
@@ -198,12 +204,14 @@ class TrainModelWindow(QWidget):
             self.feature_importance.setText(feature_importance_str)
             # get and set the confusion matrix
             self.display_confusion_matrix(x_test, y_test)
-
             pop_message_box("Model trained successfully")
         else:
             pop_message_box("Please select features to train on.")
 
     def display_confusion_matrix(self, x_test, y_test):
+        """
+        Creates and displays the information present in the confusion matrix
+        """
         titles_options = [
             ("Confusion matrix, without normalization", None),
             ("Normalized confusion matrix", "true"),
@@ -224,10 +232,11 @@ class TrainModelWindow(QWidget):
                                + "\nTrue positives: " + str(round(disp.confusion_matrix[1][1], 1))
         self.confusion_matrix.setText(confusion_matrix_str)
 
-
-# This function is used to update the Excel file. This Excel file is used to note down all the selected features
-# for the trained models. If a feature was used, then the corresponding cell will be filled with 1.
 def save_features(row_index_list, model_name):
+    """
+    This function is used to update the Excel file. This Excel file is used to note down all the selected features for
+    the trained models. If a feature was used, then the corresponding cell will be filled with 1.
+    """
     # load a workbook and worksheet.
     try:
         wb = load_workbook(FEATURE_CHECKLIST_PATH)

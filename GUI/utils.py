@@ -57,53 +57,76 @@ def find_prediction(data, model, sex):
     else:
         return output + "Will not survive", 0
 
-
-# pops open a message box with the passed str as the message
 def pop_message_box(string):
+    """
+    pops open a message box with the passed str as the message
+    :param string: message
+    """
     msg_box = QMessageBox()
     msg_box.setText(string)
     msg_box.exec()
 
-
-# returns the species from the integer representation
 def get_seal_species_str_from_int(x):
+    """
+    Converts the species from a number to its string representation
+    :param x: a binary value representing species
+    :return: species in string form
+    """
     if x == 0 or x == '0':
         return "Phoca Vitulina"
     if x == 1 or x == '1':
         return "Halichoerus Grypus"
 
-
-# returns the sex from the integer representation
 def get_sex_str_from_int(x):
+    """
+    Converts the sex from a number to its string representation
+    :param x: a binary value representing sex
+    :return: sex in string form
+    """
     if x == 0:
         return "Female"
     if x == 1:
         return "Male"
 
-
-# returns the survival from the integer representation
 def get_chances_str_from_int(x):
+    """
+    Converts the survival from a number to its string representation
+    :param x: a binary value representing survival
+    :return: survival in string form
+    """
     if x == 0:
         return "Will not survive"
     if x == 1:
         return "Will survive"
 
-
 def get_seal_species_int(string):
+    """
+    Converts the species from a string to its binary representation
+    :param x: species in string form
+    :return: a binary value representing species
+    """
     if string == "Phoca Vitulina":
         return 0
     if string == "Halichoerus Grypus":
         return 1
 
-
 def get_sex_int(string):
+    """
+    Converts the sex from a string to its binary representation
+    :param x: sex in string form
+    :return: a binary value representing sex
+    """
     if string == "Female":
         return 0
     if string == "Male":
         return 1
 
-
 def get_survival_str_from_int(x):
+    """
+    Converts the survival from a string to its binary representation
+    :param x: survival in string form
+    :return: a binary value representing survival
+    """
     if x == 0:
         return "Not released"
     if x == 1:

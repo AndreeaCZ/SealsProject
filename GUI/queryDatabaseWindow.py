@@ -11,6 +11,10 @@ import datetime
 from GUI.utils import lightgray, pop_message_box
 from variables import DB_PATH, DIV
 
+########################################################################################################################
+# Represents the window where the user can query the database and save the subset of data retrieved
+########################################################################################################################
+
 query_error = "Something went wrong when querying"
 
 
@@ -94,8 +98,10 @@ class QueryDatabaseWindow(QWidget):
         q.setColor(QPalette.ColorRole.Window, QColor(lightgray))
         self.setPalette(q)
 
-    # re-opens the dashboard and closes the current window
     def go_to_home(self):
+        """
+        re-opens the dashboard and closes the current window
+        """
         self.dashboard.show()
         self.close()
 
@@ -310,7 +316,9 @@ class QueryDatabaseWindow(QWidget):
         connection.close()
 
     def reset_elements(self):
-        # Setting placeholder tests for blood values:
+        """
+        clears all text fields
+        """
         self.minWBC.setText("")
         self.maxWBC.setText("")
         self.minLYMF.setText("")
@@ -479,9 +487,6 @@ class QueryDatabaseWindow(QWidget):
         layout.addWidget(self.executeButton, 13, 3, 1, 2)
 
         layout.addWidget(self.home_button, 13, 6)
-        # layout.setRowMinimumHeight(14, 80)
-
         layout.setRowStretch(25, 1)
-        # layout.setColumnMinimumWidth(0, 150)
 
         return layout

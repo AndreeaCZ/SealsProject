@@ -9,7 +9,6 @@ from variables import DB_PATH
 # This can be connected and used in the GUI to visualize the data.
 ########################################################################################################################
 
-
 def data_visualization():
     conn = connect(DB_PATH)  # create a connection to the database
     # database connection

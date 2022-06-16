@@ -6,10 +6,10 @@ from sklearn.preprocessing import MinMaxScaler
 from Database.modelDataGeneration import get_model_data
 from variables import MODEL_PATH
 
+
 ########################################################################################################################
 # File containing the model creation functions.
 ########################################################################################################################
-
 
 def data_preprocessing():
     """
@@ -28,18 +28,15 @@ def data_preprocessing():
     return x_train, x_test, y_train, y_test
 
 
-# feedForwardModel accuracy = 0.601
-# highest accuracy = 0.602 Decision Tree
-# highest accuracy = 0.65
 def rf_model():
+    """
+    Generate a random forest classifier
+    """
     rf = RandomForestClassifier(criterion='entropy', n_estimators=300, max_depth=7, random_state=42, bootstrap=True,
                                 max_features='sqrt', min_samples_leaf=1, min_samples_split=10)
     return rf
 
 
-# highest accuracy = 0.64 SVM
-# highest accuracy = 0.641 KNN
-# highest accuracy = 0.645, fluctuating a lot LR
 def test_accuracy(model):
     """
     Test the accuracy of the model
@@ -57,4 +54,3 @@ def export_model(model):
     :return: void function
     """
     joblib.dump(model, MODEL_PATH)
-
