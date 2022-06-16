@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import QMessageBox
 ########################################################################################################################
 # Contains usefule functions for the manipulation of Excel files
 ########################################################################################################################
-from GUI.utils import pop_message_box
+
 
 
 def get_blood_test_values(nparray, labels):
@@ -59,3 +59,8 @@ def error_message_popup(wrong_labels):
     msg_box.setText("These parameters have non-numeric input. Change it!" + str(wrong_labels))
     msg_box.exec()
 
+# pops open a message box with the passed str as the message
+def pop_message_box(string):
+    msg_box = QMessageBox()
+    msg_box.setText(string)
+    msg_box.exec()
