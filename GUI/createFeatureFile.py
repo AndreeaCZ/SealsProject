@@ -1,7 +1,7 @@
 from openpyxl import Workbook
 
 ########################################################################################################################
-# Used to create a feature file
+# Used to create a feature checklist file
 # Run this file to create a feature file
 ########################################################################################################################
 

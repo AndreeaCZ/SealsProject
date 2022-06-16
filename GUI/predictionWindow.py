@@ -71,7 +71,7 @@ class PredictionWindow(QWidget):
         self.mpv_input = QLineEdit()
         self.plt_input = QLineEdit()
 
-        # textField dict
+        # feature to text field dictionary
         default_input_list = [self.wbc_input, self.lymf_input, self.gran_input, self.mid_input, self.rbc_input,
                             self.hgb_input, self.mch_input, self.mchc_input, self.mpv_input, self.plt_input]
         self.featureInputDict = dict(zip(defaultFeatureList, default_input_list))
@@ -86,8 +86,10 @@ class PredictionWindow(QWidget):
         q.setColor(QPalette.ColorRole.Window, QColor(lightgray))
         self.setPalette(q)
 
-    # re-opens the dashboard and closes the current window
     def go_to_home(self):
+        """
+        re-opens the dashboard and closes the current window
+        """
         self.dashboard.show()
         self.close()
 
@@ -164,7 +166,6 @@ class PredictionWindow(QWidget):
         layout.setRowStretch(20, 1)
         return layout
 
-    # dynamically add input lines and labels
     def update_input_and_labels(self):
         '''
         update the input fields and labels based on the loaded model
@@ -178,21 +179,27 @@ class PredictionWindow(QWidget):
                 self.featureInputDict.get(i).setStyleSheet("background-color: darkgrey;")
                 self.featureInputDict.get(i).setDisabled(True)
 
-    # clears the text of all input fields
     def reset_input_fields_text(self):
+        '''
+        clear all input fields
+        '''
         for input in self.featureInputDict.values():
             input.setText("")
 
-    # loads the default model with a different message
     def load_default_model_with_new_msg(self):
+        '''
+        loads the default model with a different message
+        '''
         self.output_label.setText("")
         self.modelName = defaultModelName
         self.model = joblib.load(MODEL_PATH)
         self.featureList = defaultFeatureList
         pop_message_box("Can't find the featuresChecklist.xlsx file. Default model loaded successfully")
 
-    # Update the list of features used for predicting based on the parameters the new model was trained on
     def update_feature_list(self, filename):
+        '''
+        Update the list of features used for predicting based on the parameters the new model was trained on
+        '''
         try:
             wb = load_workbook(FEATURE_CHECKLIST_PATH)
             ws = wb.active
@@ -221,8 +228,10 @@ class PredictionWindow(QWidget):
         except FileNotFoundError:
             self.load_default_model_with_new_msg()
 
-    # saves the results of the prediction
     def save_results(self):
+        '''
+        main function to save the results of the prediction
+        '''
         file_name = self.input_filename.text()
         if file_name == "":
             pop_message_box("Please enter a file name first.")
@@ -246,6 +255,9 @@ class PredictionWindow(QWidget):
         self.input_filename.setText("")
 
     def save_prediction(self, import_path):
+        '''
+        Saves the results of the prediction
+        '''
         # Create an Excel file
         excel_file = Workbook()
         spread_sheet = excel_file.active
@@ -279,8 +291,10 @@ class PredictionWindow(QWidget):
         excel_file.save(import_path)
         self.reset_input_fields_text()
 
-    # Load the default model
     def load_default_model(self):
+        '''
+        Loads the default model
+        '''
         self.output_label.setText("")
         self.seal_tag_input.setText("")
         self.modelName = defaultModelName
@@ -290,8 +304,10 @@ class PredictionWindow(QWidget):
         self.reset_input_fields_text()
         self.update_input_and_labels()
 
-    # Load a model from the local machine
     def load_model(self):
+        '''
+        Loads a model from the local machine
+        '''
         self.output_label.setText("")
         self.seal_tag_input.setText("")
         import_path = QFileDialog.getOpenFileName(filter='PKL files (*.pkl)')[0]
@@ -302,8 +318,10 @@ class PredictionWindow(QWidget):
             self.reset_input_fields_text()
             self.update_input_and_labels()
 
-    # if the result is zero, there´s a problem when taking the input
     def get_import(self):
+        '''
+        Makes a prediction based on the imported file
+        '''
         self.reset_input_fields_text()
         result = 0
         import_path_null = False
@@ -325,8 +343,10 @@ class PredictionWindow(QWidget):
         if result != 0:
             self.output_label.setText("Seal tag - " + seal_tag + "\n\n" + result)
 
-    # retrieves the seal tag of the seal whose data is present in the file
     def get_seal_tag(self, import_path):
+        '''
+        Retrieves the seal tag of the seal whose data is present in the file
+        '''
         new_seal_data = pd.read_excel(import_path).to_numpy()
         seal_tag = np.where((new_seal_data == 'Rhb. number:') | (new_seal_data == 'Rhb. number: '))[0]
         tag = ""
@@ -337,6 +357,9 @@ class PredictionWindow(QWidget):
         return tag
 
     def get_manual_input_prediction(self):
+        '''
+        Makes a prediction based on the inputted values
+        '''
         sex = get_sex_int(self.combo1.currentText())
         seal_tag = self.seal_tag_input.text()
         data = []

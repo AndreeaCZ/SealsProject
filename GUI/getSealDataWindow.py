@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import QWidget, QLineEdit, QLabel, QPushButton, QGridLayout
 from variables import DB_PATH
 
 ########################################################################################################################
-# Represents the window that lets the user see seal data
+# Represents the window that lets the user retrieve seal data
 ########################################################################################################################
 
 dataLabels = ["sealTag", "WBC", "LYMF", "GRAN", "MID", "HCT", "MCV", "RBC", "HGB", "MCH", "MCHC", "MPV", "PLT", "Survival", "Sex", "Species"]
@@ -59,13 +59,18 @@ class GetSealDataWindow(QWidget):
         layout.addWidget(self.home_button)
         return layout
 
-    # re-opens the dashboard and closes the current window
     def go_to_home(self):
+        """
+        re-opens the dashboard and closes the current window
+        """
         self.dashboard.show()
         self.close()
 
-    # presents the seal data to the output panel
     def show_seal_data(self, seal_data):
+        """
+        presents the seal data to the output panel
+        :param seal_data: the data of the seal
+        """
         seal_data_len = len(seal_data)
         s = ""
         for i in range(seal_data_len-3):
@@ -75,9 +80,10 @@ class GetSealDataWindow(QWidget):
         s = s + dataLabels[seal_data_len-1] + " - " + get_seal_species_str_from_int(int(seal_data[seal_data_len - 1])) + "\n"
         self.output_label.setText(s)
 
-    # retrieves the data of the seal with a seal tag
-    # if the result is zero, there´s a problem when taking the input
     def get_seal_data(self):
+        """
+        retrieves the data of the seal with a seal tag
+        """
         seal_tag = self.sealTag_input_line.text()
         connection = sqlite3.connect(DB_PATH)  # create a database for model training data
         c = connection.cursor()

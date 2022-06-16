@@ -6,7 +6,7 @@ from GUI.utils import lightgray
 from variables import DESCRIPTION_PATH
 
 ########################################################################################################################
-# Represents the description window of the application
+# Represents the description window of the application, contains the user guide that details all Blubber functionality
 ########################################################################################################################
 
 
@@ -33,6 +33,9 @@ class DescriptionWindow(QWidget):
 
     # re-opens the dashboard and closes the current window
     def go_to_home(self):
+        """
+        re-opens the dashboard and closes the current window
+        """
         self.dashboard.show()
         self.close()
 
@@ -50,24 +53,3 @@ class DescriptionWindow(QWidget):
         layout.addWidget(self.text)
         layout.addWidget(self.home_button)
         return layout
-
-
-        # VERSION WITH PICTURES, WILL PROBABLY REMOVE LATER
-        # layout = QVBoxLayout()
-        # text = QTextEdit()
-        # text.setMarkdown(string)
-        # text.setReadOnly(True)
-        # text.setFixedHeight(1000)
-        # layout.addWidget(text)
-        # layout.addStretch()
-        # image = QLabel()
-        # pic = QPixmap.fromImage(QImage('/Users/andreeazelko/Documents/SoftwareEngineering/SealsProject/treeOutput.png'))
-        # image.setPixmap(pic.scaledToWidth(600))
-        # layout.addWidget(image)
-        # inWidget = QWidget()
-        # inWidget.setLayout(layout)
-        # scroll = QScrollArea()
-        # scroll.setWidget(inWidget)
-        # outsideLayout = QVBoxLayout()
-        # outsideLayout.addWidget(scroll)
-        # self.setLayout(outsideLayout)

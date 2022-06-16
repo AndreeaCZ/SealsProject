@@ -77,13 +77,17 @@ class AddSealWindow(QWidget):
         layout.setRowMinimumHeight(8, 70)
         return layout
 
-    # re-opens the dashboard and closes the current window
     def go_to_home(self):
+        """
+        re-opens the dashboard and closes the current window
+        """
         self.dashboard.show()
         self.close()
 
-    # if the result is zero, there´s a problem when taking the input
     def add_seal(self):
+        """
+        main function for adding a seal
+        """
         import_path_null = False
         seal_tag = self.sealTag_input_line.text()
         if seal_tag != "":
@@ -95,12 +99,16 @@ class AddSealWindow(QWidget):
         else:
             pop_message_box("Provide a unique seal tag ID")
 
-    # adds a seal to the database
     def add_to_database(self, file, seal_tag):
-        sex1 = self.combo1.currentText()
-        species1 = self.combo2.currentText()
-        sex = get_sex_int(sex1)
-        species = get_seal_species_int(species1)
+        """
+        adds a seal to the database by extracting the seal data from the file
+        :param file: the file path of seal data file
+        :param seal_tag: the seal tag of the seal
+        """
+        sex_str = self.combo1.currentText()
+        species_str = self.combo2.currentText()
+        sex = get_sex_int(sex_str)
+        species = get_seal_species_int(species_str)
         surv = self.combo3.currentText()
         if surv == "Released":
             survival = 1
@@ -122,7 +130,7 @@ class AddSealWindow(QWidget):
             MCHC = blood_values[9]
             MPV = blood_values[10]
             PLT = blood_values[11]
-            connection = sqlite3.connect(DB_PATH)  # create a database for model training data
+            connection = sqlite3.connect(DB_PATH)  
             c = connection.cursor()
             try:
                 sql = "INSERT INTO sealPredictionData(sealTag, WBC, LYMF, GRAN, MID, HCT, MCV, RBC, HGB, MCH, MCHC, MPV, PLT, Survival, Sex, Species) VALUES (?, ?, ?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
