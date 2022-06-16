@@ -1,4 +1,3 @@
-
 import unittest
 import collections
 
@@ -6,9 +5,15 @@ import numpy as np
 
 from Utilities.excelManipulation import label_in_array, low_in_array, is_numeric, is_empty, get_blood_test_values
 
+########################################################################################################################
+# File for testing the Excel manipulation functions.
+########################################################################################################################
+
+
 collections.Callable = collections.abc.Callable
 
-class test_excel_manipulation(unittest.TestCase):
+
+class TestExcelManipulation(unittest.TestCase):
 
     def test_label_in_array(self):
         # Should return False if the label is in the array
@@ -33,24 +38,24 @@ class test_excel_manipulation(unittest.TestCase):
         self.assertEqual(value, True)
 
     def test_is_numeric(self):
-        x=3
-        y=0.5
-        z='a'
+        x = 3
+        y = 0.5
+        z = 'a'
         self.assertEqual(is_numeric(x), True)
         self.assertEqual(is_numeric(y), True)
         self.assertEqual(is_numeric(z), False)
 
     def test_is_empty(self):
-        x=[]
-        y=["XY"]
+        x = []
+        y = ["XY"]
         self.assertEqual(is_empty(x), True)
         self.assertEqual(is_empty(y), False)
 
     def test_get_blood_test_values(self):
-        #Checks that it gets correct value
-        x = np.array([['a', 'LOW'], ['WBC', 8.6]],dtype=object)
-        value = get_blood_test_values(x,["WBC"])
-        self.assertEqual(value,[8.6])
+        # Checks that it gets correct value
+        x = np.array([['a', 'LOW'], ['WBC', 8.6]], dtype=object)
+        value = get_blood_test_values(x, ["WBC"])
+        self.assertEqual(value, [8.6])
 
         # Checks that it gets correct value, for multiple labels
         x = np.array([['a', 'LOW'], ['WBC', 8.6], ['LYMF', 59], ['GRAN', 3.16]], dtype=object)
@@ -65,5 +70,3 @@ class test_excel_manipulation(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-

@@ -1,4 +1,5 @@
 import sys
+import unittest
 from unittest import TestCase, mock
 
 from PyQt6.QtCore import Qt, QSize
@@ -8,8 +9,13 @@ from PyQt6.QtWidgets import QApplication
 
 from GUI.aboutPage import About
 
+########################################################################################################################
+# File for testing the about page
+########################################################################################################################
+
 
 app = QApplication(sys.argv)
+
 
 class TestAbout(TestCase):
     # SET UP:
@@ -19,7 +25,7 @@ class TestAbout(TestCase):
 
     # TestInitial: title, size , button clicked working?
     def test_title(self):
-        self.assertEqual(self.test_window.windowTitle(), ("About"))
+        self.assertEqual(self.test_window.windowTitle(), "About")
 
     def test_size(self):
         self.assertEqual(self.test_window.size(), QSize(800, 500))

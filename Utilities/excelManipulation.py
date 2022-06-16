@@ -3,9 +3,14 @@ import math
 import numpy as np
 from PyQt6.QtWidgets import QMessageBox
 
+########################################################################################################################
+# Contains usefule functions for the manipulation of Excel files
+########################################################################################################################
+
+
 
 def get_blood_test_values(nparray, labels):
-    # Get the values from the excel file in numpy array format
+    # Get the values from the Excel file in numpy array format
     # Input: nparray, labels
     # Output: list of values
     values = []
@@ -32,24 +37,27 @@ def get_blood_test_values(nparray, labels):
     else:
         return 0
 
-def label_in_array(nparray,label):
-    return (np.where(nparray == label)[0].size == 0)
+
+def label_in_array(nparray, label):
+    return np.where(nparray == label)[0].size == 0
+
 
 def low_in_array(nparray):
-    return (np.where(nparray == "LOW")[0].size == 0)
+    return np.where(nparray == "LOW")[0].size == 0
+
 
 def is_numeric(e):
     return (isinstance(e, float) and not math.isnan(e)) or isinstance(e, int)
 
+
 def is_empty(nparray):
-    return (len(nparray) == 0)
+    return len(nparray) == 0
 
 
 def error_message_popup(wrong_labels):
     msg_box = QMessageBox()
     msg_box.setText("These parameters have non-numeric input. Change it!" + str(wrong_labels))
     msg_box.exec()
-
 
 # pops open a message box with the passed str as the message
 def pop_message_box(string):

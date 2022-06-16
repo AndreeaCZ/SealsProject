@@ -1,4 +1,5 @@
 import sys
+import unittest
 from unittest import TestCase, mock
 
 from PyQt6.QtCore import QSize, Qt
@@ -8,7 +9,13 @@ from PyQt6.QtWidgets import QApplication
 
 from GUI.queryDatabaseWindow import QueryDatabaseWindow
 
+########################################################################################################################
+# File for testing the queryDatabaseWindow.py file.
+########################################################################################################################
+
+
 app = QApplication(sys.argv)
+
 
 class TestQueryDatabaseWindow(TestCase):
     # SET UP:
@@ -18,7 +25,7 @@ class TestQueryDatabaseWindow(TestCase):
 
     # TestInitial: title, size , button clicked working?
     def test_title(self):
-        self.assertEqual(self.test_window.windowTitle(), ("Get seal data"))
+        self.assertEqual(self.test_window.windowTitle(), "Get seal data")
 
     def test_size(self):
         self.assertEqual(self.test_window.size(), QSize(700, 500))
@@ -57,6 +64,7 @@ class TestQueryDatabaseWindow(TestCase):
 
     def test_set_elements(self):
         self.fail()
+
 
 if __name__ == '__main__':
     unittest.main()

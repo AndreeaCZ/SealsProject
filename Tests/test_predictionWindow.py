@@ -1,4 +1,5 @@
 import sys
+import unittest
 from unittest import TestCase, mock
 
 from PyQt6.QtCore import Qt, QSize
@@ -8,7 +9,13 @@ from PyQt6.QtWidgets import QApplication
 
 from GUI.predictionWindow import PredictionWindow
 
+########################################################################################################################
+# File for testing the prediction window
+########################################################################################################################
+
+
 app = QApplication(sys.argv)
+
 
 class TestPredictionWindow(TestCase):
     # SET UP:
@@ -18,7 +25,7 @@ class TestPredictionWindow(TestCase):
 
     # TestInitial: title, size , button clicked working?
     def test_title(self):
-        self.assertEqual(self.test_window.windowTitle(), ("Run predictions"))
+        self.assertEqual(self.test_window.windowTitle(), "Run predictions")
 
     def test_size(self):
         self.assertEqual(self.test_window.size(), QSize(600, 700))
@@ -101,6 +108,7 @@ class TestPredictionWindow(TestCase):
 
     def test_get_manual_input_prediction(self):
         self.fail()
+
 
 if __name__ == '__main__':
     unittest.main()

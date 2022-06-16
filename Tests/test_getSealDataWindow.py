@@ -9,7 +9,13 @@ from PyQt6.QtWidgets import QApplication
 
 from GUI.getSealDataWindow import GetSealDataWindow
 
+########################################################################################################################
+# File for testing the get seal data window.
+########################################################################################################################
+
+
 app = QApplication(sys.argv)
+
 
 class TestGetSealDataWindow(TestCase):
     # SET UP:
@@ -19,7 +25,7 @@ class TestGetSealDataWindow(TestCase):
 
     # TestInitial: title, size , button clicked working?
     def test_title(self):
-        self.assertEqual(self.test_window.windowTitle(), ("Get seal data"))
+        self.assertEqual(self.test_window.windowTitle(), "Get seal data")
 
     def test_size(self):
         self.assertEqual(self.test_window.size(), QSize(700, 500))
@@ -42,6 +48,7 @@ class TestGetSealDataWindow(TestCase):
 
     def test_show_seal_data(self):
         self.fail()
+
 
 if __name__ == '__main__':
     unittest.main()
