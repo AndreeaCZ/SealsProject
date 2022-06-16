@@ -44,6 +44,11 @@ def get_values(nparray, sur, seal_tag, seal_sex, species):
 
 
 def get_seal_species_str(species):
+    """
+    Returns the initials of the species from the full species name
+    :param species: full species name
+    :return: the initials of the species
+    """
     if species == "Phoca Vitulina":
         return "PV"
     if species == "Halichoerus Grypus":

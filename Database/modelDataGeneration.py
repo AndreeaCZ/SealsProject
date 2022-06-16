@@ -4,10 +4,13 @@ import pandas as pd
 
 from variables import DB_PATH
 
+# ########################################################################################################################
+# File used to retrieve all data present in the database
+# ########################################################################################################################
 
 def get_model_data():
     """
-    Used to balance the data for the model to be trained on
+    Used to retrieve and balance the data from the database
     :return: balanced data
     """
     conn = connect(DB_PATH)

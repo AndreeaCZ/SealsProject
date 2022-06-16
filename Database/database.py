@@ -1,8 +1,10 @@
-# possibly not needed anymore, Used to create the database
-
 import sqlite3
 
 from variables import DB_NAME
+
+# ########################################################################################################################
+# File used make the database.
+# ########################################################################################################################
 
 connection = sqlite3.connect(DB_NAME)  # create a database for model training data
 c = connection.cursor()
