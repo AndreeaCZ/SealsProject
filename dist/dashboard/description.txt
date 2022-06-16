@@ -20,42 +20,42 @@ therefore should not be used as a substitute for the actual survival chances of 
 This is the main page of the Blubber application. It provides access to the following pages:
 * Prediction page
 * Database access page
-* About page
+* User guide page
 * Train a model page
 * Add a seal page
 * Get a seal page
+* About the model page
 
 &nbsp;
 ### Prediction page
 
-This is the page where the user can make a prediction about the survival chances of the animals. Please select the
-gender of the seal, its species. Also select what model you wish to use. Next, import the Excel file containing the
-blood test results of the new seal. Make sure the file follows the usual format.
+This is the page where the user can make a prediction about the survival chances of the animals.
 
 &nbsp;
-### Data ranges page
+### Database access page
 
-This page allows the user to interact with and query the database of seal information. It is not required to fill all the
-available fields on that page. Simply fill the desired values and additional fields, then enter a file name and press Get
-the subsets. The database entries which match the criteria selected will be entered into a new Excel file and saved with
-the given name.
+This page allows the user to interact with and query the database of seal information.
 
 &nbsp;
 ### Train a model page
 
-This page allows the user to train a model. The user can select the parameters on which the model will be trained, and
-then click the "Train" button. The window will then show the accuracy of the new model. If satisfactory, the user can
-click the "Save" button to save the model.
+This page allows the user to train a new prediction model on personalised parameters.
 
 &nbsp;
 ### Add a seal page
 
-This page allows the user to add a new seal to the database.
+This page allows the user to add the information of a new seal to the database.
 
 &nbsp;
 ### Get a seal page
 
-This page allows the user to get a seal from the database.
+This page allows the user to get the information of a seal from the database.
+
+&nbsp;
+### About the model page
+
+This page contains information about the default prediction model of Blubber, as well as technical information about
+what kind of madels can be trained by the user.
 
 &nbsp;
 &nbsp;
@@ -76,24 +76,32 @@ If the prediction was successful, the user will be shown the survival chances of
 The user can also click on the "Save" button to save the prediction.
 
 &nbsp;
+## How to query the seal database
+
+It is not required to fill all the available fields on that page. Simply fill the desired values and additional fields,
+then enter a file name and press Get the subsets. The database entries which match the criteria selected will be entered
+into a new Excel file and saved with the given name.
+
+&nbsp;
 ## How to train a new model for Blubber
 
 To create a new model, the user must first select the Train a model page.
 
 There, the user must select the parameters on which the model will be trained. Once the parameters are selected,
-click the "Train" button. The window will then show the accuracy of the new model. If satisfactory, the user can
-save the model by clicking the "Save" button after inputting a name for the new model.
+click the "Train" button. The window will then show the accuracy of the new model, as well as the feature importance
+and the confusion matrix. If satisfactory, the user can save the model by clicking the "Save" button after inputting a
+name for the new model.
 
 &nbsp;
 ## How to add a new seal to the database
 
 Adding a new seal to the database is done by clicking on the "Add a seal" button on the main page. There, the process
-is similar to the process of making a prediction. The user must select the species of the seal, the sex and whether
-the seal has released or has not survived. Then, use the import feature and just choose the Excel file which holds all
-the values. Lastly add the unique ID of the seal and click on the "Add seal" button.
+is similar to the process of making a prediction. Select the seal's sex, species and release status, then enter
+the ID tag. Next, click on Add seal and select the Excel file which contains the seals blood test results. The seal information
+will then be added to the database.
 
 &nbsp;
-## How to get a seal from the database
+## How to get the information of a seal from the database
 
 To retrieve a seal from the database, the user must first click on the "Get a seal" button on the main page.
 

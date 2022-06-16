@@ -11,8 +11,9 @@ This page offers information on the technologies and algorithms used when buildi
 ## Prediction model
 
 The prediction model chosen for the app is a [Random Forest model](https://en.wikipedia.org/wiki/Random_forest#:~:text=Random%20forests%20or%20random%20decision,class%20selected%20by%20most%20trees.).
-A random forest is a meta estimator that fits a number of decision tree classifiers on various sub-samples of the dataset
- and uses averaging to improve the predictive accuracy and control over-fitting.
+A random forest is a meta estimator(meta-estimator: an algorithm that fits a number of simpler estimators) that fits a
+number of decision tree classifiers on various sub-samples of the dataset and uses averaging to improve the predictive
+accuracy and control over-fitting.
 
 A decision tree takes in a set of data and then creates a set of rules (that produce the highest accuracy) that can be
 used to make predictions.
