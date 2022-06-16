@@ -8,9 +8,15 @@ from PyQt6.QtWidgets import QApplication
 
 from GUI.trainingWindow import TrainModelWindow
 
+########################################################################################################################
+# File for testing the training window
+########################################################################################################################
+
+
 app = QApplication(sys.argv)
 
-class TestTraingWindow(TestCase):
+
+class TestTrainingWindow(TestCase):
     # SET UP:
     # Opening dummyDB for testing is not implemented yet.
     # If dummbyDB executed, all data in dummbyDB will be deleted and the DB will be closed when the tests ended.
@@ -20,7 +26,7 @@ class TestTraingWindow(TestCase):
 
     # TestInitial: title, size , button clicked working?
     def test_title(self):
-        self.assertEqual(self.test_window.windowTitle(), ("Train a model"))
+        self.assertEqual(self.test_window.windowTitle(), "Train a model")
 
     def test_size(self):
         self.assertEqual(self.test_window.size(), QSize(500, 450))
@@ -64,7 +70,6 @@ class TestTraingWindow(TestCase):
     def test_empty_model_name(self):
         self.fail()
 
+
 if __name__ == '__main__':
     unittest.main()
-
-

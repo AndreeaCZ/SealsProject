@@ -6,6 +6,10 @@ from sklearn.preprocessing import MinMaxScaler
 from Database.modelDataGeneration import get_model_data
 from variables import MODEL_PATH
 
+########################################################################################################################
+# File containing the model creation functions.
+########################################################################################################################
+
 
 def data_preprocessing():
     """

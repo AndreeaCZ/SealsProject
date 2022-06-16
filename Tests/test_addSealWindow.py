@@ -9,7 +9,13 @@ from PyQt6.QtWidgets import QApplication
 
 from GUI.addSealWindow import AddSealWindow
 
+########################################################################################################################
+# File for testing the add seal window
+########################################################################################################################
+
+
 app = QApplication(sys.argv)
+
 
 class TestAddSealWindow(TestCase):
     # SET UP:
@@ -21,7 +27,7 @@ class TestAddSealWindow(TestCase):
 
     # Test Initial: title, size , button clicked working?
     def test_title(self):
-        self.assertEqual(self.test_window.windowTitle(), ("Add a seal"))
+        self.assertEqual(self.test_window.windowTitle(), "Add a seal")
 
     def test_size(self):
         self.assertEqual(self.test_window.size(), QSize(700, 400))
@@ -41,7 +47,6 @@ class TestAddSealWindow(TestCase):
             home_button = test_window.home_button
             QTest.mouseClick(home_button, Qt.MouseButton.LeftButton)
             self.assertTrue(clickCheck.called)
-
 
     # 1. test unique sealTag with excel file
     # NOT IMPLEMENTED YET
@@ -65,8 +70,6 @@ class TestAddSealWindow(TestCase):
     def test_add_with_wrong_excel_file(self):
         self.test_window.import_path = 'Tests/wrong_testing_data.xlsx'
         self.fail()
-
-
 
 
 if __name__ == '__main__':

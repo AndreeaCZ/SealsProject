@@ -3,10 +3,15 @@ import collections
 
 from Database.modelDataGeneration import get_model_data
 
+########################################################################################################################
+# File for testing the model data generation functions.
+########################################################################################################################
+
+
 collections.Callable = collections.abc.Callable
 
 
-class test_model_data_generation(unittest.TestCase):
+class TestModelDataGeneration(unittest.TestCase):
 
     def test_label_in_array(self):
         # The amount of columns in database should be 13
