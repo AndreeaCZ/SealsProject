@@ -4,7 +4,7 @@ import numpy as np
 from PyQt6.QtWidgets import QMessageBox
 
 ########################################################################################################################
-# Contains usefule functions for the manipulation of Excel files
+# Contains useful functions for the manipulation of Excel files
 ########################################################################################################################
 
 
