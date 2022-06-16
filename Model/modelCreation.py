@@ -29,7 +29,7 @@ def data_preprocessing():
 # highest accuracy = 0.65
 def rf_model():
     rf = RandomForestClassifier(criterion='entropy', n_estimators=300, max_depth=7, random_state=42, bootstrap=True,
-                                max_features='auto', min_samples_leaf=1, min_samples_split=10)
+                                max_features='sqrt', min_samples_leaf=1, min_samples_split=10)
     return rf
 
 
