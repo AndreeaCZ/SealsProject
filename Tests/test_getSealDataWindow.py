@@ -1,4 +1,5 @@
 import sys
+import unittest
 from unittest import TestCase, mock
 
 from PyQt6.QtCore import Qt, QSize
