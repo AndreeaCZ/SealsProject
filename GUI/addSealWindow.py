@@ -96,8 +96,10 @@ class AddSealWindow(QWidget):
                 import_path_null = True
             if not import_path_null:
                 self.add_to_database(import_path, seal_tag)
+                return True
         else:
             pop_message_box("Provide a unique seal tag ID")
+            return False
 
     def add_to_database(self, file, seal_tag):
         """
@@ -140,3 +142,6 @@ class AddSealWindow(QWidget):
             except NameError:
                 pop_message_box("Something went wrong. Ensure that the seal tag is unique.")
             connection.close()
+            return True
+        else:
+            return False

@@ -1,6 +1,8 @@
+import os
 import sys
 import unittest
 from unittest import TestCase, mock
+from unittest.mock import patch
 
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtTest import QTest
@@ -12,7 +14,7 @@ from GUI.addSealWindow import AddSealWindow
 ########################################################################################################################
 # File for testing the add seal window
 ########################################################################################################################
-
+from variables import ROOT_DIR
 
 app = QApplication(sys.argv)
 
@@ -49,28 +51,37 @@ class TestAddSealWindow(TestCase):
             self.assertTrue(clickCheck.called)
 
     # 1. test unique sealTag with excel file
-    # NOT IMPLEMENTED YET
-    def test_add_database_sucessfully(self):
-        self.test_window.import_path = 'Tests/correct_testing_data.xlsx'
-        self.test_window.sealTag_input_line.setText("3")
-        self.fail()
+    @mock.patch("GUI.addSealWindow.pop_message_box")
+    @mock.patch("sqlite3.connect")
+    def test_add_database_sucessfully(self, mock_pop, mock_db):
+        test_file = os.path.join(ROOT_DIR, 'Tests/correct_testing_data.xlsx')
+        test_tag = "test-1"
 
-    # 2. test duplicated sealTag with excel file
-    # NOT IMPLEMENTED YET
-    def test_same_tagID(self):
-        self.fail()
+        result = self.test_window.add_to_database(test_file, test_tag)
+        mock_db.return_value = mock.Mock()
+
+        self.assertTrue(result)
+        mock_pop.assert_called_once()
+        mock_db.assert_called_once()
+
+    # 2. test adding to database with wrong excel file
+    @mock.patch("Utilities.excelManipulation.error_message_popup")
+    def test_add_database_fail(self, mock_pop):
+        test_file = os.path.join(ROOT_DIR, 'Tests/wrong_testing_data.xlsx')
+        test_tag = "test-1"
+
+        result = self.test_window.add_to_database(test_file, test_tag)
+
+        self.assertFalse(result)
+        mock_pop.assert_called_once()
 
     # 3. test add data with empty tagID
-    # NOT IMPLEMENTED YET
-    def test_empty_tagID(self):
-        self.fail()
-
-    # 4. test wrong excel file
-    # NOT IMPLEMENTED YET
-    def test_add_with_wrong_excel_file(self):
-        self.test_window.import_path = 'Tests/wrong_testing_data.xlsx'
-        self.fail()
-
+    @mock.patch("GUI.addSealWindow.pop_message_box")
+    def test_empty_tagID(self, mock_pop):
+        self.test_window.sealTag_input_line.setText("")
+        result = self.test_window.add_seal()
+        self.assertFalse(result)
+        mock_pop.assert_called_once()
 
 if __name__ == '__main__':
     unittest.main()
