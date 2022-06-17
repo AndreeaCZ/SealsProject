@@ -1,6 +1,8 @@
 import unittest
 import collections
 
+import pandas as pd
+
 from Model.modelCreation import data_preprocessing, rf_model
 
 ########################################################################################################################
@@ -23,8 +25,10 @@ class TestDataVisualization(unittest.TestCase):
         z = all((y_test == 0) | (y_test == 1))
         self.assertTrue(z)
 
-        # X_train and X_test should only hold values between 1-0 #TODO: These fails sometimes
-        x = ((x_train >= 0) & (x_train <= 1))
+        df = pd.DataFrame(x_train)
+
+        # X_train and X_test should only hold values between 1-0
+        x = ((df >= 0.0) & (df <= 1.0))
         self.assertNotIn(False, x)
 
         t = ((x_test >= 0) & (x_test <= 1))

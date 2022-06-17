@@ -53,7 +53,7 @@ class TestTrainingWindow(TestCase):
             test_window = TrainModelWindow(m)
             home_button = test_window.home_button
             QTest.mouseClick(home_button, Qt.MouseButton.LeftButton)
-            self.assertTrue(clickCheckgit .called)
+            self.assertTrue(clickCheck.called)
 
     @mock.patch("joblib.load")
     @mock.patch("GUI.trainingWindow.pop_message_box")
