@@ -134,17 +134,19 @@ class TestPredictionWindow(TestCase):
             mock_load.assert_called_once()
             mock_update.assert_called_once()
 
-    #
-    # @mock.patch("GUI.predictionWindow.QFileDialog")
-    # @mock.patch("GUI.predictionWindow.make_prediction")
-    # @mock.patch("GUI.predictionWindow.PredictionWindow.get_seal_tag")
-    # def test_get_import(self, mock_qDialog, mock_predict, mock_tag):
-    #     mock_qDialog.getOpenFileName(filter='Excel files (*.xlsx)')[0] = "Tests/correct_testing_data.xlsx"
-    #     self.test_window.get_import()
-    #
-    #     mock_qDialog.assert_called_once()
-    #     mock_predict.assert_called_once()
-    #     mock_tag.assert_called_once()
+
+    @mock.patch("GUI.predictionWindow.QFileDialog")
+    @mock.patch("GUI.predictionWindow.make_prediction")
+    @mock.patch("GUI.predictionWindow.PredictionWindow.get_seal_tag")
+    def test_get_import(self, mock_qDialog, mock_predict, mock_tag):
+        mock_qDialog.getOpenFileName(filter='Excel files (*.xlsx)')[0] = "Tests/correct_testing_data.xlsx"
+        self.test_window.im
+        self.test_window.get_import()
+
+
+        mock_qDialog.assert_called_once()
+        mock_predict.assert_called_once()
+        mock_tag.assert_called_once()
 
     # @mock.patch("GUI.predictionWindow.pandas")
     # def test_get_seal_tag(self, mock_pd):

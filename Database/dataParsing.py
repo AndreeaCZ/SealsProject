@@ -1,6 +1,8 @@
 import sqlite3
+import sys
 
 import pandas as pd
+from PyQt6.QtWidgets import QApplication
 
 from GUI.utils import get_seal_species_int, get_sex_int
 from Utilities.excelManipulation import get_blood_test_values
@@ -54,10 +56,11 @@ def get_seal_species_str(species):
     if species == "Halichoerus Grypus":
         return "HG"
 
-
+# app = QApplication(sys.argv)
 # Goes through the main Excel file and tries to get data about each seal and store it into the database
 for i in range(221, arrivedSeals.shape[0]):
     try:
+        print(i)
         tag = arrivedSeals[i][1]
         survival = arrivedSeals[i][2]
         sealSpecies = get_seal_species_str(arrivedSeals[i][6])

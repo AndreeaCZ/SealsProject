@@ -25,9 +25,10 @@ maxExcludedFeatures = 10
 class TrainModelWindow(QWidget):
     def __init__(self, dashboard):
         super().__init__()
+        self.setFixedSize(QSize(600, 750))
         self.model = None
         self.excelRowIndex = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-        self.setFixedSize(QSize(600, 700))
+        self.move(450, 0)
         self.setWindowTitle("Train a model")
         # close home page
         self.dashboard = dashboard

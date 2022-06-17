@@ -172,7 +172,7 @@ class PredictionWindow(QWidget):
         '''
         for input in self.featureInputDict.values():
             input.setDisabled(False)
-            input.setStyleSheet("background-color: black;")
+            input.setStyleSheet("background-color: white;")
         # show labels and fields of features in the current feature list
         for i in defaultFeatureList:
             if i not in self.featureList:
