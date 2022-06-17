@@ -296,7 +296,6 @@ class QueryDatabaseWindow(QWidget):
         for i in range(len(feature_list)):
             if list_self_min[i].text() == "":
                 try:
-
                     c.execute("SELECT min(" + feature_list[i] + ") FROM sealPredictionData")
                     min_value = c.fetchall()
                     list_self_min[i].setText(str(min_value[0][0]))
