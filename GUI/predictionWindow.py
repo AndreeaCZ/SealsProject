@@ -72,9 +72,9 @@ class PredictionWindow(QWidget):
         self.plt_input = QLineEdit()
 
         # feature to text field dictionary
-        default_input_list = [self.wbc_input, self.lymf_input, self.gran_input, self.mid_input, self.rbc_input,
+        self.default_input_list = [self.wbc_input, self.lymf_input, self.gran_input, self.mid_input, self.rbc_input,
                             self.hgb_input, self.mch_input, self.mchc_input, self.mpv_input, self.plt_input]
-        self.featureInputDict = dict(zip(defaultFeatureList, default_input_list))
+        self.featureInputDict = dict(zip(defaultFeatureList, self.default_input_list))
 
         # Creating a home button
         self.home_button = QPushButton('Home')
@@ -172,7 +172,7 @@ class PredictionWindow(QWidget):
         '''
         for input in self.featureInputDict.values():
             input.setDisabled(False)
-            input.setStyleSheet("background-color: white;")
+            input.setStyleSheet("background-color: black;")
         # show labels and fields of features in the current feature list
         for i in defaultFeatureList:
             if i not in self.featureList:
@@ -317,6 +317,9 @@ class PredictionWindow(QWidget):
             self.update_feature_list(file_name)
             self.reset_input_fields_text()
             self.update_input_and_labels()
+            return True
+        else:
+            return False
 
     def get_import(self):
         '''
@@ -349,6 +352,8 @@ class PredictionWindow(QWidget):
         '''
         new_seal_data = pd.read_excel(import_path).to_numpy()
         seal_tag = np.where((new_seal_data == 'Rhb. number:') | (new_seal_data == 'Rhb. number: '))[0]
+        # print("new seal data\n" + str(new_seal_data))
+        # print("seal tag\n" + str(seal_tag))
         tag = ""
         if np.where((new_seal_data == 'Rhb. number:') | (new_seal_data == 'Rhb. number: '))[0].size != 0:
             for i in range(1, 5):
