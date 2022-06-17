@@ -134,33 +134,6 @@ class TestPredictionWindow(TestCase):
             mock_load.assert_called_once()
             mock_update.assert_called_once()
 
-
-    @mock.patch("GUI.predictionWindow.QFileDialog")
-    @mock.patch("GUI.predictionWindow.make_prediction")
-    @mock.patch("GUI.predictionWindow.PredictionWindow.get_seal_tag")
-    def test_get_import(self, mock_qDialog, mock_predict, mock_tag):
-        mock_qDialog.getOpenFileName(filter='Excel files (*.xlsx)')[0] = "Tests/correct_testing_data.xlsx"
-        self.test_window.im
-        self.test_window.get_import()
-
-
-        mock_qDialog.assert_called_once()
-        mock_predict.assert_called_once()
-        mock_tag.assert_called_once()
-
-    # @mock.patch("GUI.predictionWindow.pandas")
-    # def test_get_seal_tag(self, mock_pd):
-    #     test_array = [['Species:', nan, 'PV', nan, nan, nan, nan, nan, 'VETERINARY DEPARTMENT', nan, nan,
-    #       nan, nan, nan,],
-    #      ['Rhb. number: ', nan, '20-013', nan, nan, nan, nan, nan,
-    #      'Sealcentre Pieterburen', nan, nan, nan, nan, nan]]
-    #
-    #     import_path = mock.Mock()
-    #
-    #     self.test_window.get_seal_tag()
-    #     mock_pd.read_excel(import_path).to_numpy().return_value = test_array
-    #     pass
-
     def test_get_manual_input_prediction(self):
         self.test_window.combo1.addItem("Female")
         self.test_window.seal_tag_input.setText("Julia")
@@ -178,7 +151,7 @@ class TestPredictionWindow(TestCase):
         self.test_window.plt_input.setText("10")
 
         self.test_window.featureInputDict = dict(zip(defaultFeatureList, self.test_window.default_input_list))
-        output = ['Julia', 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 0, 0]
+        output = ['Julia', 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 0, (0 | 1)]
 
         self.test_window.get_manual_input_prediction()
 
