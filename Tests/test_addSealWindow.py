@@ -6,15 +6,13 @@ from unittest.mock import patch
 
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtTest import QTest
-
 from PyQt6.QtWidgets import QApplication
-
 from GUI.addSealWindow import AddSealWindow
+from variables import ROOT_DIR
 
 ########################################################################################################################
 # File for testing the add seal window
 ########################################################################################################################
-from variables import ROOT_DIR
 
 app = QApplication(sys.argv)
 
@@ -82,6 +80,7 @@ class TestAddSealWindow(TestCase):
         result = self.test_window.add_seal()
         self.assertFalse(result)
         mock_pop.assert_called_once()
+
 
 if __name__ == '__main__':
     unittest.main()
