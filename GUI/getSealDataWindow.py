@@ -93,7 +93,9 @@ class GetSealDataWindow(QWidget):
             seal_data = c.fetchone()
             np_seal_data = np.array(seal_data)
             self.show_seal_data(np_seal_data)
+            return np_seal_data
         except SyntaxError:
             pop_message_box("Something went wrong. Ensure that you've provided the seal tag of a seal present in the database.")
             self.output_label.setText("")
+            return 0
         connection.close()
